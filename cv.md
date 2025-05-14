@@ -1,23 +1,56 @@
 ---
 layout: page
-title: "CV"
+title: "Curriculum Vitae"
 permalink: /cv/
 nav_order: 2
 ---
 
-# Curriculum Vitae
+<h1>Curriculum Vitae</h1>
 
-## Education
+<section>
+  <h2>Education</h2>
+  <ul class="cv-list">
+    <li>
+      <strong>M.Math (Honours)</strong>, Indian Statistical Institute, Kolkata, India <span class="cv-year">2024</span>
+    </li>
+    <li>
+      <strong>B.Math (Honours)</strong>, Indian Statistical Institute, Bangalore, India <span class="cv-year">2022</span>
+    </li>
+    <li>
+      Senior Secondary (Class&nbsp;12), Delhi Public School, Ruby&nbsp;Park, Kolkata, India <span class="cv-year">2019</span>
+    </li>
+    <li>
+      Secondary (Class&nbsp;10), Don&nbsp;Bosco School, Bandel, India <span class="cv-year">2017</span>
+    </li>
+  </ul>
+</section>
 
-| Degree / Level | Institution | Location | Year |
-|----------------|-------------|----------|------|
-| **M.Math (Honours)** | Indian Statistical Institute | Kolkata, India | 2024 |
-| **B.Math (Honours)** | Indian Statistical Institute | Bangalore, India | 2022 |
-| Senior Secondary (Class 12) | Delhi Public School, Ruby Park | Kolkata, India | 2019 |
-| Secondary (Class 10) | Don Bosco School, Bandel | Bandel, India | 2017 |
+<section>
+  <h2>Employment History</h2>
+  <ul class="cv-list">
+    <li>
+      <strong>Research Assistant</strong>, Department of Mathematics, National University of Singapore &mdash; <em>2024&ndash;present</em>
+    </li>
+  </ul>
+</section>
 
-## Employment History
-
-| Position | Organisation | Dates |
-|----------|--------------|-------|
-| **Research Assistant** | Department of Mathematics, National University of Singapore | 2024 – present |
+<style>
+  .cv-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cv-list li {
+    margin-bottom: 0.75rem;
+  }
+  .cv-year {
+    float: right;
+  }
+  @media(max-width: 600px){
+    .cv-year {
+      float:none;
+      display:block;
+      margin-top:0.25rem;
+    }
+  }
+</style>
