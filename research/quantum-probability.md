@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Research: Quantum Probability"
+title: "Quantum Probability"
 permalink: /research/quantum-probability/
 ---
 
