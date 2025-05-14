@@ -1,19 +1,26 @@
+# Site settings
 title: "Rathin’s corner"
 description: "Experiments, notes and projects."
-# Pick any Pages‑approved theme, e.g. minima
 theme: minima
 
-# OPTIONAL—keep the build fast & clean
+# Plugins to keep the build fast & SEO friendly
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
+# Navigation menu (visible links)
 nav:
-  - title: "CV"
-    url: "/cv/"
   - title: "Home"
     url: "/"
-
-  
-
-  
+  - title: "CV"
+    url: "/cv/"
+  - title: "Probability & Statistics"
+    url: "/research/probability-statistics/"
+  - title: "Machine Learning"
+    url: "/research/machine-learning/"
+  - title: "Quantum Probability"
+    url: "/research/quantum-probability/"
+  - title: "Financial Mathematics"
+    url: "/research/financial-mathematics/"
+  - title: "Automated Theorem Proving"
+    url: "/research/automated-theorem-proving/"
