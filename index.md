@@ -1,6 +1,7 @@
 ---
 layout: home
 title: "Welcome!"
+nav_order: 1
 ---
 
 Hi, I’m Rathin.  
