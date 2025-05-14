@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ page.title }} · {{ site.title }}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    {%- feed_meta -%}          {#– only works if jekyll‑feed in plugins –#}
+    {%- seo -%}               {#– only works if jekyll‑seo‑tag in plugins –#}
+    <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="wrapper">
+        <a class="site-title" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+
+        <nav class="site-nav">
+          <ul class="menu">
+            {%- assign pages_sorted = site.pages | sort: 'nav_order' -%}
+            {%- for p in pages_sorted -%}
+              {%- if p.nav_order -%}
+                <li><a class="page-link" href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-content wrapper">
+      {{ content }}
+    </main>
+
+    <footer class="site-footer wrapper">
+      &copy; {{ site.time | date: '%Y' }} · {{ site.title }}
+    </footer>
+  </body>
+</html>
