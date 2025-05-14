@@ -8,9 +8,14 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
-# Navigation menu (visible links)
+# Tell Jekyll to process our custom SASS
+sass:
+  sass_dir: _sass
+  style: compressed
+
+# Navigation menu (inline, right‑aligned)
 nav:
-  - title: "Home"
+  - title: "Welcome!"
     url: "/"
   - title: "CV"
     url: "/cv/"
