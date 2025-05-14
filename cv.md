@@ -5,7 +5,7 @@ permalink: /cv/
 nav_order: 2
 ---
 
-<h1>Curriculum Vitae</h1>
+
 
 <section>
   <h2>Education</h2>
