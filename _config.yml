@@ -1,19 +1,15 @@
-# Site settings
 title: "Rathin’s corner"
 description: "Experiments, notes and projects."
 theme: minima
 
-# Plugins to keep the build fast & SEO friendly
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
-# Tell Jekyll to process our custom SASS
+# No special sass_dir needed when we put main.scss in /assets
 sass:
-  sass_dir: _sass
-  style: compressed
+  style: compressed    # optional, keeps CSS tiny
 
-# Navigation menu (inline, right‑aligned)
 nav:
   - title: "Welcome!"
     url: "/"
