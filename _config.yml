@@ -1,11 +1,10 @@
 # _config.yml
 title: "Rathin’s corner"
 description: "Experiments, notes and projects."
-theme: minima
 
 plugins:
   - jekyll-feed
-  - jekyll-seo-tag
+  - jekyll-seo-tag     # optional—keep if you want it
 
 sass:
-  style: compressed
+  style: compressed    # keep CSS tiny
