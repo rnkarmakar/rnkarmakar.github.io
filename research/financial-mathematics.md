@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Research: Financial Mathematics"
+title: "Financial Mathematics"
 permalink: /research/financial-mathematics/
 ---
 
