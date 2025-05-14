@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Research: Probability & Statistics"
+title: "Probability & Statistics"
 permalink: /research/probability-statistics/
 ---
 
