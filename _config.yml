@@ -1,3 +1,4 @@
+# _config.yml
 title: "Rathin’s corner"
 description: "Experiments, notes and projects."
 theme: minima
@@ -6,22 +7,5 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
-# No special sass_dir needed when we put main.scss in /assets
 sass:
-  style: compressed    # optional, keeps CSS tiny
-
-nav:
-  - title: "Welcome!"
-    url: "/"
-  - title: "CV"
-    url: "/cv/"
-  - title: "Probability & Statistics"
-    url: "/research/probability-statistics/"
-  - title: "Machine Learning"
-    url: "/research/machine-learning/"
-  - title: "Quantum Probability"
-    url: "/research/quantum-probability/"
-  - title: "Financial Mathematics"
-    url: "/research/financial-mathematics/"
-  - title: "Automated Theorem Proving"
-    url: "/research/automated-theorem-proving/"
+  style: compressed
