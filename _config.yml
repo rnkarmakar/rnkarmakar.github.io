@@ -9,10 +9,10 @@ plugins:
   - jekyll-seo-tag
 
 nav:
-  - title: "Home"
-    url: "/"
   - title: "CV"
     url: "/cv/"
+  - title: "Home"
+    url: "/"
 
   
 
