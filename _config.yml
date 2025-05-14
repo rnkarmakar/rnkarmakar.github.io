@@ -1,0 +1,9 @@
+title: "Rathin’s corner"
+description: "Experiments, notes and projects."
+# Pick any Pages‑approved theme, e.g. minima
+theme: minima
+
+# OPTIONAL—keep the build fast & clean
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
