@@ -1,0 +1,56 @@
+/* ---------- typographic scale ---------- */
+$font-base: "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+
+body {
+  margin: 0;
+  font-family: $font-base;
+  line-height: 1.6;
+}
+
+/* ---------- header ---------- */
+header.site-header {
+  border-bottom: 1px solid #eee;
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: .75rem 1rem;
+  }
+
+  .site-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #333;
+  }
+
+  .menu {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    .page-link {
+      white-space: nowrap;
+      text-decoration: none;
+      color: #111;
+    }
+  }
+}
+
+/* ---------- content & footer ---------- */
+.wrapper {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+footer.site-footer {
+  border-top: 1px solid #eee;
+  font-size: .9rem;
+  text-align: center;
+  color: #666;
+}
