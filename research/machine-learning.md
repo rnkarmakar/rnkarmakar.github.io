@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Research: Machine Learning"
+title: "Machine Learning"
 permalink: /research/machine-learning/
 ---
 
