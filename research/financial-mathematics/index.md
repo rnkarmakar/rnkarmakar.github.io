@@ -7,8 +7,8 @@ nav_order: 6
 <!-- Auto-list every article whose first category matches this slug -->
 <ul class="post-list">
 {% assign posts = site.research
-     {% if page.slug %}| where_exp: "p", "p.categories[0] == page.slug" {% endif %}
-     | sort: "date" | reverse %}
+   | where_exp: "p", "p.categories[0] == 'financial-mathematics'"
+   | sort: "date" | reverse %}
 {% for post in posts %}
   <li>
     <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
@@ -18,3 +18,4 @@ nav_order: 6
   </li>
 {% endfor %}
 </ul>
+
