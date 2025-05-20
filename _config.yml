@@ -13,7 +13,7 @@ sass:
 collections:
   research:
     output: true
-    permalink: /research/:categories/:slug/
+    permalink: /_research/:categories/:slug/
 
 jekyll-archives:
   enabled:
