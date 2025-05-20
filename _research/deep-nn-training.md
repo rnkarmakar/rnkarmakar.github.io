@@ -1,7 +1,7 @@
 ---
 layout: page
 title:  "Deep Neural Networks: Diagnosing training"
-date:   2025-05-20
+date:   2025-05-22
 categories: [machine-learning]
 tags: [neural networks, histograms, activation]
 ---
