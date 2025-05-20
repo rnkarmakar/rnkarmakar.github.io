@@ -6,10 +6,7 @@ categories: [probability-statistics]
 tags: [random graphs, max entropy]
 ---
 
-Modern machine learning techniques provide powerful methods for approximating
-complex functions. In this article, we explore...
-
+This article is about the use of Jaynes' maximum entropy principle to test the parameters of an exponential random graph model.
 <!--more-->
 
-## 1. Introduction  
-Function approximation is a fundamental problem in mathematics and computer science...
+
