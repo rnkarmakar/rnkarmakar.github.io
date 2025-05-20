@@ -1,8 +1,10 @@
 ---
 layout: page
-title: "Research Articles"
+-title: "Research Articles"
++title: "Research"
 permalink: /research/
-nav_order: false
+-nav_order: false
++nav_order: 3 # Assuming Home is 1, CV is 2
 ---
 
 <ul class="post-list">
