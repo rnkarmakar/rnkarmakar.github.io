@@ -5,9 +5,9 @@ permalink: /research/
 nav_order: false
 ---
 
-<ul>
-{% assign sorted = site.research | sort: 'date' | reverse %}
-{% for post in sorted %}
+<ul class="post-list">
+{% assign posts = site.research | sort: "date" | reverse %}
+{% for post in posts %}
   <li>
     <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
     <small>{{ post.date | date: '%-d %b %Y' }}</small>
