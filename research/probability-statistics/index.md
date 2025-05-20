@@ -2,7 +2,7 @@
 layout: page
 title: "Probability Statistics"
 permalink: /research/probability-statistics/
-nav_order: 1
+nav_order: 3
 ---
 <!-- Auto-list every article whose first category matches this slug -->
 <ul>

@@ -2,7 +2,7 @@
 layout: page
 title: "Automated Theorem Proving"
 permalink: /research/automated-theorem-proving/
-nav_order: 5
+nav_order: 7
 ---
 <!-- Auto-list every article whose first category matches this slug -->
 <ul>

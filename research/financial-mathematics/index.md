@@ -2,7 +2,7 @@
 layout: page
 title: "Financial Mathematics"
 permalink: /research/financial-mathematics/
-nav_order: 4
+nav_order: 6
 ---
 <!-- Auto-list every article whose first category matches this slug -->
 <ul>

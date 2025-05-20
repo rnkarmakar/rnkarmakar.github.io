@@ -2,7 +2,7 @@
 layout: page
 title: "Machine Learning"
 permalink: /research/machine-learning/
-nav_order: 2
+nav_order: 4
 ---
 <!-- Auto-list every article whose first category matches this slug -->
 <ul>
