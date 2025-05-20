@@ -18,43 +18,43 @@ FILE: _layouts/default.html
         <nav class="site-nav">
           <ul class="menu">
             
--    {% assign pages_sorted = site.pages | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
--    {% for p in pages_sorted %}
--              {%- if p.nav_order -%}
--                <li><a class="page-link" href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
--              {%- endif -%}
--            {%- endfor -%}
-+    {% assign nav_pages = site.pages | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
-+    
-+    {% for p in nav_pages %}
-+      {% comment %} Check if this page is a research category page (e.g., /research/machine-learning/). {% endcomment %}
-+      {% assign is_research_category_page = false %}
-+      {% if p.url contains "/research/" and p.url != "/research/" %}
-+        {% assign is_research_category_page = true %}
-+      {% endif %}
-+
-+      {% if p.url == "/research/" %} {# This is the main Research page, e.g., research/index.md #}
-+        <li class="dropdown">
-+          <a href="{{ p.url | relative_url }}" class="page-link dropbtn">{{ p.title }}</a>
-+          <div class="dropdown-content">
-+            {% assign category_pages_for_dropdown = site.pages 
-+                                                 | where_exp: "item", "item.url contains '/research/'" 
-+                                                 | where_exp: "item", "item.url != '/research/'"
-+                                                 | where_exp: "item", "item.nav_order != nil"
-+                                                 | sort: "nav_order" %}
-+            {% for cat_page in category_pages_for_dropdown %}
-+              <a href="{{ cat_page.url | relative_url }}">{{ cat_page.title }}</a>
-+            {% endfor %}
-+          </div>
-+        </li>
-+      {% elsif is_research_category_page %}
-+        {% comment %} This page is a research category like /research/machine-learning/.
-+                      It's handled by the dropdown, so do nothing here to avoid duplicate top-level link. {% endcomment %}
-+      {% else %}
-+        {# Standard page like Home, CV #}
-+        <li><a class="page-link" href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
-+      {% endif %}
-+    {% endfor %}
+-    {% assign nav_pages = site.pages | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
+-    
+-    {% for p in nav_pages %}
+-      {% comment %} Check if this page is a research category page (e.g., /research/machine-learning/). {% endcomment %}
+-      {% assign is_research_category_page = false %}
+-      {% if p.url contains "/research/" and p.url != "/research/" %}
+-        {% assign is_research_category_page = true %}
+-      {% endif %}
+-
+-      {% if p.url == "/research/" %} {# This is the main Research page, e.g., research/index.md #}
+-        <li class="dropdown">
+-          <a href="{{ p.url | relative_url }}" class="page-link dropbtn">{{ p.title }}</a>
+-          <div class="dropdown-content">
+-            {% assign category_pages_for_dropdown = site.pages 
+-                                                 | where_exp: "item", "item.url contains '/research/'" 
+-                                                 | where_exp: "item", "item.url != '/research/'"
+-                                                 | where_exp: "item", "item.nav_order != nil"
+-                                                 | sort: "nav_order" %}
+-            {% for cat_page in category_pages_for_dropdown %}
+-              <a href="{{ cat_page.url | relative_url }}">{{ cat_page.title }}</a>
+-            {% endfor %}
+-          </div>
+-        </li>
+-      {% elsif is_research_category_page %}
+-        {% comment %} This page is a research category like /research/machine-learning/.
+-                      It's handled by the dropdown, so do nothing here to avoid duplicate top-level link. {% endcomment %}
+-      {% else %}
+-        {# Standard page like Home, CV #}
+-        <li><a class="page-link" href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+-      {% endif %}
+-    {% endfor %}
++    {% assign pages_sorted_for_nav = site.pages | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
++    {% for p_nav in pages_sorted_for_nav %}
++      {%- if p_nav.nav_order and p_nav.title -%}
++        <li><a class="page-link" href="{{ p_nav.url | relative_url }}">{{ p_nav.title }}</a></li>
++      {%- endif -%}
++    {%- endfor -%}
           </ul>
         </nav>
       </div>
