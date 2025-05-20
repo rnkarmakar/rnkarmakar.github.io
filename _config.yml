@@ -22,3 +22,6 @@ jekyll-archives:
   layouts:
     category: archive
     tag: archive  
+
+excerpt_separator: "<!--more-->"
+    
