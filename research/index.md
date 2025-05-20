@@ -9,9 +9,10 @@ nav_order: false
 {% assign sorted = site.research | sort: 'date' | reverse %}
 {% for post in sorted %}
   <li>
-    <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-    <small> — {{ post.date | date: '%-d %b %Y' }}</small><br>
-    <em>{{ post.categories | join: ', ' }}</em>
+    <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+    <small>{{ post.date | date: '%-d %b %Y' }}</small>
+    <p>{{ post.excerpt | strip_html | truncatewords: 40 }}</p>
+    <a href="{{ post.url | relative_url }}">Read more →</a>
   </li>
 {% endfor %}
 </ul>
