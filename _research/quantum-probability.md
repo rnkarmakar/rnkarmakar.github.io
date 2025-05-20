@@ -1,5 +1,4 @@
 ---
-nav_order: false
 layout: page
 title: "Quantum Probability"
 permalink: /research/quantum-probability/

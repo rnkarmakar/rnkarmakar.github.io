@@ -1,5 +1,4 @@
 ---
-nav_order: false
 layout: page
 title: "Probability & Statistics"
 permalink: /research/probability-statistics/
