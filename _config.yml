@@ -5,6 +5,20 @@ description: "Experiments, notes and projects."
 plugins:
   - jekyll-feed
   - jekyll-seo-tag     # optional—keep if you want it
+  - jekyll-archives
 
 sass:
   style: compressed    # keep CSS tiny
+
+collections:
+  research:
+    output: true
+    permalink: /research/:slug/
+
+jekyll-archives:
+  enabled:
+    - categories
+    - tags
+  layouts:
+    category: archive
+    tag: archive  
