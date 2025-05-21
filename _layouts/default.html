@@ -17,10 +17,14 @@
             {% assign nav_pages = site.pages | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
             
             {% for p in nav_pages %}
-              {% comment %} Check if this page is a research category page (e.g., /research/machine-learning/). {% endcomment %}
+              {% comment %} Check if this page is a research or notes category page (e.g., /research/machine-learning/ or /notes/machine-learning/). {% endcomment %}
               {% assign is_research_category_page = false %}
+              {% assign is_notes_category_page = false %}
               {% if p.url contains "/research/" and p.url != "/research/" %}
                 {% assign is_research_category_page = true %}
+              {% endif %}
+              {% if p.url contains "/notes/" and p.url != "/notes/" %}
+                {% assign is_notes_category_page = true %}
               {% endif %}
 
               {% if p.url == "/research/" %} 
@@ -37,8 +41,22 @@
                     {% endfor %}
                   </div>
                 </li>
-              {% elsif is_research_category_page %}
-                {% comment %} This page is a research category like /research/machine-learning/.
+              {% elsif p.url == "/notes/" %}
+                <li class="dropdown">
+                  <a href="{{ p.url | relative_url }}" class="page-link dropbtn">{{ p.title }}</a>
+                  <div class="dropdown-content">
+                    {% assign notes_category_pages_for_dropdown = site.pages 
+                                                         | where_exp: "item", "item.url contains '/notes/'" 
+                                                         | where_exp: "item", "item.url != '/notes/'"
+                                                         | where_exp: "item", "item.nav_order != nil"
+                                                         | sort: "nav_order" %}
+                    {% for cat_page in notes_category_pages_for_dropdown %}
+                      <a href="{{ cat_page.url | relative_url }}">{{ cat_page.title }}</a>
+                    {% endfor %}
+                  </div>
+                </li>
+              {% elsif is_research_category_page or is_notes_category_page %}
+                {% comment %} This page is a research or notes category like /research/machine-learning/ or /notes/machine-learning/.
                               It's handled by the dropdown, so do nothing here to avoid duplicate top-level link. {% endcomment %}
               {% else %}
                 <li><a class="page-link" href="{{ p.url | relative_url }}">{{ p.title }}</a></li>

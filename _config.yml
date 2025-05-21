@@ -14,6 +14,9 @@ collections:
   research:
     output: true
     permalink: /_research/:slug/
+  notes:
+    output: true
+    permalink: /_notes/:slug/  
 
 jekyll-archives:
   enabled:
