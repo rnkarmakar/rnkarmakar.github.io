@@ -50,6 +50,18 @@ header.site-header {
   padding: 2rem 1rem;
 }
 
+.wide-content {
+  max-width: 60rem !important;
+  margin-left: -9rem !important;
+  margin-right: -9rem !important;
+}
+
+.wide-content {
+  max-width: 60rem !important;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
 footer.site-footer {
   border-top: 1px solid #eee;
   font-size: .9rem;
