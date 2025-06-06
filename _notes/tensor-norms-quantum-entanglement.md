@@ -11,9 +11,7 @@ A write-up of my notes on entanglement tests using tensor norms and related idea
 
 <div class="wide-content">
   <div class="note-box" style="border:1px solid #ccc; padding:1rem; margin-top:1rem;">
-    <details>
-      <summary style="cursor: pointer; font-weight: bold;">Read More</summary>
-      <iframe src="{{ '/assets/html/tensor-norms-quantum-entanglement.html' | relative_url }}" width="100%" height="1800px" style="border:none; margin-top:1rem;" loading="lazy"></iframe>
-    </details>
-  </div>
-</div>
+    <!-- "Read More" removed; iframe now opens directly -->
+    <iframe src="{{ '/assets/html/tensor-norms-quantum-entanglement.html' | relative_url }}" width="100%" height="1800px" style="border:none; margin-top:1rem;" loading="lazy"></iframe>
+
+   </div>
