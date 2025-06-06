@@ -9,8 +9,6 @@ A write-up of my notes on entanglement tests using tensor norms and related idea
 
 <!--more-->
 
-<div class="wrapper">
-  <div class="notebox" style="border:1px solid #ccc; padding:1rem; margin-top:1rem;">
-    <!-- "Read More" removed; iframe now opens directly -->
+<div class="note-box" style="border:1px solid #ccc; padding:1rem; margin-top:1rem;">
     <iframe src="{{ '/assets/html/tensor-norms-quantum-entanglement.html' | relative_url }}" width="100%" height="1800px" style="border:none; margin-top:1rem;" loading="lazy"></iframe>
-   </div>
+</div>
