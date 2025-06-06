@@ -105,9 +105,3 @@ header.site-header .menu .dropdown:hover .dropdown-content {
 }
 
 /* Allow iframes to extend full viewport width */
-.page-content div{
-  width: 60vw;
-  max-width: none;
-  
-  display: block; /* ensures it acts as a block element */
-}
