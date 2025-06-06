@@ -53,7 +53,7 @@ header.site-header {
 /* Make content inside .wide-content extend full viewport width, overriding .wrapper constraints */
 .wrapper .wide-content {
   width: 100vw;
-  max-width: 60rem;
+  max-width: 45rem;
   margin-left: calc(50% - 50vw); // centers the element relative to the viewport
   padding: 1rem;
 }
