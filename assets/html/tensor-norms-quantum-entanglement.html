@@ -10,7 +10,9 @@
             margin: 0;
             padding: 0;
             background-color: #f8f9fa; /* Lighter background */
-            color: #212529; /* Darker text for better contrast */
+            col                    If $\rho$ is separable, $\rho = \sum_a p_a \rho_a^{(1)} \otimes \dots \otimes \rho_a^{(k)}$.
+            If $\Phi$ is convex and satisfies $\Phi(X^{(1)} \otimes \dots \otimes X^{(k)}) \le C$ for all product states (e.g., $C=1$ if normalized), then for a separable state:
+            $$ \Phi(\rho) = \Phi\left(\sum_a p_a (\rho_a^{(1)} \otimes \dots \otimes \rho_a^{(k)})\right) \le \sum_a p_a \Phi(\rho_a^{(1)} \otimes \dots \otimes \rho_a^{(k)}) \le \sum_a p_a \cdot C = C $$ #212529; /* Darker text for better contrast */
         }
         header {
             background-color: #4a5568; /* Darker, more muted header */
@@ -315,13 +317,13 @@
             If \rho_{\text{GHZ}} were separable as \rho_A \otimes \rho_B \otimes \rho_C, then (\mathrm{Id}_{AB} \otimes T_C)(\rho_{\text{GHZ}}) = \rho_A \otimes \rho_B \otimes \rho_C^T. Since \rho_C is a pure state, \rho_C^T is also a pure state (rank 1, positive). Thus, \rho_A \otimes \rho_B \otimes \rho_C^T would be a product of positive operators, hence positive, and its rank would be 1 \times 1 \times 1 = 1. Its singular values would be (1, 0, \dots, 0).
             </p>
             <p>
-            However, let's calculate the partial transpose of the actual \rho_{\text{GHZ}}:
+            However, let's calculate the partial transpose of the actual $\rho_{\text{GHZ}}$:
             $$ \rho_{\text{GHZ}} = \frac{1}{2} \left( |000\rangle\langle 000| + |000\rangle\langle 111| + |111\rangle\langle 000| + |111\rangle\langle 111| \right) $$
-            Applying T_C (transpose on the third qubit's space):
-            |0\rangle_C\langle 0|_C \xrightarrow{T_C} |0\rangle_C\langle 0|_C
-            |0\rangle_C\langle 1|_C \xrightarrow{T_C} |1\rangle_C\langle 0|_C
-            |1\rangle_C\langle 0|_C \xrightarrow{T_C} |0\rangle_C\langle 1|_C
-            |1\rangle_C\langle 1|_C \xrightarrow{T_C} |1\rangle_C\langle 1|_C
+            Applying $T_C$ (transpose on the third qubit's space):
+            $|0\rangle_C\langle 0|_C \xrightarrow{T_C} |0\rangle_C\langle 0|_C$
+            $|0\rangle_C\langle 1|_C \xrightarrow{T_C} |1\rangle_C\langle 0|_C$
+            $|1\rangle_C\langle 0|_C \xrightarrow{T_C} |0\rangle_C\langle 1|_C$
+            $|1\rangle_C\langle 1|_C \xrightarrow{T_C} |1\rangle_C\langle 1|_C$
             So,
             $$ \rho_{\text{GHZ}}^{\Gamma_C} = \frac{1}{2} \left( |00\rangle_A\langle 00|_{AB} \otimes |0\rangle_C\langle 0|_C + |00\rangle_{AB}\langle 11|_{AB} \otimes |1\rangle_C\langle 0|_C + |11\rangle_{AB}\langle 00|_{AB} \otimes |0\rangle_C\langle 1|_C + |11\rangle_{AB}\langle 11|_{AB} \otimes |1\rangle_C\langle 1|_C \right) $$
             In the standard basis ordered as |000\rangle, |001\rangle, |010\rangle, |011\rangle, |100\rangle, |101\rangle, |110\rangle, |111\rangle, the matrix for \rho_{\text{GHZ}}^{\Gamma_C} is:
@@ -447,15 +449,15 @@
 
             <div class="callout callout-theorem">
                 <div class="callout-title">Lemma (Variational characterization of Nuclear Norm)</div>
-                <p>For a bounded linear operator A on \mathcal{H}^d:
+                <p>For a bounded linear operator $A$ on $\mathcal{H}^d$:
                 $$ \|A\|_{S_1} = \max_{U \text{ unitary}} |\mathrm{Tr}(AU)| $$
-                (Note: This particular maximization gives the sum of singular values if A is normal and U can align with its eigenbasis appropriately. The more general statement is \|A\|_{S_1} = \sup_{\|X\|_{S_\infty} \le 1} |\mathrm{Tr}(A^\dagger X)|.)
+                (Note: This particular maximization gives the sum of singular values if $A$ is normal and $U$ can align with its eigenbasis appropriately. The more general statement is $\|A\|_{S_1} = \sup_{\|X\|_{S_\infty} \le 1} |\mathrm{Tr}(A^\dagger X)|$.)
                 </p>
-                <p><em>Proof sketch for why \|\cdot\|_{S_1} is a norm:</em></p>
+                <p><em>Proof sketch for why $\|\cdot\|_{S_1}$ is a norm:</em></p>
                 <ul>
-                    <li>\|A\|_{S_1} = \mathrm{Tr}(\sqrt{A^\dagger A}) \ge 0$. \|A\|_{S_1}=0 \iff \sqrt{A^\dagger A}=0 \iff A=0$.</li>
-                    <li>\|\lambda A\|_{S_1} = \mathrm{Tr}(\sqrt{(\lambda A)^\dagger (\lambda A)}) = \mathrm{Tr}(\sqrt{|\lambda|^2 A^\dagger A}) = |\lambda| \mathrm{Tr}(\sqrt{A^\dagger A}) = |\lambda|\|A\|_{S_1}$.</li>
-                    <li>\|A+B\|_{S_1} = \max_U |\mathrm{Tr}((A+B)U)| = \max_U |\mathrm{Tr}(AU) + \mathrm{Tr}(BU)| \le \max_U (|\mathrm{Tr}(AU)| + |\mathrm{Tr}(BU)|) \le \max_U |\mathrm{Tr}(AU)| + \max_U |\mathrm{Tr}(BU)| = \|A\|_{S_1} + \|B\|_{S_1}$.</li>
+                    <li>$\|A\|_{S_1} = \mathrm{Tr}(\sqrt{A^\dagger A}) \ge 0$. $\|A\|_{S_1}=0 \iff \sqrt{A^\dagger A}=0 \iff A=0$.</li>
+                    <li>$\|\lambda A\|_{S_1} = \mathrm{Tr}(\sqrt{(\lambda A)^\dagger (\lambda A)}) = \mathrm{Tr}(\sqrt{|\lambda|^2 A^\dagger A}) = |\lambda| \mathrm{Tr}(\sqrt{A^\dagger A}) = |\lambda|\|A\|_{S_1}$.</li>
+                    <li>$\|A+B\|_{S_1} = \max_U |\mathrm{Tr}((A+B)U)| = \max_U |\mathrm{Tr}(AU) + \mathrm{Tr}(BU)| \le \max_U (|\mathrm{Tr}(AU)| + |\mathrm{Tr}(BU)|) \le \max_U |\mathrm{Tr}(AU)| + \max_U |\mathrm{Tr}(BU)| = \|A\|_{S_1} + \|B\|_{S_1}$.</li>
                 </ul>
             </div>
         </section>
@@ -465,11 +467,11 @@
             <div class="callout callout-theorem">
                 <div class="callout-title">Theorem (Entanglement Test using Partial Transpose)</div>
                 <p>
-                    Let \rho be a d_A \times d_B dimensional bipartite density operator.
-                    If \|\rho^{\Gamma_B}\|_{S_1} > 1, then \rho is entangled.
+                    Let $\rho$ be a $d_A \times d_B$ dimensional bipartite density operator.
+                    If $\|\rho^{\Gamma_B}\|_{S_1} > 1$, then $\rho$ is entangled.
                 </p>
                 <p>
-                    (Where \rho^{\Gamma_B} = (\mathrm{Id}_A \otimes T_B)(\rho) is the partial transpose on subsystem B, and \|\cdot\|_{S_1}$ is the nuclear norm.)
+                    (Where $\rho^{\Gamma_B} = (\mathrm{Id}_A \otimes T_B)(\rho)$ is the partial transpose on subsystem B, and $\|\cdot\|_{S_1}$ is the nuclear norm.)
                 </p>
                 <p><em>Proof Idea:</em></p>
                 <p>
