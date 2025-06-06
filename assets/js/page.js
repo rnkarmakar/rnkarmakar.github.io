@@ -5,11 +5,24 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', function(e) {
             if (this.href.includes('?download=pdf')) {
                 e.preventDefault();
-                // Here you can add custom PDF download logic
-                window.location.href = this.href;
+                const element = document.querySelector('.note-box iframe').contentDocument.body;
+                
+                // Set up PDF options
+                const opt = {
+                    margin: 0.5,
+                    filename: 'quantum-entanglement-notes.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                // Convert and trigger download
+                html2pdf().set(opt).from(element).save().then(() => {
+                    console.log('PDF downloaded successfully');
+                }).catch(err => {
+                    console.error('PDF generation failed:', err);
+                });
             }
         });
     });
-
-    // Add any other common page functionality here
 });
