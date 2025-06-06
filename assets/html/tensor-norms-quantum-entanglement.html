@@ -356,13 +356,13 @@
             </div>
 
             <h3>Entanglement of Mixed Quantum States (in terms of density operators)</h3>
-            <p>\rho \in \mathcal{M}_d^{sa}(\mathbb{C}), \rho \ge 0, \mathrm{Tr}(\rho)=1.</p>
+            <p>$\rho \in \mathcal{M}_d^{sa}(\mathbb{C})$, $\rho \ge 0$, $\mathrm{Tr}(\rho)=1$.</p>
             <div class="callout callout-definition">
                 <div class="callout-title">Separable mixed state</div>
                 <p>
-                    \rho \in \mathcal{M}_{d_1} \otimes \dots \otimes \mathcal{M}_{d_k} (where this denotes the space of self-adjoint operators on the tensor product space)
+                    $\rho \in \mathcal{M}_{d_1} \otimes \dots \otimes \mathcal{M}_{d_k}$ (where this denotes the space of self-adjoint operators on the tensor product space)
                     $$ \rho = \sum_i p_i (\rho_i^{(1)} \otimes \rho_i^{(2)} \otimes \dots \otimes \rho_i^{(k)}) $$
-                    p_i > 0, \sum p_i = 1, and each \rho_i^{(j)} is a density matrix in \mathcal{M}_{d_j}^{sa}(\mathbb{C}).
+                    $p_i > 0$, $\sum p_i = 1$, and each $\rho_i^{(j)}$ is a density matrix in $\mathcal{M}_{d_j}^{sa}(\mathbb{C})$.
                 </p>
             </div>
             <div class="callout callout-remark">
@@ -475,17 +475,17 @@
                 </p>
                 <p><em>Proof Idea:</em></p>
                 <p>
-                    If \rho is separable, \rho = \sum_k p_k \rho_k^A \otimes \rho_k^B, where p_k \ge 0, \sum p_k = 1, and \rho_k^A, \rho_k^B are density matrices.
-                    Then \rho^{\Gamma_B} = \sum_k p_k \rho_k^A \otimes (\rho_k^B)^T.
-                    Since \rho_k^B \ge 0, its transpose (\rho_k^B)^T is also \ge 0.
-                    Thus \rho_k^A \otimes (\rho_k^B)^T \ge 0 for all k.
-                    So, \rho^{\Gamma_B}$ is a convex combination of positive semidefinite operators, which means \rho^{\Gamma_B}$ itself is positive semidefinite.
-                    For any positive semidefinite operator X, its nuclear norm \|X\|_{S_1} is equal to its trace \mathrm{Tr}(X).
-                    Therefore, if \rho is separable, \|\rho^{\Gamma_B}\|_{S_1} = \mathrm{Tr}(\rho^{\Gamma_B}).
-                    The partial transpose operation preserves the trace: \mathrm{Tr}(\rho^{\Gamma_B}) = \mathrm{Tr}(\rho).
-                    Since \rho$ is a density matrix, \mathrm{Tr}(\rho)=1.
-                    So, if \rho is separable, then \|\rho^{\Gamma_B}\|_{S_1} = 1.
-                    Consequently, if we find that \|\rho^{\Gamma_B}\|_{S_1} > 1, then \rho$ cannot be separable and must be entangled.
+                    If $\rho$ is separable, $\rho = \sum_k p_k \rho_k^A \otimes \rho_k^B$, where $p_k \ge 0$, $\sum p_k = 1$, and $\rho_k^A$, $\rho_k^B$ are density matrices.
+                    Then $\rho^{\Gamma_B} = \sum_k p_k \rho_k^A \otimes (\rho_k^B)^T$.
+                    Since $\rho_k^B \ge 0$, its transpose $(\rho_k^B)^T$ is also $\ge 0$.
+                    Thus $\rho_k^A \otimes (\rho_k^B)^T \ge 0$ for all $k$.
+                    So, $\rho^{\Gamma_B}$ is a convex combination of positive semidefinite operators, which means $\rho^{\Gamma_B}$ itself is positive semidefinite.
+                    For any positive semidefinite operator $X$, its nuclear norm $\|X\|_{S_1}$ is equal to its trace $\mathrm{Tr}(X)$.
+                    Therefore, if $\rho$ is separable, $\|\rho^{\Gamma_B}\|_{S_1} = \mathrm{Tr}(\rho^{\Gamma_B})$.
+                    The partial transpose operation preserves the trace: $\mathrm{Tr}(\rho^{\Gamma_B}) = \mathrm{Tr}(\rho)$.
+                    Since $\rho$ is a density matrix, $\mathrm{Tr}(\rho)=1$.
+                    So, if $\rho$ is separable, then $\|\rho^{\Gamma_B}\|_{S_1} = 1$.
+                    Consequently, if we find that $\|\rho^{\Gamma_B}\|_{S_1} > 1$, then $\rho$ cannot be separable and must be entangled.
                 </p>
             </div>
         </section>
