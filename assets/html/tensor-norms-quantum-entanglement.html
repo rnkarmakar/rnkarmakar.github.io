@@ -1,29 +1,21 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tensor Norms for Quantum Entanglement (From Notes)</title>
     <style>
+        /* ---------- base typography & colours ---------- */
         body {
             font-family: 'Georgia', serif;
             line-height: 1.7;
             margin: 0;
             padding: 0;
             background-color: #f8f9fa; /* Lighter background */
-            /* 
-            If $$\rho$$ is separable, $$\rho = \sum_a p_a\,\rho_a^{(1)} \otimes \dots \otimes \rho_a^{(k)}$$.
-            If $$\Phi$$ is convex and satisfies 
-            $$\Phi\bigl(X^{(1)} \otimes \dots \otimes X^{(k)}\bigr) \le C$$ 
-            for all product states (e.g., $$C=1$$ if normalized), then for a separable state:
-            $$
-            \Phi(\rho) 
-            = \Phi\Bigl(\sum_a p_a\,( \rho_a^{(1)} \otimes \dots \otimes \rho_a^{(k)} )\Bigr)
-            \le \sum_a p_a\,\Phi\bigl(\rho_a^{(1)} \otimes \dots \otimes \rho_a^{(k)}\bigr)
-            \le \sum_a p_a \cdot C
-            = C
-            $$
-            */  /* Darker text for better contrast */
+            color: #212529;           /* Darker text for better contrast */
         }
+
+        /* ---------- header ---------- */
         header {
             background-color: #4a5568; /* Darker, more muted header */
             color: #f7fafc;
@@ -35,6 +27,8 @@
             font-size: 2.2rem;
             font-weight: normal;
         }
+
+        /* ---------- layout ---------- */
         main {
             max-width: 900px;
             margin: 2rem auto;
@@ -43,9 +37,9 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             border-radius: 5px;
         }
-        section {
-            margin-bottom: 2.5rem;
-        }
+        section { margin-bottom: 2.5rem; }
+
+        /* ---------- headings ---------- */
         h2 {
             color: #2c5282; /* Dark blue */
             border-bottom: 2px solid #a0aec0; /* Grey border */
@@ -58,56 +52,50 @@
             font-size: 1.4rem;
             margin-top: 1.8rem;
         }
-        p, li {
-            font-size: 1.05rem;
-            margin-bottom: 1rem;
-        }
-        ul, ol {
-            margin-left: 1.5rem;
-            padding-left: 0.5rem;
-        }
+
+        /* ---------- text ---------- */
+        p, li { font-size: 1.05rem; margin-bottom: 1rem; }
+        ul, ol { margin-left: 1.5rem; padding-left: 0.5rem; }
+
+        /* ---------- callouts ---------- */
         .callout {
             padding: 1rem 1.2rem;
             margin: 1.5rem 0;
             border-left: 5px solid;
-            background-color: #f7fafc; /* Lighter background for callouts */
+            background-color: #f7fafc;
             border-radius: 3px;
         }
-        .callout-definition { border-color: #718096; } /* Slate */
-        .callout-theorem { border-color: #38a169; } /* Green */
-        .callout-observation { border-color: #dd6b20; } /* Orange */
-        .callout-goal { border-color: #d69e2e; } /* Yellow-Brown */
-        .callout-remark { border-color: #4299e1; } /* Blue */
-        .callout-example { border-color: #9f7aea; } /* Purple */
-
-        .callout-title {
-            font-weight: bold;
-            font-size: 1.15rem;
-            margin-bottom: 0.6rem;
-            display: block;
-        }
+        .callout-title { font-weight: bold; font-size: 1.15rem; margin-bottom: 0.6rem; display: block; }
+        .callout-definition { border-color: #718096; }
+        .callout-theorem    { border-color: #38a169; }
+        .callout-observation{ border-color: #dd6b20; }
+        .callout-goal       { border-color: #d69e2e; }
+        .callout-remark     { border-color: #4299e1; }
+        .callout-example    { border-color: #9f7aea; }
         .callout-definition .callout-title { color: #2d3748; }
-        .callout-theorem .callout-title { color: #2f855a; }
-        .callout-observation .callout-title { color: #c05621; }
-        .callout-goal .callout-title { color: #b7791f; }
-        .callout-remark .callout-title { color: #2b6cb0; }
-        .callout-example .callout-title { color: #805ad5; }
+        .callout-theorem .callout-title    { color: #2f855a; }
+        .callout-observation .callout-title{ color: #c05621; }
+        .callout-goal .callout-title       { color: #b7791f; }
+        .callout-remark .callout-title     { color: #2b6cb0; }
+        .callout-example .callout-title    { color: #805ad5; }
 
         code {
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-            background-color: #edf2f7; /* Light grey */
+            background-color: #edf2f7;
             padding: 0.2em 0.4em;
             border-radius: 3px;
             font-size: 0.9em;
         }
+
         .math.math-block {
             overflow-x: auto;
             padding: 1em;
             margin: 1em 0;
-            border: 1px solid #e2e8f0; /* Lighter border */
+            border: 1px solid #e2e8f0;
             border-radius: 4px;
             background-color: #f7fafc;
         }
+
         .page-break {
             text-align: center;
             margin: 3rem 0;
@@ -116,25 +104,18 @@
             border-top: 1px dashed #cbd5e0;
             padding-top: 1rem;
         }
-        .table-container {
-            overflow-x: auto;
-            margin: 1.5em 0;
-        }
-        table.custom-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1em;
-        }
+
+        /* ---------- tables ---------- */
+        .table-container { overflow-x: auto; margin: 1.5em 0; }
+        table.custom-table { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
         table.custom-table th, table.custom-table td {
             border: 1px solid #cbd5e0;
             padding: 0.5em 0.75em;
             text-align: left;
         }
-        table.custom-table th {
-            background-color: #e2e8f0;
-            font-weight: bold;
-        }
-         /* Basic responsive design */
+        table.custom-table th { background-color: #e2e8f0; font-weight: bold; }
+
+        /* ---------- responsive ---------- */
         @media (max-width: 600px) {
             body { font-size: 16px; }
             header h1 { font-size: 1.8rem; }
@@ -143,52 +124,52 @@
             p, li { font-size: 1rem; }
         }
     </style>
+
+    <!-- MathJax configuration -->
     <script>
       window.MathJax = {
         tex: {
           inlineMath: [['$', '$'], ['\\(', '\\)']],
           displayMath: [['$$', '$$'], ['\\[', '\\]']],
-          tags: 'ams' // For equation numbering
+          tags: 'ams'
         },
-        svg: {
-          fontCache: 'global'
-        }
+        svg: { fontCache: 'global' }
       };
     </script>
-    <script type="text/javascript" id="MathJax-script" async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
     <header>
         <h1>Tensor Norms for Quantum Entanglement (From Notes)</h1>
     </header>
+
     <main>
+        <!-- ==================================================== Page 1 ==================================================== -->
         <section id="page1">
             <div class="page-break">Page 1 of Notes</div>
 
             <h2>Recall</h2>
 
             <div class="callout callout-definition">
-                <div class="callout-title">State</div>
+                <span class="callout-title">State</span>
                 <p>
-                    $$\rho$$ – self-adjoint operator on a complex Hilbert space (e.g., $$\mathbb{C}^d$$, $$L^2(\mathbb{R})$$) where $$d < \infty$$. <br>
-                    $$\rho \ge 0$$, $$\mathrm{Tr}(\rho) = 1$$.
+                    $\rho$ — self‑adjoint operator on a complex Hilbert space (e.g. $\mathbb{C}^d$, $L^2(\mathbb{R})$) where $d<\infty$.<br>
+                    $\rho \ge 0$, $\operatorname{Tr}(\rho)=1$.
                 </p>
             </div>
 
             <div class="callout callout-definition">
-                <div class="callout-title">Pure State</div>
+                <span class="callout-title">Pure State</span>
                 <p>
-                    Rank-1 projection. <br>
-                    $$\rho = |\psi\rangle\langle\psi|$$, where $$\langle\psi|\psi\rangle = 1$$ and $$|\psi\rangle \in \mathcal{H}^d$$.
+                    Rank‑1 projection.<br>
+                    $\rho = |\psi\rangle\langle\psi|$, where $\langle\psi|\psi\rangle = 1$ and $|\psi\rangle \in \mathcal H^d$.
                 </p>
             </div>
 
             <div class="callout callout-definition">
-                <div class="callout-title">Mixed State</div>
+                <span class="callout-title">Mixed State</span>
                 <p>
-                    $$\rho = \sum_i \lambda_i\,|\psi_i\rangle\langle\psi_i|$$, where $$\lambda_i > 0$$, $$\sum \lambda_i = 1$$, and $$\langle\psi_i|\psi_j\rangle = \delta_{ij}$$ (i.e., $$\{|\psi_i\rangle\}$$ form an orthonormal basis of eigenvectors for $$\rho$$).
+                    $\rho = \sum_i \lambda_i |\psi_i\rangle\langle\psi_i|$, where $\lambda_i>0$, $\sum \lambda_i = 1$, and $\langle\psi_i|\psi_j\rangle = \delta_{ij}$ (i.e. $\{|\psi_i\rangle\}$ form an orthonormal eigenbasis of $\rho$).
                 </p>
             </div>
 
@@ -196,590 +177,196 @@
             <ul>
                 <li>Classical notion of entanglement (independence)</li>
                 <li>Entanglement of pure states</li>
-                <li>Entanglement of mixed states
-                    <ul><li>Tensor norms</li></ul>
-                </li>
+                <li>Entanglement of mixed states<ul><li>Tensor norms</li></ul></li>
                 <li>Story of norms</li>
-                <li>Graphical tensor notation in Quantum Computing</li>
+                <li>Graphical tensor notation in quantum computing</li>
             </ul>
 
             <h3>Classical Notion of Independence</h3>
-            <p>Consider $$X, Y$$ discrete random variables with finite support.</p>
+            <p>Consider random variables $X,Y$ with finite support.</p>
+
             <div class="callout callout-definition">
-                <div class="callout-title">Definition</div>
+                <span class="callout-title">Definition</span>
                 <p>
-                    “$$X, Y$$ are <strong>Independent</strong>” if for $$x_i \in \operatorname{Range}(X)$$, $$y_j \in \operatorname{Range}(Y)$$:
-                    $$ 
-                      P\bigl(X = x_i,\; Y = y_j\bigr) 
-                      = P\bigl(X = x_i\bigr)\;P\bigl(Y = y_j\bigr). 
-                    $$
-                    “$$X, Y$$ are <strong>Dependent</strong>” if not independent.
+                    $X, Y$ are <strong>independent</strong> if for $x_i \in \operatorname{Ran}(X)$, $y_j \in \operatorname{Ran}(Y)$,
+                    $$ P(X=x_i,\,Y=y_j) = P(X=x_i)\,P(Y=y_j). $$
+                    Otherwise they are <strong>dependent</strong>.
                 </p>
             </div>
 
             <div class="callout callout-goal">
-                <div class="callout-title">Goal</div>
-                <p>
-                    From the matrix $$M_{ij} = P\bigl(X = x_i,\; Y = y_j\bigr)$$, decide whether $$X, Y$$ are independent.
-                </p>
+                <span class="callout-title">Goal</span>
+                <p>Given the matrix $M_{ij}=P(X=x_i, Y=y_j)$ decide whether $X$ and $Y$ are independent.</p>
             </div>
 
             <div class="callout callout-observation">
-                <div class="callout-title">Observation</div>
+                <span class="callout-title">Observation</span>
                 <p>
-                    If $$X, Y$$ are independent, then 
-                    $$ 
-                      M = \mathbf{u}\,\mathbf{v}^T 
-                    $$ 
-                    where 
-                    $$ 
-                      \mathbf{u} = \bigl(P(X = x_1),\; P(X = x_2),\; \dots\bigr)^T, 
-                      \quad 
-                      \mathbf{v} = \bigl(P(Y = y_1),\; P(Y = y_2),\; \dots\bigr)^T. 
-                    $$
-                    Hence $$M$$ is of rank 1.
+                    If $X$ and $Y$ are independent then $M = \mathbf u\mathbf v^{\!\top}$ where
+                    $$\mathbf u=(P(X=x_1),\dots)^{\!\top}, \quad \mathbf v=(P(Y=y_1),\dots)^{\!\top},$$
+                    so $\operatorname{rank}(M)=1$.
                 </p>
             </div>
 
             <div class="callout callout-theorem">
-                <div class="callout-title">Theorem</div>
-                <p>
-                    $$X, Y$$ are independent 
-                    $$\iff M \text{ has rank }1.$$
-                </p>
-                <p><em>Proof:</em></p>
-                <p>
-                    ($\implies$) Done (Observation).
-                </p>
-                <p>
-                    ($\impliedby$) If $$M$$ has rank 1, then $$M = \mathbf{u}\,\mathbf{v}^T$$.
-                    Since $$M_{ij} \ge 0$$, we can choose $$u_i, v_j \ge 0$$.
-                    Let $$U = \sum_i u_i$$ and $$V = \sum_j v_j$$.
-                    Then 
-                    $$
-                      P(X = x_i) 
-                      = \sum_j M_{ij} 
-                      = u_i \sum_j v_j 
-                      = u_i\,V,
-                      \quad
-                      P(Y = y_j) 
-                      = \sum_i M_{ij} 
-                      = v_j \sum_i u_i 
-                      = v_j\,U.
-                    $$
-                    Hence 
-                    $$
-                      P(X = x_i)\,P(Y = y_j) 
-                      = u_i\,V \; v_j\,U 
-                      = u_i\,v_j\,(UV) 
-                      = M_{ij}\,(UV).
-                    $$
-                    Also, 
-                    $$
-                      1 
-                      = \sum_{i,j} M_{ij} 
-                      = \Bigl(\sum_i u_i\Bigr)\,\Bigl(\sum_j v_j\Bigr) 
-                      = UV.
-                    $$
-                    Therefore 
-                    $$
-                      P(X = x_i)\,P(Y = y_j) 
-                      = M_{ij} 
-                      = P(X = x_i,\; Y = y_j).
-                    $$
-                    $\square$
+                <span class="callout-title">Theorem</span>
+                <p>$X$ and $Y$ are independent $\iff \operatorname{rank}(M)=1$.</p>
+                <p><em>Proof.</em> The forward direction is the previous observation. For the reverse direction, if $\operatorname{rank}(M)=1$ then $M=\mathbf u\mathbf v^{\!\top}$. Because $M_{ij}\ge0$ we can choose $u_i,v_j\ge0$ and set
+                    $$U=\sum_i u_i,\;V=\sum_j v_j.$$  One checks that $P(X=x_i)=u_iV$, $P(Y=y_j)=v_jU$, and $UV=1$, giving
+                    $$P(X=x_i)P(Y=y_j)=u_iV v_jU=u_i v_j( UV)=M_{ij}.\;\square$$
                 </p>
             </div>
         </section>
 
+        <!-- ==================================================== Page 2 ==================================================== -->
         <section id="page2">
             <div class="page-break">Page 2 of Notes</div>
+
             <h2>Entanglement of Pure States</h2>
             <p>
-                Let $$\mathcal{H}_X = \operatorname{span}\{|x_1\rangle,\; |x_2\rangle,\; \dots,\; |x_m\rangle\},$$ 
-                where $$m = \lvert \operatorname{Range}(X)\rvert.$$ <br>
-                Let $$\mathcal{H}_Y = \operatorname{span}\{|y_1\rangle,\; |y_2\rangle,\; \dots,\; |y_n\rangle\},$$ 
-                where $$n = \lvert \operatorname{Range}(Y)\rvert.$$ <br>
-                Define the state vector corresponding to 
-                $$M = \bigl(P\bigl(X = x_i,\; Y = y_j\bigr)\bigr)_{i=1,\dots,m;\;j=1,\dots,n}$$ 
-                as:
-                $$
-                  |\psi\rangle 
-                  = \sum_{i,j} \sqrt{P\bigl(X = x_i,\; Y = y_j\bigr)}\; |x_i\rangle \otimes |y_j\rangle.
-                $$
+                Let $\mathcal H_X = \operatorname{span}\{|x_1\rangle,\dots,|x_m\rangle\}$ where $m=|\operatorname{Ran}(X)|$.<br>
+                Let $\mathcal H_Y = \operatorname{span}\{|y_1\rangle,\dots,|y_n\rangle\}$ where $n=|\operatorname{Ran}(Y)|$.<br>
+                Define the state vector corresponding to $M$ as
+                $$|\psi\rangle = \sum_{i,j}\sqrt{P(X=x_i, Y=y_j)}\,|x_i\rangle\otimes|y_j\rangle.$$
             </p>
+
             <div class="callout callout-observation">
-                <div class="callout-title">Observation</div>
+                <span class="callout-title">Observation</span>
                 <p>
-                    $$M = U\,V^T \iff |\psi\rangle = |\psi_X\rangle \otimes |\psi_Y\rangle$$ 
-                    for some state vectors 
-                    $$|\psi_X\rangle \in \mathcal{H}_X,\; |\psi_Y\rangle \in \mathcal{H}_Y.$$ <br>
-                    (In this case, 
-                    $$ 
-                      |\psi_X\rangle = \sum_i \sqrt{P(X = x_i)}\;|x_i\rangle,\;
-                      |\psi_Y\rangle = \sum_j \sqrt{P(Y = y_j)}\;|y_j\rangle.)
-                    $$
+                    $M=UV^{\!\top}$ iff $|\psi\rangle = |\psi_X\rangle\otimes|\psi_Y\rangle$ with
+                    $$|\psi_X\rangle=\sum_i\sqrt{P(X=x_i)}\,|x_i\rangle,\qquad|\psi_Y\rangle=\sum_j\sqrt{P(Y=y_j)}\,|y_j\rangle.$$
                 </p>
             </div>
 
             <div class="callout callout-definition">
-                <div class="callout-title">Definition (Tensor rank decomposition)</div>
+                <span class="callout-title">Definition (Tensor‑rank decomposition)</span>
                 <p>
-                    Given Hilbert spaces $$\mathcal{H}_1, \dots, \mathcal{H}_k$$.
-                    A state vector 
-                    $$|\psi\rangle \in \mathcal{H}_1 \otimes \dots \otimes \mathcal{H}_k$$ 
-                    can be written as:
-                    $$
-                      |\psi\rangle 
-                      = \sum_{a=1}^r 
-                        \bigl|\varphi_1^{(a)}\bigr\rangle 
-                        \otimes \bigl|\varphi_2^{(a)}\bigr\rangle 
-                        \otimes \dots \otimes 
-                        \bigl|\varphi_k^{(a)}\bigr\rangle,
-                    $$
-                    where each $$|\varphi_i^{(a)}\rangle$$ is a state vector in $$\mathcal{H}_i$$.
+                    For Hilbert spaces $\mathcal H_1,\dots,\mathcal H_k$, a vector $|\psi\rangle\in\mathcal H_1\otimes\cdots\otimes\mathcal H_k$ admits a decomposition
+                    $$|\psi\rangle = \sum_{a=1}^r |\varphi_1^{(a)}\rangle\otimes|\varphi_2^{(a)}\rangle\otimes\cdots\otimes|\varphi_k^{(a)}\rangle.$$
                 </p>
             </div>
 
             <div class="callout callout-definition">
-                <div class="callout-title">Definition (Tensor Rank)</div>
+                <span class="callout-title">Definition (Tensor rank)</span>
                 <p>
-                    $$R\bigl(|\psi\rangle\bigr) \;=\; \min\Bigl\{\,r \ge 1 \;\Bigm|\; 
-                      |\psi\rangle \text{ has a tensor rank decomposition of size }r 
-                    \Bigr\}.$$
+                    $$R(|\psi\rangle)=\min\bigl\{r\in\mathbb N\,:\,|\psi\rangle\text{ admits a decomposition with }r\text{ simple tensors}\bigr\}.$$
                 </p>
                 <ul>
-                    <li>$$R\bigl(|\psi\rangle\bigr) = 1 \iff |\psi\rangle\text{ is a separable pure state.}$$</li>
-                    <li>$$R\bigl(|\psi\rangle\bigr) > 1 \iff |\psi\rangle\text{ is an entangled pure state.}$$</li>
+                    <li>$R(|\psi\rangle)=1$  $\iff$  $|\psi\rangle$ is a separable pure state.</li>
+                    <li>$R(|\psi\rangle)>1$ $\iff$  $|\psi\rangle$ is entangled.</li>
                 </ul>
             </div>
 
-            <h3>Examples (Computation of Tensor Rank)</h3>
-            <p><strong>① Bipartite Quantum States ($k=2$)</strong></p>
+            <h3>Examples (computing the tensor rank)</h3>
+            <p><strong>① Bipartite states ($k=2$)</strong></p>
             <p>
-                If 
-                $$ 
-                  |\psi\rangle 
-                  = \sum_{i,j} \Psi_{ij}\; |i\rangle \otimes |j\rangle, 
-                $$
-                then 
-                $$ 
-                  R\bigl(|\psi\rangle\bigr) = \mathrm{rank}\bigl(\Psi\bigr), 
-                $$
-                where $$\Psi = (\Psi_{ij})$$ is the coefficient matrix. 
-                This is also known as the Schmidt rank.
+                If $|\psi\rangle = \sum_{ij}\Psi_{ij}|i\rangle\otimes|j\rangle$, then $R(|\psi\rangle)=\operatorname{rank}(\Psi)$ (the Schmidt rank).
             </p>
+
             <div class="callout callout-remark">
-                <div class="callout-title">Caution</div>
-                <p>
-                    In our earlier example mapping classical probabilities to a quantum state vector, 
-                    $$R\Bigl(|\psi\rangle_{\text{where }\Psi_{ij} = \sqrt{M_{ij}}}\Bigr) 
-                      = \mathrm{rank}\bigl(\sqrt{M_{ij}}\bigr) 
-                      \neq \mathrm{rank}\bigl(M\bigr)$$ 
-                    in general. (For example, if $$M$$ is rank 1, then $(\sqrt{M_{ij}})$ is also rank 1. 
-                    But if $$M$$ is rank 2, $(\sqrt{M_{ij}})$ might have a different rank.)
-                </p>
+                <span class="callout-title">Caution</span>
+                <p>For the classical‑to‑quantum mapping above, $R(|\psi\rangle)$ computed from $\sqrt{M_{ij}}$ may differ from $\operatorname{rank}(M)$.</p>
             </div>
 
             <div class="callout callout-definition">
-                 <div class="callout-title">Singular Value Decomposition (SVD)</div>
-                 <p>
-                   Let $$M$$ be a bounded linear operator on $$\mathcal{H}^d$$.
-                   There exist orthonormal bases (ONB) $$\{|\alpha_i\rangle\}$$ and $$\{|\beta_i\rangle\}$$ 
-                   of $$\mathcal{H}^d$$, and singular values 
-                   $$\sigma_1 \ge \sigma_2 \ge \dots \ge \sigma_r > 0$$ 
-                   (where $$r = \mathrm{rank}(M)$$) such that:
-                   $$
-                     M 
-                     = \sum_{i=1}^r \sigma_i\,|\alpha_i\rangle\langle\beta_i|.
-                   $$
-                   (Uniqueness): The singular values $$\sigma_i$$ are unique. 
-                   If the singular values are distinct, the vectors $$|\alpha_i\rangle,|\beta_i\rangle$$ 
-                   are unique up to a phase factor. If there are degenerate singular values, 
-                   the corresponding subspaces spanned by $$|\alpha_i\rangle$$ (and $$|\beta_i\rangle$$) 
-                   are unique.
-                   If $$M$$ is normal ($$M\,M^\dagger = M^\dagger\,M$$), then one can choose 
-                   $$|\alpha_i\rangle = |\beta_i\rangle$$ (eigenvectors) and 
-                   $$\sigma_i = |\lambda_i|$$ (absolute values of eigenvalues).
-                 </p>
+                <span class="callout-title">Singular‑value decomposition</span>
+                <p>
+                    For a bounded operator $M$ on $\mathcal H^d$ there exist ONBs $\{|\alpha_i\rangle\}$, $\{|\beta_i\rangle\}$ and singular values $\sigma_1\ge\cdots\ge\sigma_r>0$ such that
+                    $$M=\sum_{i=1}^r\sigma_i|\alpha_i\rangle\langle\beta_i|.$$
+                </p>
             </div>
         </section>
 
+        <!-- ==================================================== Page 3 ==================================================== -->
         <section id="page3">
             <div class="page-break">Page 3 of Notes</div>
+
+            <p><strong>② Example: $|\mathrm{GHZ}\rangle=\tfrac{1}{\sqrt2}(|000\rangle+|111\rangle)$</strong></p>
+            <p>$R(|\mathrm{GHZ}\rangle)\le2$. To show $R(|\mathrm{GHZ}\rangle)>1$ assume, for contradiction, that $|\mathrm{GHZ}\rangle$ is separable:</p>
             <p>
-              <strong>② Example: 
-              $$|\mathrm{GHZ}\rangle 
-                = \frac{1}{\sqrt{2}}\,|000\rangle 
-                + \frac{1}{\sqrt{2}}\,|111\rangle 
-                = \frac{1}{\sqrt{2}}\bigl(|0\rangle_A \otimes |0\rangle_B \otimes |0\rangle_C 
-                + |1\rangle_A \otimes |1\rangle_B \otimes |1\rangle_C\bigr)$$
-              </strong>
+                $$|\mathrm{GHZ}\rangle = |\phi_A\rangle\otimes|\phi_B\rangle\otimes|\phi_C\rangle.$$
+                Then $$\rho_{\mathrm{GHZ}} = |\mathrm{GHZ}\rangle\langle\mathrm{GHZ}| = \rho_A\otimes\rho_B\otimes\rho_C,$$ with each $\rho_S$ pure (rank 1).
+                Consider the partial transpose on $C$: $(\mathrm{Id}_{AB}\otimes T_C)(\rho_{\mathrm{GHZ}})=\rho_A\otimes\rho_B\otimes\rho_C^{\!T}$, which is positive of rank 1.
             </p>
-            <p>
-                $$R\bigl(|\mathrm{GHZ}\rangle\bigr) \le 2.$$  
-                To show $$R\bigl(|\mathrm{GHZ}\rangle\bigr) > 1$$ (i.e., it is entangled):
-            </p>
-            <p>
-                Assume, for contradiction, that $$|\mathrm{GHZ}\rangle$$ is separable, i.e., 
-                $$R\bigl(|\mathrm{GHZ}\rangle\bigr) = 1.$$
-                Then 
-                $$
-                  |\mathrm{GHZ}\rangle 
-                  = |\phi_A\rangle \otimes |\phi_B\rangle \otimes |\phi_C\rangle.
-                $$
-                The density operator would be 
-                $$
-                  \rho_{\mathrm{GHZ}} 
-                  = |\mathrm{GHZ}\rangle\langle\mathrm{GHZ}| 
-                  = \bigl(|\phi_A\rangle\langle\phi_A|\bigr) 
-                    \otimes \bigl(|\phi_B\rangle\langle\phi_B|\bigr) 
-                    \otimes \bigl(|\phi_C\rangle\langle\phi_C|\bigr) 
-                  = \rho_A \otimes \rho_B \otimes \rho_C,
-                $$
-                where each $$\rho_S$$ is a pure state (rank 1).
-                Now, consider the partial transpose on system C: 
-                $$
-                  (\mathrm{Id}_{AB} \otimes T_C)\bigl(\rho_{\mathrm{GHZ}}\bigr).
-                $$
-                If $$\rho_{\mathrm{GHZ}}$$ were separable as 
-                $$\rho_A \otimes \rho_B \otimes \rho_C,$$ 
-                then 
-                $$
-                  (\mathrm{Id}_{AB} \otimes T_C)\bigl(\rho_{\mathrm{GHZ}}\bigr) 
-                  = \rho_A \otimes \rho_B \otimes \rho_C^T.
-                $$
-                Since $$\rho_C$$ is a pure state, $$\rho_C^T$$ is also a pure state (rank 1, positive). 
-                Thus $$\rho_A \otimes \rho_B \otimes \rho_C^T$$ would be a product of positive operators, 
-                hence positive, and its rank would be $$1 \times 1 \times 1 = 1$$. 
-                Its singular values would be $$(1,\,0,\,\dots,\,0).$$
-            </p>
-            <p>
-                However, let’s calculate the partial transpose of the actual $$\rho_{\mathrm{GHZ}}$$:
-                $$
-                  \rho_{\mathrm{GHZ}} 
-                  = \frac{1}{2}\Bigl(
-                    |000\rangle\langle 000| 
-                    + |000\rangle\langle 111| 
-                    + |111\rangle\langle 000| 
-                    + |111\rangle\langle 111|
-                  \Bigr).
-                $$
-                Applying $$T_C$$ (transpose on the third qubit’s space):
-                \[
-                  |0\rangle_C\langle 0|_C \;\xrightarrow{T_C}\; |0\rangle_C\langle 0|_C, 
-                  \quad
-                  |0\rangle_C\langle 1|_C \;\xrightarrow{T_C}\; |1\rangle_C\langle 0|_C, 
-                  \quad
-                  |1\rangle_C\langle 0|_C \;\xrightarrow{T_C}\; |0\rangle_C\langle 1|_C, 
-                  \quad
-                  |1\rangle_C\langle 1|_C \;\xrightarrow{T_C}\; |1\rangle_C\langle 1|_C.
-                \]
-                So,
-                $$
-                  \rho_{\mathrm{GHZ}}^{\Gamma_C} 
-                  = \frac{1}{2}\Bigl(
-                    |00\rangle_{AB}\langle 00|_{AB} \otimes |0\rangle_C\langle 0|_C 
-                    \;+\; |00\rangle_{AB}\langle 11|_{AB} \otimes |1\rangle_C\langle 0|_C 
-                    \;+\; |11\rangle_{AB}\langle 00|_{AB} \otimes |0\rangle_C\langle 1|_C 
-                    \;+\; |11\rangle_{AB}\langle 11|_{AB} \otimes |1\rangle_C\langle 1|_C
-                  \Bigr).
-                $$
-                In the standard basis ordered as 
-                $$|000\rangle,\;|001\rangle,\;|010\rangle,\;|011\rangle,\;|100\rangle,\;|101\rangle,\;|110\rangle,\;|111\rangle,$$ 
-                the matrix for $$\rho_{\mathrm{GHZ}}^{\Gamma_C}$$ is:
-                $$
-                  \rho_{\mathrm{GHZ}}^{\Gamma_C} 
-                  = \frac{1}{2} 
-                  \begin{pmatrix}
-                    1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
-                    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-                    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-                    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-                    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-                    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-                    1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-                    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1
-                  \end{pmatrix}.
-                $$
-                This matrix has eigenvalues 
-                $$\{\,\tfrac{1}{2},\,\tfrac{1}{2},\,\tfrac{1}{2},\, -\tfrac{1}{2},\,0,\,0,\,0,\,0\}.$$
-                Since it has a negative eigenvalue, $$\rho_{\mathrm{GHZ}}^{\Gamma_C}$$ is not positive semidefinite. 
-                This implies that $$\rho_{\mathrm{GHZ}}$$ cannot be separable. 
-                Therefore, the pure state $$|\mathrm{GHZ}\rangle$$ is entangled, and its tensor rank must be >1. 
-                Since it is a sum of two terms, 
-                $$R\bigl(|\mathrm{GHZ}\rangle\bigr) = 2.$$
-                (The argument in the notes using singular values of the partial transpose is more directly related to the PPT criterion for mixed states; 
-                the rank of $$\rho_{\mathrm{GHZ}}^{\Gamma_C}$$ is 4, which differs from the rank 1 of $$\rho_{\mathrm{GHZ}}$$.)
+            <p>But for the true GHZ state,
+                $$\rho_{\mathrm{GHZ}}=\frac12\bigl(|000\rangle\langle000|+|000\rangle\langle111|+|111\rangle\langle000|+|111\rangle\langle111|\bigr).$$
+                Taking $T_C$ one obtains a matrix with eigenvalues $\{\tfrac12,\tfrac12,\tfrac12,-\tfrac12,0,0,0,0\}$, hence not positive.
+                Therefore $|\mathrm{GHZ}\rangle$ is entangled and $R(|\mathrm{GHZ}\rangle)=2$.
             </p>
 
             <div class="callout callout-remark">
-                <div class="callout-title">Remark</div>
-                <p>
-                    Rank (tensor rank) is called a discrete “norm” (more accurately, a discrete measure of complexity, not strictly a norm in the mathematical sense due to the scaling property).
-                </p>
-                <ul>
-                    <li>$$R\bigl(|\psi\rangle\bigr) \ge 0.$$</li>
-                    <li>$$R\bigl(|\psi\rangle\bigr) = 0 \iff |\psi\rangle = 0.$$</li>
-                    <li>
-                      $$R\bigl(|\psi\rangle + |\phi\rangle\bigr) 
-                        \le R\bigl(|\psi\rangle\bigr) + R\bigl(|\phi\rangle\bigr)
-                      \quad\text{(Triangle inequality for rank).}$$
-                    </li>
-                    <li>
-                      Fails to satisfy 
-                      $$R\bigl(\lambda\,|\psi\rangle\bigr) = \lvert \lambda\rvert\,R\bigl(|\psi\rangle\bigr)$$ 
-                      unless $$\lvert \lambda\rvert = 0,1$$ or $$|\psi\rangle = 0.$$ 
-                      In fact, $$R\bigl(\lambda\,|\psi\rangle\bigr) = R\bigl(|\psi\rangle\bigr)$$ for $$\lambda \neq 0.$$
-                    </li>
-                </ul>
+                <span class="callout-title">Remark</span>
+                <p>The tensor rank behaves like a “discrete norm” except that $R(\lambda|\psi\rangle)=R(|\psi\rangle)$ for any non‑zero scalar $\lambda$.</p>
             </div>
 
-            <h3>Entanglement of Mixed Quantum States (in terms of density operators)</h3>
-            <p>
-                $$\rho \in \mathcal{M}_d^{\mathrm{sa}}(\mathbb{C}), \quad \rho \ge 0, \quad \mathrm{Tr}(\rho) = 1.$$
-            </p>
+            <h3>Entanglement of Mixed States</h3>
+            <p>Let $\rho\in\mathcal M_d^{\mathrm{sa}}(\mathbb C)$ with $\rho\ge0$ and $\operatorname{Tr}(\rho)=1$.</p>
+
             <div class="callout callout-definition">
-                <div class="callout-title">Separable mixed state</div>
+                <span class="callout-title">Separable mixed state</span>
                 <p>
-                    $$\rho \in \mathcal{M}_{d_1} \otimes \dots \otimes \mathcal{M}_{d_k}$$ 
-                    (denoting the space of self-adjoint operators on the tensor-product space) if 
-                    $$
-                      \rho 
-                      = \sum_i p_i \, \bigl(\rho_i^{(1)} \otimes \rho_i^{(2)} \otimes \dots \otimes \rho_i^{(k)}\bigr),
-                    $$
-                    where $$p_i > 0$$, $$\sum p_i = 1$$, and each $$\rho_i^{(j)}$$ is a density matrix in 
-                    $$\mathcal{M}_{d_j}^{\mathrm{sa}}(\mathbb{C}).$$
-                </p>
-            </div>
-            <div class="callout callout-remark">
-                <div class="callout-title">Clarifying Notation for Product States (Digression)</div>
-                <p>
-                    The notation 
-                    $$\rho_i^{(1)} \otimes \rho_i^{(2)}$$ 
-                    means the tensor product of the density operators 
-                    $$\rho_i^{(1)}$$ and $$\rho_i^{(2)}$$. 
-                    If these are pure states, e.g., 
-                    $$\rho_i^{(1)} = |\psi_i^{(1)}\rangle\langle\psi_i^{(1)}|$$ 
-                    and 
-                    $$\rho_i^{(2)} = |\psi_i^{(2)}\rangle\langle\psi_i^{(2)}|,$$ 
-                    then
-                    $$
-                      \rho_i^{(1)} \otimes \rho_i^{(2)} 
-                      = 
-                      \bigl|\psi_i^{(1)}\rangle\langle\psi_i^{(1)}|\bigr) 
-                      \otimes 
-                      \bigl|\psi_i^{(2)}\rangle\langle\psi_i^{(2)}|\bigr) 
-                      = 
-                      \bigl(|\psi_i^{(1)}\rangle \otimes |\psi_i^{(2)}\rangle\bigr)\,
-                      \bigl(\langle\psi_i^{(1)}| \otimes \langle\psi_i^{(2)}|\bigr).
-                    $$
-                    This differs from first taking tensor products of vectors and then forming the projector.
+                    $$\rho = \sum_i p_i\,\rho_i^{(1)}\otimes\rho_i^{(2)}\otimes\cdots\otimes\rho_i^{(k)},\qquad p_i>0,\;\sum_i p_i=1,$$
+                    with each $\rho_i^{(j)}$ a density matrix on $\mathbb C^{d_j}$.
                 </p>
             </div>
 
-            <p><strong>Question: How useful is (matrix) rank for mixed quantum states?</strong></p>
-            <div class="table-container">
-                <table class="custom-table">
-                    <thead>
-                        <tr>
-                            <th>Example State (Density Operator $$\rho$$)</th>
-                            <th>Tensor (Pure state it projects onto, if applicable)</th>
-                            <th>Rank of $$\rho$$</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>$$|00\rangle\langle 00|$$</td>
-                            <td>$$|0\rangle \otimes |0\rangle$$</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td>$$|01\rangle\langle 01|$$</td>
-                            <td>$$|0\rangle \otimes |1\rangle$$</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td>
-                              $$\tfrac{1}{2}\Bigl(|00\rangle\langle 00| + |01\rangle\langle 01|\Bigr)$$
-                            </td>
-                            <td>N/A (Mixed)</td>
-                            <td>2</td>
-                        </tr>
-                        <tr>
-                            <td>
-                              $$\rho_{\text{separable}} 
-                                = \tfrac{1}{4}\!\sum_{i,j=0}^1 |ij\rangle\langle ij| 
-                                \;\text{(Maximally mixed on 2 qubits)}$$
-                            </td>
-                            <td>N/A (Mixed)</td>
-                            <td>4</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="callout callout-remark">
+                <span class="callout-title">Clarifying notation</span>
+                <p>The product $\rho_i^{(1)}\otimes\rho_i^{(2)}$ is the tensor product of operators; if $\rho_i^{(1)}=|\psi\rangle\langle\psi|$ then
+                    $$\rho_i^{(1)}\otimes\rho_i^{(2)} = (|\psi\rangle\otimes|\phi\rangle)(\langle\psi|\otimes\langle\phi|).$$</p>
             </div>
-            <p>
-                The matrix rank of a density operator tells us how mixed it is, but not directly if it’s entangled 
-                (unless it’s rank 1; then it’s pure, and we check its tensor rank).
-            </p>
+
+            <p><strong>How informative is matrix rank for mixed states?</strong></p>
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                  <tr><th>State $\rho$</th><th>Underlying tensor</th><th>$\operatorname{rank}(\rho)$</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>$|00\rangle\langle00|$</td><td>$|0\rangle\otimes|0\rangle$</td><td>1</td></tr>
+                  <tr><td>$|01\rangle\langle01|$</td><td>$|0\rangle\otimes|1\rangle$</td><td>1</td></tr>
+                  <tr><td>$\tfrac12(|00\rangle\langle00|+|01\rangle\langle01|)$</td><td>— (mixed)</td><td>2</td></tr>
+                  <tr><td>$\rho_{\text{sep}}=\tfrac14\sum_{i,j}|ij\rangle\langle ij|$</td><td>— (mixed)</td><td>4</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Rank measures mixedness, not entanglement (unless rank 1).</p>
         </section>
 
+        <!-- ==================================================== Page 4 ==================================================== -->
         <section id="page4">
             <div class="page-break">Page 4 of Notes</div>
 
-            <h3>Desirable Properties of an Entanglement Measure/Test Function ($$\Phi$$)</h3>
-            <p>
-                We are looking for a function $$\Phi$$ (e.g., a norm) that can help us test for entanglement.
-            </p>
-            <p>
-                A key property we want is convexity (or a related property that behaves well under convex combinations):
-                If $$\rho = \sum_i p_i\,\rho_i$$ is a convex combination, we would like 
-                $$\Phi(\rho) \le \sum_i p_i \,\Phi(\rho_i).$$
-            </p>
-            <p>
-                If a state $$\rho$$ is separable, then 
-                $$
-                  \rho = \sum_a p_a\,\bigl(\rho_a^{(1)} \otimes \dots \otimes \rho_a^{(k)}\bigr).
-                $$
-                If $$\Phi$$ is convex and satisfies 
-                $$
-                  \Phi\bigl(X^{(1)} \otimes \dots \otimes X^{(k)}\bigr) \le C 
-                  \quad\text{for all product states (e.g., }C=1\text{ if normalized)}, 
-                $$
-                then for a separable state:
-                $$
-                  \Phi(\rho) 
-                  = \Phi\Bigl(\sum_a p_a\,\bigl(\rho_a^{(1)} \otimes \dots \otimes \rho_a^{(k)}\bigr)\Bigr)
-                  \;\le\; \sum_a p_a\,\Phi\bigl(\rho_a^{(1)} \otimes \dots \otimes \rho_a^{(k)}\bigr)
-                  \;\le\; \sum_a p_a \cdot C
-                  \;=\; C.
-                $$
-                So if we find $$\Phi(\rho) > C$$, then $$\rho$$ must be entangled.
+            <h3>Desirable properties of an entanglement measure $\Phi$</h3>
+            <p>We want $\Phi$ convex so that for a separable state $\rho=\sum_a p_a\rho_a^{(1)}\otimes\cdots\otimes\rho_a^{(k)}$ we have
+                $$\Phi(\rho)\le\sum_a p_a\,\Phi\bigl(\rho_a^{(1)}\otimes\cdots\otimes\rho_a^{(k)}\bigr).$$
+                If moreover $\Phi$ is normalised so that $\Phi$ of any product state is $\le C$ (often $C=1$), then $\Phi(\rho)\le C$ for separable $\rho$. Hence $\Phi(\rho)>C$ certifies entanglement.
             </p>
 
             <div class="callout callout-definition">
-                <div class="callout-title">Convex Envelope</div>
-                <p>
-                    Let $$C \subseteq \mathcal{H}$$ be a convex set, and $$f: C \to \mathbb{R}$$.
-                    The <strong>convex envelope</strong> of $$f$$ is a function $$g: C \to \mathbb{R}$$ such that:
-                    <ol type="i">
-                        <li>$$g$$ is convex.</li>
-                        <li>$$g(x) \le f(x)\quad \forall\,x \in C.$$</li>
-                        <li>For any other convex function $$g_1: C \to \mathbb{R}$$ satisfying (i) and (ii) for $$f$$, 
-                            we have $$g_1(x) \le g(x)\quad \forall\,x \in C.$$ 
-                            (i.e., $$g$$ is the largest convex lower bound).
-                        </li>
-                    </ol>
-                </p>
+              <span class="callout-title">Convex envelope</span>
+              <p>For $f:C\to\mathbb R$ on a convex $C$, its convex envelope is the largest convex lower bound $g\le f$ on $C$.</p>
             </div>
 
             <div class="callout callout-theorem">
-                <div class="callout-title">Theorem (Rank and Nuclear Norm)</div>
-                <p>
-                    The convex envelope of the rank function $$R(A)$$ (on the set of matrices $$A$$ with operator norm 
-                    $$\lVert A\rVert_{S_\infty} \le 1$$) is the nuclear norm 
-                    $$\lVert A\rVert_{S_1} = \sum \sigma_i(A).$$
-                </p>
-                <p>
-                  (This is why $$\|\cdot\|_{S_1}$$ is used as a convex surrogate for rank in many optimization problems.)
-                </p>
+              <span class="callout-title">Theorem (rank vs. nuclear norm)</span>
+              <p>The convex envelope of $\operatorname{rank}(A)$ on $\{A:\|A\|_{S_\infty}\le1\}$ is the nuclear norm $\|A\|_{S_1}=\sum_i\sigma_i(A)$.</p>
             </div>
 
             <div class="callout callout-theorem">
-                <div class="callout-title">Lemma (Variational characterization of Nuclear Norm)</div>
-                <p>
-                  For a bounded linear operator $$A$$ on $$\mathcal{H}^d$$:
-                  $$
-                    \lVert A\rVert_{S_1} 
-                    = \max_{\substack{U \text{ unitary}}} 
-                      \bigl\lvert \mathrm{Tr}(A\,U)\bigr\rvert.
-                  $$
-                  (Note: This particular maximization gives the sum of singular values if $$A$$ is normal and $$U$$ can align with its eigenbasis appropriately. 
-                  The more general statement is 
-                  $$
-                    \lVert A\rVert_{S_1} 
-                    = \sup_{\lVert X\rVert_{S_\infty} \le 1} \bigl\lvert \mathrm{Tr}(A^\dagger\,X)\bigr\rvert.
-                  $$
-                  )
-                </p>
-                <p><em>Proof sketch for why $$\lVert\cdot\rVert_{S_1}$$ is a norm:</em></p>
-                <ul>
-                    <li>
-                      $$\lVert A\rVert_{S_1} = \mathrm{Tr}\bigl(\sqrt{A^\dagger A}\bigr) \ge 0.$$ 
-                      $$\lVert A\rVert_{S_1} = 0 \iff \sqrt{A^\dagger A} = 0 \iff A = 0.$$
-                    </li>
-                    <li>
-                      $$\lVert \lambda A\rVert_{S_1} 
-                        = \mathrm{Tr}\bigl(\sqrt{(\lambda A)^\dagger (\lambda A)}\bigr) 
-                        = \mathrm{Tr}\bigl(\sqrt{|\lambda|^2\,A^\dagger A}\bigr) 
-                        = |\lambda|\,\mathrm{Tr}\bigl(\sqrt{A^\dagger A}\bigr) 
-                        = |\lambda|\;\lVert A\rVert_{S_1}.$$
-                    </li>
-                    <li>
-                      $$\lVert A + B\rVert_{S_1} 
-                        = \max_{U}\bigl\lvert \mathrm{Tr}\bigl((A+B)\,U\bigr)\bigr\rvert 
-                        = \max_{U}\bigl\lvert \mathrm{Tr}(A\,U) + \mathrm{Tr}(B\,U)\bigr\rvert 
-                        \;\le\; \max_{U}\bigl(\lvert \mathrm{Tr}(A\,U)\rvert + \lvert \mathrm{Tr}(B\,U)\rvert\bigr) 
-                        \;\le\; \max_{U}\lvert \mathrm{Tr}(A\,U)\rvert 
-                        + \max_{U}\lvert \mathrm{Tr}(B\,U)\rvert 
-                        = \lVert A\rVert_{S_1} + \lVert B\rVert_{S_1}.
-                      $$
-                    </li>
-                </ul>
+              <span class="callout-title">Lemma (variational form of $\|\cdot\|_{S_1}$)</span>
+              <p>$$\|A\|_{S_1}=\sup_{\|X\|_{S_\infty}\le1}|\operatorname{Tr}(A^\dagger X)|=\max_{U\text{ unitary}}|\operatorname{Tr}(AU)|.$$</p>
             </div>
         </section>
 
+        <!-- ==================================================== Page 5 ==================================================== -->
         <section id="page5">
             <div class="page-break">Page 5 of Notes</div>
+
             <div class="callout callout-theorem">
-                <div class="callout-title">Theorem (Entanglement Test using Partial Transpose)</div>
-                <p>
-                    Let $$\rho$$ be a $$d_A \times d_B$$ dimensional bipartite density operator.
-                    If 
-                    $$
-                      \bigl\lVert \rho^{\Gamma_B}\bigr\rVert_{S_1} > 1,
-                    $$ 
-                    then $$\rho$$ is entangled.
-                </p>
-                <p>
-                    (Here, $$\rho^{\Gamma_B} = (\mathrm{Id}_A \otimes T_B)(\rho)$$ is the partial transpose on subsystem B, 
-                    and $$\lVert\cdot\rVert_{S_1}$$ is the nuclear norm.)
-                </p>
-                <p><em>Proof Idea:</em></p>
-                <p>
-                    If $$\rho$$ is separable, 
-                    $$
-                      \rho = \sum_k p_k\,\rho_k^A \otimes \rho_k^B,
-                      \quad p_k \ge 0,\;\sum p_k = 1,
-                      \quad \rho_k^A, \rho_k^B \text{ are density matrices}.
-                    $$
-                    Then 
-                    $$
-                      \rho^{\Gamma_B} 
-                      = \sum_k p_k\,\rho_k^A \otimes (\rho_k^B)^T.
-                    $$
-                    Since $$\rho_k^B \ge 0$$, its transpose $$(\rho_k^B)^T$$ is also $$\ge 0$$.
-                    Thus $$\rho_k^A \otimes (\rho_k^B)^T \ge 0$$ for all $$k$$.
-                    So, $$\rho^{\Gamma_B}$$ is a convex combination of positive semidefinite operators, 
-                    which means $$\rho^{\Gamma_B}$$ itself is positive semidefinite.
-                    For any positive semidefinite operator $$X$$, its nuclear norm 
-                    $$\lVert X\rVert_{S_1}$$ equals its trace $$\mathrm{Tr}(X)$$.
-                    Therefore, if $$\rho$$ is separable, 
-                    $$
-                      \lVert \rho^{\Gamma_B}\rVert_{S_1} 
-                      = \mathrm{Tr}\bigl(\rho^{\Gamma_B}\bigr).
-                    $$
-                    The partial transpose operation preserves the trace: 
-                    $$\mathrm{Tr}(\rho^{\Gamma_B}) = \mathrm{Tr}(\rho).$$
-                    Since $$\rho$$ is a density matrix, $$\mathrm{Tr}(\rho) = 1$$.
-                    Hence if $$\rho$$ is separable, 
-                    $$
-                      \lVert \rho^{\Gamma_B}\rVert_{S_1} = 1.
-                    $$
-                    Consequently, if we find that 
-                    $$\lVert \rho^{\Gamma_B}\rVert_{S_1} > 1,$$ 
-                    then $$\rho$$ cannot be separable and must be entangled.
-                </p>
+              <span class="callout-title">Theorem (PPT test via nuclear norm)</span>
+              <p>Let $\rho$ be a bipartite state. If $\|\rho^{\Gamma_B}\|_{S_1}>1$ then $\rho$ is entangled.</p>
+              <p><em>Sketch.</em> For separable $\rho$ we have $\rho^{\Gamma_B}\ge0$ and $\operatorname{Tr}(\rho^{\Gamma_B})=1$, hence $\|\rho^{\Gamma_B}\|_{S_1}=1$. Thus any value $>1$ witnesses entanglement.</p>
             </div>
         </section>
     </main>
