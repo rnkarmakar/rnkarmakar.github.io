@@ -52,7 +52,7 @@ header.site-header {
 
 /* Make content inside .wide-content extend full viewport width, overriding .wrapper constraints */
 .wrapper .wide-content {
-  max-width: 60rem;
+  max-width: 100rem;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
