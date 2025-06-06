@@ -51,12 +51,9 @@ header.site-header {
 }
 
 .wide-content {
-  max-width: min(90vw, 80rem) !important;
-  width: 100% !important;
-  margin: 0 auto !important;
+  max-width: 60rem !important;
+  margin: 0 auto;
   padding: 1rem;
-  position: relative;
-  overflow-x: hidden;
 }
 
 footer.site-footer {
