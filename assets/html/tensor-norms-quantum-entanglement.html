@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tensor Norms for Quantum Entanglement (From Notes)</title>
+    <title>Tensor Norms for Quantum Entanglement (Part 1)</title>
     <style>
         html {
             scroll-behavior: smooth; /* Smooth scrolling for hyperlinks */
@@ -15,6 +15,9 @@
             padding: 0;
             background-color: #fdfdfd;
             color: #212529;
+        }
+
+        main {
             counter-reset: section;
         }
 
@@ -205,7 +208,7 @@
 
     <div class="paper-header">
         <h1>Tensor Norms for Quantum Entanglement</h1>
-        <div class="authors">(From Notes)</div>
+        <div class="authors">(Part 1)</div>
         <div class="metadata">
             Keywords: Quantum Entanglement, Tensor Norms, Separability, Nuclear Norm, Partial Transpose
         </div>
@@ -224,18 +227,18 @@
             <div class="environment definition" id="def-state">
                 <p><span class="env-title">Definition</span>
                 A <strong>State</strong> $\rho$ is a self-adjoint operator on a complex Hilbert space (e.g., $\mathbb{C}^d, L^2(\mathbb{R})$) where $d < \infty$, satisfying $\rho \ge 0$ and $\mathrm{Tr}(\rho) = 1$.
-                </p>
+                <strong> For this note, the Hilbert space will be $\mathbb{C}^d$</strong>.</p>
             </div>
 
             <div class="environment definition" id="def-pure-state">
                 <p><span class="env-title">Definition</span>
-                A <strong>Pure State</strong> is a rank-1 projection, i.e., $\rho = |\psi\rangle\langle\psi|$, where $\langle\psi|\psi\rangle = 1$ and $|\psi\rangle \in \mathcal{H}^d$.
+                A <strong>Pure State</strong> is a rank-1 projection, i.e., $\rho = |\psi\rangle\langle\psi|$, where $\langle\psi|\psi\rangle = 1$ and $|\psi\rangle \in \mathbb{C}^d$.
                 </p>
             </div>
 
             <div class="environment definition" id="def-mixed-state">
                 <p><span class="env-title">Definition</span>
-                A <strong>Mixed State</strong> is a convex combination of pure states, $\rho = \sum_i \lambda_i |\psi_i\rangle\langle\psi_i|$, where $\lambda_i > 0, \sum \lambda_i = 1,$ and $\{|\psi_i\rangle\}$ form an orthonormal basis of eigenvectors for $\rho$.
+                A <strong>Mixed State</strong> is a convex combination of pure states, $\rho = \sum_i \lambda_i |\psi_i\rangle\langle\psi_i|$.
                 </p>
             </div>
         </section>
@@ -243,16 +246,16 @@
         <section id="sec-entanglement-testing">
             <h2>Entanglement Testing</h2>
             <ul>
-                <li><a href="#subsec-classical">Classical notion of entanglement (independence)</a></li>
+                <li><a href="#subsec-classical">Classical notion of entanglement (dependence)</a></li>
                 <li><a href="#sec-pure-states">Entanglement of pure states</a></li>
                 <li><a href="#sec-mixed-states">Entanglement of mixed states</a>
-                    <ul><li><a href="#sec-criteria">Tensor norms</a></li></ul>
+                    <ul><li>Tensor norms</li></ul>
                 </li>
-                <li><a href="#sec-criteria">Story of norms</a></li>
+                <li>Story of norms</li>
                 <li>Graphical tensor notation in Quantum Computing</li>
             </ul>
 
-            <h3 id="subsec-classical">Classical Notion of Independence</h3>
+            <h3 id="subsec-classical">Classical Notion of entanglement (dependence)</h3>
             <p>Consider $X, Y$ discrete random variables with finite support.</p>
             <div class="environment definition" id="def-independence">
                 <p><span class="env-title">Definition</span>
@@ -268,8 +271,8 @@
                 </p>
             </div>
             
-            <div class="environment proposition" id="prop-independence">
-                 <p><span class="env-title">Proposition</span>
+            <div class="environment remark" id="prop-independence">
+                 <p><span class="env-title">Observation</span>
                     If $X, Y$ are independent, then $M = \mathbf{u}\mathbf{v}^T$ where <br>
                     $\mathbf{u} = (P(X=x_1), P(X=x_2), \dots)^T$ <br>
                     $\mathbf{v} = (P(Y=y_1), P(Y=y_2), \dots)^T$. <br>
@@ -283,8 +286,16 @@
                 </span></p>
                 <div class="proof">
                     <span class="proof-title">Proof.</span><span class="qed">□</span>
-                    <p>($\implies$) Done (by <a href="#prop-independence">Proposition 2.1</a>).</p>
-                    <p>($\impliedby$) If $M$ has rank 1, then $M = \mathbf{u}\mathbf{v}^T$. Since $M_{ij} \ge 0$, we can choose $u_i, v_j \ge 0$. Let $U = \sum_i u_i$ and $V = \sum_j v_j$. The marginals are $P(X=x_i) = \sum_j M_{ij} = u_i V$ and $P(Y=y_j) = \sum_i M_{ij} = v_j U$. Then $P(X=x_i)P(Y=y_j) = u_i V v_j U = u_i v_j (UV) = M_{ij}(UV)$. Also, $1 = \sum_{i,j} M_{ij} = (\sum_i u_i) (\sum_j v_j) = UV$. So $P(X=x_i)P(Y=y_j) = M_{ij}$.</p>
+                    <p>($\implies$) Done (by <a href="#prop-independence">Observation 2.2</a>).</p>
+                    <p>($\impliedby$) If $M$ has rank 1, then $M = \mathbf{u}\mathbf{v}^T$. Since $M$ represents a joint probability distribution with marginals $P(X=\cdot)$ and $P(Y=\cdot)$, we get that 
+                        <ul>
+                            <li>$u_iv_j\geq 0$</li>
+                            <li>$\sum_i\sum_j u_iv_j = 1$</li>
+                            <li>$u_i\sum_jv_j = P(X=x_i)$</li>
+                            <li>$v_j\sum_iu_i = P(Y=y_j)$</li>
+                        </ul>
+                    Hence $P(X=x_i)P(Y=y_j) = u_i v_j = M_{ij}$, showing $X, Y$ are independent.    
+                    </p>
                 </div>
             </div>
         </section>
@@ -299,9 +310,11 @@
             </p>
             <div class="environment proposition" id="prop-pure-product">
                 <p><span class="env-title">Proposition</span>
-                    $M=UV^T$ iff $|\psi\rangle = |\psi_X\rangle \otimes |\psi_Y\rangle$ for some state vectors $|\psi_X\rangle \in \mathcal{H}_X, |\psi_Y\rangle \in \mathcal{H}_Y$.
+                    $M=uv^T$ iff $|\psi\rangle = |\psi_X\rangle \otimes |\psi_Y\rangle$ for some state vectors $|\psi_X\rangle \in \mathcal{H}_X, |\psi_Y\rangle \in \mathcal{H}_Y$.
                 </p>
             </div>
+
+            <p>This means that $X$ and $Y$ are independent iff the state vector $|\psi\rangle$ is a pure tensor.</p>
 
             <div class="environment definition" id="def-tensor-decomp">
                 <p><span class="env-title">Definition (Tensor Rank Decomposition)</span>
@@ -312,84 +325,94 @@
 
             <div class="environment definition" id="def-tensor-rank">
                 <p><span class="env-title">Definition (Tensor Rank)</span>
-                    $R(|\psi\rangle) = \min \{ r \ge 1 \mid |\psi\rangle \text{ has a decomposition into } r \text{ simple tensors} \}$.
+                    $R(|\psi\rangle) = \min \{ r \ge 1 \mid |\psi\rangle \text{ has a decomposition into } r \text{ pure tensors} \}$.
                 </p>
                 <ul>
-                    <li>$R(|\psi\rangle)=1 \iff$ "$|\psi\rangle$ is a separable pure state"</li>
-                    <li>$R(|\psi\rangle)>1 \iff$ "$|\psi\rangle$ is an entangled pure state"</li>
+                    <li>$R(|\psi\rangle)=1$ &emsp; "$|\psi\rangle$ is a separable pure state"</li>
+                    <li>$R(|\psi\rangle)>1$ &emsp; "$|\psi\rangle$ is an entangled pure state"</li>
                 </ul>
             </div>
 
             <h3 id="subsec-rank-computation">Examples (Computation of Tensor Rank)</h3>
             <p><strong>① Bipartite Quantum States ($k=2$)</strong></p>
             <p>
-                If $|\psi\rangle = \sum_{ij} \Psi_{ij} |i\rangle \otimes |j\rangle$, then its tensor rank $R(|\psi\rangle)$ is equal to the matrix rank of the coefficient matrix $\Psi = (\Psi_{ij})$. This is also known as the Schmidt rank.
+                If $|\psi\rangle = \sum_{ij} \Psi_{ij} |x_i\rangle \otimes |y_j\rangle$, then its tensor rank $R(|\psi\rangle)$ is equal to the matrix rank of the coefficient matrix $\Psi = (\Psi_{ij})$. This is also known as the Schmidt rank. 
             </p>
             <div class="environment remark" style="border-left-color: #4299e1;" id="rem-caution">
                 <p><span class="env-title" style="color:#2b6cb0;">Caution</span>
-                    In our classical-to-quantum mapping, $R(|\psi\rangle) = \mathrm{rank}((\sqrt{M_{ij}}))$, which is not equal to $\mathrm{rank}(M)$ in general.
+                    In our classical-to-quantum mapping, $R(|\psi\rangle) = \mathrm{rank}((\sqrt{M_{ij}}))$, which is not equal to $\mathrm{rank}(M)$ in general. However, one of them has rank 1 iff the other does. Hence, either can be used for testing entanglement.
                 </p>
             </div>
-
+            <p>
+                In practice, we can compute the rank of a matrix using Singular Value Decomposition (SVD). Let's recall its definition as we will need it later as well.
+            </p>
             <div class="environment definition" id="def-svd">
                  <p><span class="env-title">Definition (Singular Value Decomposition)</span>
                  For a bounded linear operator $M$ on $\mathcal{H}^d$, there exist orthonormal bases $\{|\alpha_i\rangle\}, \{|\beta_i\rangle\}$ and singular values $\sigma_1 \ge \dots \ge \sigma_r > 0$ ($r=\mathrm{rank}(M)$) such that:
                  $$ M = \sum_{i=1}^r \sigma_i |\alpha_i\rangle\langle\beta_i| $$
-                 The singular values are unique. If $M$ is normal ($MM^\dagger = M^\dagger M$), we can choose $|\alpha_i\rangle = |\beta_i\rangle$.
+                <strong id="uniqueness">The singular values are unique upto permutation.</strong>
                  </p>
             </div>
         </section>
         
         <div class="page-divider">Page 3 of Notes</div>
 
-        <section id="sec-mixed-states">
-            <h2>Examples and Mixed States</h2>
-            <h3 id="subsec-ghz">Example: The GHZ State</h3>
-            <p><strong>② $|\text{GHZ}\rangle = \frac{1}{\sqrt{2}}|000\rangle + \frac{1}{\sqrt{2}}|111\rangle$</strong></p>
+        
+         
+            <p><strong>② The GHZ state - $|\text{GHZ}\rangle = \frac{1}{\sqrt{2}}|000\rangle + \frac{1}{\sqrt{2}}|111\rangle$</strong></p>
             <p>The decomposition shows $R(|\text{GHZ}\rangle) \le 2$. To show it is entangled, we assume it is separable for contradiction, i.e., $R(|\text{GHZ}\rangle) = 1$. Then $|\text{GHZ}\rangle = |\phi_A\rangle \otimes |\phi_B\rangle \otimes |\phi_C\rangle$.
-            The density operator would be $\rho_{\text{GHZ}} = \rho_A \otimes \rho_B \otimes \rho_C$. If so, its partial transpose on system C, $(\mathrm{Id}_{AB} \otimes T_C)(\rho_{\text{GHZ}})$, would be $\rho_A \otimes \rho_B \otimes \rho_C^T$, which must be positive semidefinite.
+            The density operator would be $\rho_{\text{GHZ}} = \rho_A \otimes \rho_B \otimes \rho_C$. Note that
+            $$\rho_{\text{GHZ}} = \frac{1}{2}(|000\rangle\langle000| + |111\rangle\langle111| + |000\rangle\langle111| + |111\rangle\langle000|)$$
+            while $\rho_A \otimes \rho_B \otimes \rho_C = |\phi_A\phi_B\phi_C\rangle\langle \phi_A\phi_B\phi_C|$. Now it's tempting to apply the <a href="#uniqueness">uniqueness of SVD</a> to conclude that the LHS has non zero singular values $\frac{1}{2}, \frac{1}{2}, \frac{1}{2}, \frac{1}{2}$, while the RHS has non zero singular value $1$, giving a contradiction. However, note that the vectors $|000\rangle, |111\rangle, |000\rangle, |111\rangle$ are not orthogonal, so we cannot apply the uniqueness of SVD directly.
             </p>
             <p>
-            However, for the actual $\rho_{\text{GHZ}} = \frac{1}{2} ( |000\rangle\langle 000| + |000\rangle\langle 111| + |111\rangle\langle 000| + |111\rangle\langle 111| )$, the partial transpose is:
-            $$ \rho_{\text{GHZ}}^{\Gamma_C} = \frac{1}{2} \left( |00\rangle\langle 00| \otimes |0\rangle\langle 0| + |00\rangle\langle 11| \otimes |1\rangle\langle 0| + |11\rangle\langle 00| \otimes |0\rangle\langle 1| + |11\rangle\langle 11| \otimes |1\rangle\langle 1| \right) $$
-            The matrix for $\rho_{\text{GHZ}}^{\Gamma_C}$ has a negative eigenvalue (-1/2), so it is not positive semidefinite. This is a contradiction, thus $|\text{GHZ}\rangle$ must be entangled, and $R(|\text{GHZ}\rangle)=2$. This is an application of the <a href="#sec-ppt-test">partial transpose test</a> discussed later.
+            However, we can "cheat" a bit by rearranging the last two qubits between the input and output, as follows:
+            $$\frac{1}{2}|000\rangle\langle 000| + \frac{1}{2}|111\rangle \langle 111|+ \frac{1}{2}|011\rangle\langle 100| + \frac{1}{2}|100\rangle\langle 011| = | \phi_A\phi_B\phi_C\rangle\langle \phi_A\phi_B\phi_C |$$
+            Now we can safely apply the uniqueness of SVD, as the vectors $|000\rangle, |111\rangle, |011\rangle, |100\rangle$ are orthogonal. This gives us a contradiction, hence $R(|\text{GHZ}\rangle) > 1$.
             </p>
+            <p>
+                The trick we used above is called the <strong>partial transpose</strong>, which we will come back to later while discussing entanglement testers.
+            </p>
+           
 
             <div class="environment remark" style="border-left-color: #4299e1;" id="rem-rank-norm">
                 <p><span class="env-title" style="color:#2b6cb0;">Remark</span>
-                Tensor rank is a discrete measure of complexity. It satisfies some but not all properties of a norm. It satisfies $R(|\psi\rangle) \ge 0$, $R(|\psi\rangle)=0 \iff |\psi\rangle=0$, and $R(|\psi\rangle + |\phi\rangle) \le R(|\psi\rangle) + R(|\phi\rangle)$. However, it fails homogeneity, as $R(\lambda|\psi\rangle) = R(|\psi\rangle)$ for $\lambda \neq 0$.
+                Tensor rank is called a discrete norm. It satisfies some but not all properties of a norm: $R(|\psi\rangle) \ge 0$, $R(|\psi\rangle)=0 \iff |\psi\rangle=0$, and $R(|\psi\rangle + |\phi\rangle) \le R(|\psi\rangle) + R(|\phi\rangle)$. However, it fails positive homogeneity, as $R(\lambda|\psi\rangle) = R(|\psi\rangle)$ for $\lambda \neq 0$.
                 </p>
             </div>
 
-            <h3 id="subsec-mixed-entanglement">Entanglement of Mixed Quantum States</h3>
+        <section id="sec-mixed-states">    
+
+            <h2 id="sec-mixed-states">Entanglement of Mixed Quantum States</h2>
             <p>We now consider general density operators $\rho$.</p>
             <div class="environment definition" id="def-separable-mixed">
                 <p><span class="env-title">Definition (Separable Mixed State)</span>
-                    A state $\rho \in \mathcal{M}_{d_1} \otimes \dots \otimes \mathcal{M}_{d_k}$ is <strong>separable</strong> if it can be written as a convex combination of product states:
+                    A density operator $\rho \in \mathcal{M}_{d_1} \otimes \dots \otimes \mathcal{M}_{d_k}$ is <strong>separable</strong> if it can be written as a convex combination of product density operators:
                     $$ \rho = \sum_i p_i (\rho_i^{(1)} \otimes \rho_i^{(2)} \otimes \dots \otimes \rho_i^{(k)}) $$
-                    where $p_i > 0, \sum p_i = 1$, and each $\rho_i^{(j)}$ is a density matrix.
+                    where $p_i > 0, \sum p_i = 1$, and each $\rho_i^{(j)}$ is a density operator.
                 </p>
             </div>
             
             <div class="environment remark" style="border-left-color: #4299e1;" id="rem-notation">
                  <p><span class="env-title" style="color:#2b6cb0;">Clarifying Notation (Digression)</span>
-                    The notation $\rho_i^{(1)} \otimes \rho_i^{(2)}$ means the tensor product of operators. If $\rho_i^{(1)} = |\psi_i^{(1)}\rangle\langle\psi_i^{(1)}|$ and $\rho_i^{(2)} = |\psi_i^{(2)}\rangle\langle\psi_i^{(2)}|$, then their product is $(|\psi_i^{(1)}\rangle \otimes |\psi_i^{(2)}\rangle) (\langle\psi_i^{(1)}| \otimes \langle\psi_i^{(2)}|)$.
+                    The notation $\rho_i^{(1)} \otimes \rho_i^{(2)}$ means the tensor product of operators. If $\rho_i^{(1)} = |\psi_i^{(1)}\rangle\langle\psi_i^{(1)}|$ and $\rho_i^{(2)} = |\psi_i^{(2)}\rangle\langle\psi_i^{(2)}|$, then their product is $|\psi_i^{(1)}\rangle\langle\psi_i^{(1)}|\otimes |\psi_i^{(2)}\rangle\langle\psi_i^{(2)}|$, which lives in $\mathbb{C}^{d_1}\otimes (\mathbb{C}^{d_1})^{*}\otimes \mathbb{C}^{d_2}\otimes (\mathbb{C}^{d_2})^{*}$. But it can also be viewed as an element of $\mathbb{C}^{d_1d_2}\otimes (\mathbb{C}^{d_1d_2})^{*}$ using the notation $|\psi_i^{(1)}\psi_i^{(2)}\rangle\langle\psi_i^{(1)}\psi_i^{(2)}|$, or as an element of $\mathbb{C}^{d_1d_2}\otimes \mathbb{C}^{d_1d_2}$ using the notation $|\psi_i^{(1)}\psi_i^{(2)}\rangle\otimes|\psi_i^{(1)}\psi_i^{(2)}\rangle$.
                 </p>
             </div>
             
             <p><strong>Question: How useful is (matrix) rank for mixed quantum states?</strong></p>
-            <div class="table-container">
+            <div class="table-container" id="counterexample-rank">
                 <table class="custom-table">
-                    <thead><tr><th>Example State ($\rho$)</th><th>Tensor (if pure)</th><th>Rank of $\rho$</th></tr></thead>
+                    <thead><tr><th>Example State ($\rho$)</th><th>Rank of $\rho$</th></tr></thead>
                     <tbody>
-                        <tr><td>$|00\rangle\langle00|$</td><td>$|0\rangle \otimes |0\rangle$</td><td>1</td></tr>
-                        <tr><td>$|01\rangle\langle01|$</td><td>$|0\rangle \otimes |1\rangle$</td><td>1</td></tr>
-                         <tr><td>$\frac{1}{2}(|00\rangle\langle00| + |01\rangle\langle01|)$</td><td>N/A (Mixed)</td><td>2</td></tr>
-                        <tr><td>$\rho_{\text{sep}} = \frac{1}{4}\sum_{i,j=0}^1 |ij\rangle\langle ij|$</td><td>N/A (Mixed)</td><td>4</td></tr>
+                        <tr><td>$|00\rangle\langle00|$</td><td>1</td></tr>
+                        <tr><td>$|01\rangle\langle01|$</td><td>1</td></tr>
+                         <tr><td>$|10\rangle\langle 10|$</td><td>1</td></tr>
+                        <tr><td>$|11\rangle\langle 11|$</td><td>1</td></tr>
+                        <tr><td>$\frac{1}{4}(|00\rangle\langle00| + |01\rangle\langle01| + |10\rangle\langle 10| + |11\rangle\langle 11|)$</td><td>4</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p>The matrix rank of $\rho$ tells us about its mixture, but not directly about its entanglement (unless rank=1).</p>
+            <p>But the last state is separable by definition. This demonstrates that rank is not a good measure of entanglement for mixed states: it does not behave well with respect to taking convex combinations. </p>
         </section>
 
         <div class="page-divider">Page 4 of Notes</div>
@@ -410,22 +433,34 @@
 
             <div class="environment theorem" id="thm-rank-nuclear">
                 <p><span class="env-title">Theorem</span><span class="env-body">
-                    The convex envelope of the rank function $R(A)$ (on the set of matrices with operator norm $\|A\|_{S_\infty} \le 1$) is the nuclear norm $\|A\|_{S_1} = \sum \sigma_i(A)$.
+                    The convex envelope of the rank function $R(A)$ (on the set of matrices with operator norm $\|A\|_{S_\infty} \le 1$) is the nuclear norm $\|A\|_{S_1} = \sum \sigma_i(A)$. (Sometimes, denoted by $\|A\|_*$)
                 </span></p>
             </div>
 
             <div class="environment proposition" id="lem-nuclear-norm-var">
                 <p><span class="env-title">Lemma (Variational characterization of Nuclear Norm)</span>
                 For a bounded linear operator $A$ on $\mathcal{H}^d$:
-                $$ \|A\|_{S_1} = \max_{U \text{ unitary}} |\mathrm{Tr}(AU)| \quad \text{or more generally,} \quad \|A\|_{S_1} = \sup_{\|X\|_{S_\infty} \le 1} |\mathrm{Tr}(A^\dagger X)| $$
+                $$ \|A\|_{S_1} = \max_{U \text{ unitary}} \lvert\mathrm{Tr}(AU)\rvert $$
                 </p>
                 <div class="proof">
-                    <span class="proof-title">Proof sketch (that $\|\cdot\|_{S_1}$ is a norm).</span>
+                    <span class="proof-title">Proof sketch.</span>
                     <ul>
-                        <li>$\|A\|_{S_1} = \mathrm{Tr}(\sqrt{A^\dagger A}) \ge 0$. And $\|A\|_{S_1}=0 \iff A=0$.</li>
-                        <li>$\|\lambda A\|_{S_1} = |\lambda|\|A\|_{S_1}$ follows from properties of the trace and square root.</li>
-                        <li>Triangle Inequality: $\|A+B\|_{S_1} \le \|A\|_{S_1} + \|B\|_{S_1}$ can be shown using the dual norm characterization and triangle inequality for complex numbers.</li>
+                        <li>First, recall that $A =  \sum_{i=1}^r \sigma_i |\alpha_i\rangle\langle\beta_i|$ for some orthonormal bases. Then $\lvert\mathrm{Tr}(AU)\rvert =  \lvert\sum_{i=1}^r \sigma_i \langle\beta_i|U\alpha_i\rangle\rvert \leq \sum_{i=1}^r \sigma_i \|\beta_i\|\|U\alpha_i\|$ by Cauchy-Schwarz.</li>
+                        <li>Then for $U$ unitary, the RHS is just $ \sum_{i=1}^r \sigma_i \|\beta_i\|\|\alpha_i\| = \sum_{i}^r \sigma_i$</li>
+                        <li>Finally, equality is achieved by taking $U = A (A^{*}A)^{-1/2}$ </li>
                     </ul>
+                </div>
+            </div>
+
+            <div class="environment theorem" id="thm-nuclear-norm">
+                <p><span class="env-title">Theorem (Nuclear Norm is a Norm)</span>
+                The nuclear norm $\|\cdot\|_{S_1}$ satisfies all properties of a norm.
+                </p>
+                <div class="proof">
+                    <span class="proof-title">Proof sketch</span>
+                    The non trivial part is triangle inequality. Using the variational characterization from <strong>Lemma 5.3</strong>, for any unitary operator $U$ :
+                        $$ \lvert\mathrm{Tr}((A+B)U)\rvert \leq \lvert\mathrm{Tr}(AU)\rvert + \lvert\mathrm{Tr}(BU)\rvert$$
+                        Taking max over $U$ and using sub-additivity of max gives $\|A+B\|_{S_1} \le \|A\|_{S_1} + \|B\|_{S_1}$.
                 </div>
             </div>
         </section>
@@ -434,29 +469,20 @@
         
         <section id="sec-ppt-test">
             <h2>The PPT Entanglement Test</h2>
+            Now we come to the reason why we introduced the nuclear norm: entanglement testing.
             <div class="environment theorem" id="thm-ppt-test">
                 <p><span class="env-title">Theorem (Entanglement Test using Partial Transpose)</span><span class="env-body">
                     Let $\rho$ be a $d_A \times d_B$ dimensional bipartite density operator. If $\|\rho^{\Gamma_B}\|_{S_1} > 1$, then $\rho$ is entangled.
                 </span></p>
                 <div class="proof">
                     <span class="proof-title">Proof.</span><span class="qed">□</span>
-                    <p>
-                        If $\rho$ is separable, it can be written as a convex sum $\rho = \sum_k p_k \rho_k^A \otimes \rho_k^B$ as per <a href="#def-separable-mixed">Definition 4.4</a>.
-                        Applying the partial transpose gives $\rho^{\Gamma_B} = \sum_k p_k \rho_k^A \otimes (\rho_k^B)^T$. Since the transpose of a positive semidefinite operator is also positive semidefinite, each term in the sum is positive semidefinite. Therefore, $\rho^{\Gamma_B}$ is a convex combination of positive semidefinite operators and is itself positive semidefinite.
-                    </p>
-                    <p>
-                        For any positive semidefinite operator $X$, its nuclear norm $\|X\|_{S_1}$ is equal to its trace $\mathrm{Tr}(X)$.
-                        Thus, if $\rho$ is separable, $\|\rho^{\Gamma_B}\|_{S_1} = \mathrm{Tr}(\rho^{\Gamma_B})$.
-                    </p>
-                    <p>
-                        The trace is invariant under partial transposition, so $\mathrm{Tr}(\rho^{\Gamma_B}) = \mathrm{Tr}(\rho)$.
-                        Since $\rho$ is a density matrix, $\mathrm{Tr}(\rho)=1$.
-                        So, for any separable state $\rho$, we must have $\|\rho^{\Gamma_B}\|_{S_1} = 1$.
-                        Consequently, if we find $\|\rho^{\Gamma_B}\|_{S_1} > 1$, the state cannot be separable and must be entangled.
-                    </p>
+                    
+                       Next day.
+                    
                 </div>
             </div>
-        </section>
+
+            
 
     </main>
 </body>
