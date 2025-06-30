@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tensor Norms & Quantum Entanglement — Lecture 2</title>
+    <!-- MathJax 3 for rendering LaTeX math -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                // Fix for the \Tr command by defining it as a macro
+                macros: {
+                  Tr: '\\operatorname{Tr}'
+                },
+                packages: {'[+]': ['physics', 'ams']}
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        /* Basic Reset & Body Styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            overflow: hidden; /* Prevent body scrollbar */
+        }
+
+        /* Presentation Container */
+        .presentation-container {
+            position: relative; 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden;
+            background-color: #f8f8f8;
+        }
+
+        /* Slide Styling */
+        .slide {
+            background-color: #ffffff; 
+            border: 1px solid #ddd; 
+            border-radius: 8px;
+            padding: 40px 60px;
+            margin: 0; 
+            width: 100%; 
+            height: 100%; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center;
+            box-sizing: border-box; 
+            position: absolute; 
+            top: 0; 
+            left: 0;
+            opacity: 0; 
+            visibility: hidden; 
+            transition: opacity 0.8s ease-in-out, visibility 0s 0.8s;
+            z-index: 1; 
+            overflow-y: auto; /* Allow scrolling within a single slide if content overflows */
+        }
+        
+        .slide.active {
+            opacity: 1; 
+            visibility: visible; 
+            transition: opacity 0.8s ease-in-out; 
+            z-index: 2;
+        }
+
+        /* Column Layout */
+        .slide.columns {
+            flex-direction: row; 
+            justify-content: space-between; 
+            align-items: stretch; /* Align items to fill height */
+            gap: 30px;
+        }
+        
+        .column-text {
+            flex: 1; 
+            max-width: 50%;
+            padding: 20px 0;
+        }
+        
+        .column-details {
+            flex: 1.2;
+            padding: 20px;
+            background-color: #f9faff;
+            border-left: 3px solid #0056b3;
+            border-radius: 4px;
+            align-self: center;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .column-details h4 {
+            color: #0056b3;
+            margin-top: 0;
+            text-align: left;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            width: 100%;
+            position: relative;
+        }
+        
+        .column-details h4:after { display: none; } /* Disable default h-styles */
+
+        .column-details p { font-size: 1em; text-align: left; }
+        .column-details p em { color: #333; font-weight: 500;}
+
+
+        /* Headings */
+        h1, h2, h3 { 
+            color: #0056b3; 
+            text-align: center; 
+            width: 100%;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h1 { 
+            font-size: 2.4em; 
+            margin-bottom: 15px; 
+            background: linear-gradient(to right, #0056b3, #0088cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 { 
+            font-size: 1.9em; 
+            margin-bottom: 20px; 
+        }
+        
+        h2:after {
+            content: ''; display: block; width: 100px; height: 3px;
+            background: linear-gradient(to right, #0056b3, #80cbe5);
+            position: absolute; bottom: 0; left: 50%;
+            transform: translateX(-50%); border-radius: 2px;
+        }
+        
+        h3 { 
+            font-size: 1.3em; color: #555; margin-top: 5px; font-weight: 500;
+        }
+
+        /* Text Elements */
+        .slide p, .slide ul, .slide ol {
+            margin-bottom: 18px; 
+            font-size: 1.15em; 
+            max-width: 900px; 
+            width: 100%;
+            line-height: 1.7;
+            text-align: left;
+        }
+        
+        .slide.title-slide p, .slide.centered-text p {
+            text-align: center;
+        }
+        
+        .slide ul, .slide ol { padding-left: 40px; }
+        .slide ul li { list-style-type: '▸  '; }
+        .slide li { margin-bottom: 10px; }
+        .slide ul ul, .slide ol ol { margin-left: 30px; margin-top: 8px; }
+        
+        /* Special block for theorems */
+        .theorem-box {
+            border: 2px solid #0056b3;
+            border-radius: 8px;
+            padding: 20px 30px;
+            margin: 20px 0;
+            background-color: #f7faff;
+            box-shadow: 0 2px 8px rgba(0, 86, 179, 0.1);
+            width: 60%; /* Reduced width for characterization pages */
+            min-width: 320px;
+            max-width: 600px;
+            text-align: center;
+        }
+        .theorem-box p { text-align: center; font-size: 1.2em; font-weight: 500; }
+
+        /* Title Slide */
+        .title-slide { 
+            text-align: center;
+            background: linear-gradient(to bottom, #ffffff, #f0f8ff);
+        }
+        .title-slide h1 { margin-top: 40px; font-size: 2.8em; }
+        .title-slide h3 { margin-top: 15px; margin-bottom: 20px; color: #444; }
+
+        /* Navigation */
+        .nav-button {
+            position: fixed; bottom: 25px; background-color: rgba(0, 86, 179, 0.8);
+            color: white; border: none; padding: 12px 25px; font-size: 1.3em;
+            border-radius: 30px; cursor: pointer; z-index: 10; 
+            transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .nav-button:hover { background-color: rgba(0, 86, 179, 1); transform: translateY(-2px); }
+        .nav-button:disabled { background-color: rgba(150, 150, 150, 0.5); cursor: not-allowed; transform: none; box-shadow: none; }
+        #prevBtn { left: 25px; }
+        #nextBtn { right: 25px; }
+
+        /* Slide counter & Progress bar */
+        .slide-counter {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6); color: white; padding: 8px 15px;
+            border-radius: 20px; font-size: 0.9em; z-index: 10;
+        }
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 5px; background-color: #0088cc;
+            z-index: 20; transition: width 0.3s ease;
+        }
+        
+        /* Media Queries */
+        @media (max-width: 900px) {
+            .slide { padding: 20px 25px; }
+            .slide.columns { flex-direction: column; align-items: center; }
+            .column-text, .column-details { max-width: 100%; flex: 1; border-left: none; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.6em; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="progress-bar"></div>
+        <div class="slide-counter"></div>
+
+        <!-- SLIDE 1: Title -->
+        <section class="slide title-slide active">
+            <h1> Digression: The History of Tensor Norms</h1>
+            <h3>Tensor Norms for Quantum Entanglement</h3>
+        </section>
+
+        <!-- SLIDE 2: Setup -->
+        <section class="slide">
+            <h2>Recap: Norm Criterion for Separability</h2>
+            <h3>1. Setup</h3>
+            <ul>
+                <li>Fix a $k$-partite, $d_1 \times \cdots \times d_k$ Hilbert space:
+                    \[ \mathcal H = \bigotimes_{j=1}^{k}\mathbb C^{d_j} \]
+                </li>
+                <li>A <em>(normalised) density operator</em> $\rho \in \bigotimes_{j=1}^{k}M_{d_j}(\mathbb C)$ satisfies:
+                    \[ \rho \ge 0 \quad \text{and} \quad \Tr\rho=1 \]
+                </li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 3 - PAUSE 1/3 -->
+        <section class="slide">
+            <h2>The Projective Norm</h2>
+                     <p>For a density operator $\rho \in \bigotimes_{j=1}^{k} M_{d_j}(\mathbb{C})$</p>
+            <p>The projective norm is defined over the L2 norms of these underlying vectors:</p>
+            \[
+                \|\rho\|_{\pi}
+                =
+                \inf\left\{ \sum_i \prod_{j=1}^{k} \|\phi_i^{(j)}\|_2\,\|\psi_i^{(j)}\|_2 : \rho=\sum_i \bigotimes_{j=1}^{k} \ket{\phi_i^{(j)}}\!\bra{\psi_i^{(j)}} \right\}
+            \]
+        </section>
+        
+        <!-- SLIDE 4 - PAUSE 2/3 -->
+        <section class="slide">
+            <h2>The Projective Norm</h2>
+                    <p>For a density operator $\rho \in \bigotimes_{j=1}^{k} M_{d_j}(\mathbb{C})$</p>
+            <p>The projective norm is defined over the L2 norms of these underlying vectors:</p>
+            \[
+                \|\rho\|_{\pi}
+                =
+                \inf\left\{ \sum_i \prod_{j=1}^{k} \|\phi_i^{(j)}\|_2\,\|\psi_i^{(j)}\|_2 : \rho=\sum_i \bigotimes_{j=1}^{k} \ket{\phi_i^{(j)}}\!\bra{\psi_i^{(j)}} \right\}
+            \]
+            <p style="margin-top: 25px;"><strong>The Key Insight:</strong> The trace norm (or nuclear norm, $\|\cdot\|_1$) of a rank-one operator is precisely the product of the L2 norms of its constituent vectors.</p>
+            <div class="theorem-box" style="padding: 10px 20px; margin: 10px auto; width: auto; display: inline-block;">
+                \[
+                    \bigl\| \ket{\phi}\!\bra{\psi} \bigr\|_{1} = \|\phi\|_2 \|\psi\|_2
+                \]
+            </div>
+        </section>
+
+        <!-- SLIDE 5 - PAUSE 3/3 -->
+        <section class="slide">
+            <h2>The Projective Norm</h2>
+            <p>For a density operator $\rho \in \bigotimes_{j=1}^{k} M_{d_j}(\mathbb{C})$</p>
+            <p>The projective norm is defined over the L2 norms of these underlying vectors:</p>
+            \[
+                \|\rho\|_{\pi}
+                =
+                \inf\left\{ \sum_i \prod_{j=1}^{k} \|\phi_i^{(j)}\|_2\,\|\psi_i^{(j)}\|_2 : \rho=\sum_i \bigotimes_{j=1}^{k} \ket{\phi_i^{(j)}}\!\bra{\psi_i^{(j)}} \right\}
+            \]
+            <p style="margin-top: 25px;"><strong>The Key Insight:</strong> The trace norm (or nuclear norm, $\|\cdot\|_1$) of a rank-one operator is precisely the product of the L2 norms of its constituent vectors.</p>
+            <div class="theorem-box" style="padding: 10px 20px; margin: 10px auto; width: auto; display: inline-block;">
+                \[
+                    \bigl\| \ket{\phi}\!\bra{\psi} \bigr\|_{1} = \|\phi\|_2 \|\psi\|_2
+                \]
+            </div>
+            <p style="margin-top: 25px;">By substituting this identity, the vector-based definition transforms into one based on the nuclear norms of the component matrices. </p>
+        </section>
+
+        <!-- SLIDE 6: Projective Tensor Norm Definition -->
+        <section class="slide">
+            <h2>2. The Projective Norm (Rewritten)</h2>
+            <p>For a simple tensor $X_1 \otimes \cdots \otimes X_k \in \bigotimes_{j=1}^{k} M_{d_j}(\mathbb{C})$, we define:</p>
+            \[ \|X_1\otimes\cdots\otimes X_k\|_{\pi} := \prod_{j=1}^{k}\|X_j\|_{1}, \quad\text{where }\|\,\cdot\,\|_{1}\text{ is the trace norm.} \]
+            <p>We extend this by infimum to <em>all</em> tensors $\rho$ in the space:</p>
+            <div class="theorem-box">
+                \[ \|\rho\|_{\pi} := \inf\left\{ \sum_{i} \|Y_i^{(1)}\|_{1}\cdots\|Y_i^{(k)}\|_{1} \; : \; \rho=\sum_{i}Y_i^{(1)}\otimes\cdots\otimes Y_i^{(k)} \right\} \]
+            </div>
+        </section>
+        
+        <!-- SLIDE 7: Separability Criterion -->
+        <section class="slide">
+            <h2>3. The Separability Criterion</h2>
+            <div class="theorem-box">
+                <p>A density operator $\rho$ is <strong>separable</strong> if and only if its projective tensor norm is at most 1.</p>
+                \[ \rho\text{ separable} \quad\Longleftrightarrow\quad \|\rho\|_{\pi}\le 1 \]
+                <p style="margin-top: 15px;">(Equivalently, $\|\rho\|_{\pi} > 1 \iff \rho$ is entangled).</p>
+            </div>
+        </section>
+
+        <!-- SLIDE 8 - PROOF 1, PAUSE 1/2 -->
+        <section class="slide">
+            <h2>Proof ($\Rightarrow$): separable $\Longrightarrow \|\rho\|_{\pi}\le 1$</h2>
+            <ol>
+                <li>
+                    By definition, a separable state can be written as a convex combination:
+                    \[ \rho = \sum_{i}\lambda_i\, \rho_i^{(1)}\otimes\cdots\otimes\rho_i^{(k)} \]
+                    with $\lambda_i\ge 0$, $\sum_i\lambda_i=1$, and each $\rho_i^{(j)}$ being a single-system density operator (i.e., $\rho_i^{(j)}\ge 0$, $\Tr\rho_i^{(j)}=1$).
+                </li>
+            </ol>
+        </section>
+        
+        <!-- SLIDE 9 - PROOF 1, PAUSE 2/2 -->
+        <section class="slide">
+            <h2>Proof ($\Rightarrow$): separable $\Longrightarrow \|\rho\|_{\pi}\le 1$</h2>
+            <ol>
+                <li>
+                    By definition, a separable state can be written as a convex combination:
+                    \[ \rho = \sum_{i}\lambda_i\, \rho_i^{(1)}\otimes\cdots\otimes\rho_i^{(k)} \]
+                    with $\lambda_i\ge 0$, $\sum_i\lambda_i=1$, and each $\rho_i^{(j)}$ being a single-system density operator (i.e., $\rho_i^{(j)}\ge 0$, $\Tr\rho_i^{(j)}=1$).
+                </li>
+                <li>
+                    This is already a valid decomposition. Using the definition of $\|\cdot\|_\pi$, this specific decomposition gives an upper bound:
+                    \[ \|\rho\|_{\pi} \le \sum_{i} \prod_{j=1}^{k} \| \lambda_i^{1/k} \rho_i^{(j)} \|_{1} = \sum_{i} \prod_{j=1}^{k} \lambda_i^{1/k} \|\rho_i^{(j)}\|_{1} \]
+                </li>
+                <li>
+                    Since $\|\rho_i^{(j)}\|_{1} = \Tr(\rho_i^{(j)}) = 1$ for all density operators, this simplifies to:
+                    \[ \|\rho\|_{\pi} \le \sum_{i} \lambda_i = 1 \]
+                </li>
+            </ol>
+        </section>
+
+        <!-- SLIDE 10 - PROOF 2, PAUSE 1/4 -->
+        <section class="slide">
+            <h2>Proof ($\Leftarrow$): $\|\rho\|_{\pi}\le 1 \Longrightarrow$ separable</h2>
+            <ol>
+                <li>By compactness, the infimum in the norm definition is attained. So there exists a decomposition such that:
+                    \[ \rho=\sum_{i}Y_i^{(1)}\otimes\cdots\otimes Y_i^{(k)}, \qquad \sum_{i} \prod_{j=1}^{k}\|Y_i^{(j)}\|_{1} = \|\rho\|_{\pi} \le 1 \]
+                </li>
+            </ol>
+        </section>
+
+        <!-- SLIDE 11 - PROOF 2, PAUSE 2/4 -->
+        <section class="slide">
+            <h2>Proof ($\Leftarrow$): $\|\rho\|_{\pi}\le 1 \Longrightarrow$ separable</h2>
+            <ol>
+                <li>By compactness, the infimum in the norm definition is attained. So there exists a decomposition such that:
+                    \[ \rho=\sum_{i}Y_i^{(1)}\otimes\cdots\otimes Y_i^{(k)}, \qquad \sum_{i} \prod_{j=1}^{k}\|Y_i^{(j)}\|_{1} = \|\rho\|_{\pi} \le 1 \]
+                </li>
+                <li>
+                    <strong>Key Lemma:</strong> For any matrix $A$, its trace is less than or equal to its trace norm, $\Tr(A) \le \|A\|_{1}$. Equality holds if and only if $A$ is positive semi-definite ($A \ge 0$).
+                </li>
+            </ol>
+        </section>
+        
+        <!-- SLIDE 12 - PROOF 2, PAUSE 3/4 -->
+        <section class="slide">
+            <h2>Proof ($\Leftarrow$): $\|\rho\|_{\pi}\le 1 \Longrightarrow$ separable</h2>
+            <ol>
+                <li>By compactness, the infimum in the norm definition is attained. So there exists a decomposition such that:
+                    \[ \rho=\sum_{i}Y_i^{(1)}\otimes\cdots\otimes Y_i^{(k)}, \qquad \sum_{i} \prod_{j=1}^{k}\|Y_i^{(j)}\|_{1} = \|\rho\|_{\pi} \le 1 \]
+                </li>
+                <li>
+                    <strong>Key Lemma:</strong> For any matrix $A$, $\Tr(A) \le \|A\|_{1}$, with equality if and only if $A$ is positive semi-definite ($A \ge 0$).
+                </li>
+                <li>
+                    Now, take the trace of $\rho$ and apply the lemma term-by-term:
+                    \[ 1 = \Tr\rho = \sum_{i} \Tr(Y_i^{(1)})\cdots \Tr(Y_i^{(k)}) \le \sum_{i} \prod_{j=1}^{k}\|Y_i^{(j)}\|_{1} = \|\rho\|_{\pi} \le 1 \]
+                </li>
+                 <li>
+                    This entire chain of inequalities must collapse to equality. Specifically, we must have $\sum \prod \Tr(Y_i^{(j)}) = \sum \prod \|Y_i^{(j)}\|_1$, which implies $\Tr(Y_i^{(j)}) = \|Y_i^{(j)}\|_1  \forall i,j$.
+                 </li>
+                <li>
+                    By the lemma, this means each factor $Y_i^{(j)}$ must be positive semi-definite.
+                </li>
+            </ol>
+        </section>
+
+        <!-- SLIDE 13 - PROOF 2, PAUSE 4/4 -->
+        <section class="slide">
+            <h2>Proof ($\Leftarrow$): $\|\rho\|_{\pi}\le 1 \Longrightarrow$ separable</h2>
+            <ol>
+                <li>By compactness, the infimum in the norm definition is attained. So there exists a decomposition such that:
+                    \[ \rho=\sum_{i}Y_i^{(1)}\otimes\cdots\otimes Y_i^{(k)}, \qquad \sum_{i} \prod_{j=1}^{k}\|Y_i^{(j)}\|_{1} = \|\rho\|_{\pi} \le 1 \]
+                </li>
+                <li>
+                    <strong>Key Lemma:</strong> For any matrix $A$, $\Tr(A) \le \|A\|_{1}$, with equality if and only if $A$ is positive semi-definite ($A \ge 0$).
+                </li>
+                <li>
+                    Now, take the trace of $\rho$ and apply the lemma term-by-term:
+                    \[ 1 = \Tr\rho = \sum_{i} \Tr(Y_i^{(1)})\cdots \Tr(Y_i^{(k)}) \le \sum_{i} \prod_{j=1}^{k}\|Y_i^{(j)}\|_{1} = \|\rho\|_{\pi} \le 1 \]
+                </li>
+                 <li>
+                    This entire chain of inequalities must collapse to equality. Specifically, we must have $\sum \prod \Tr(Y_i^{(j)}) = \sum \prod \|Y_i^{(j)}\|_1$, which implies $\Tr(Y_i^{(j)}) = \|Y_i^{(j)}\|_1 \forall i,j$.
+                 </li>
+                <li>
+                    By the lemma, this means each factor $Y_i^{(j)}$ must be positive semi-definite.
+                </li>
+                <li>
+                    We can now construct the separable form. Define $\lambda_i := \prod_j \|Y_i^{(j)}\|_1$ and $\rho_i^{(j)} := Y_i^{(j)}/\|Y_i^{(j)}\|_1$. This gives the explicit separable decomposition $\rho = \sum_i \lambda_i \bigotimes_j \rho_i^{(j)}$, completing the proof.
+                </li>
+            </ol>
+        </section>
+
+        <!-- SLIDE 14: History -->
+        <section class="slide columns">
+            <div class="column-text" style="max-width: 48%;">
+                <h2>History: Two Worlds, One Problem</h2>
+                <h3 style="color:#555">Quantum Information (1990s-2000s)</h3>
+                <p>Physicists sought a definitive, computable test to distinguish separable states from entangled ones.</p>
+                <ul>
+                    <li><b>Peres (1996) - PPT Criterion:</b> For separable $\rho$, the partial transpose is positive: $\rho^{T_B} \ge 0$.</li>
+                    <li><b>Rains (1999):</b> Used $\|\rho^{T_B}\|_1$ (the "greatest cross norm") to bound distillable entanglement.</li>
+                    <li><b>Rudolph (2000-2003):</b> Formulated the CCN criterion, realizing it was equivalent to $\|\rho\|_{\pi} \le 1$ and was an exact criterion based on the Hahn-Banach theorem.</li>
+                </ul>
+            </div>
+            <div class="column-text" style="max-width: 48%;">
+                 <h2>&nbsp;</h2>
+                 <h3 style="color:#555">Functional Analysis (1950s)</h3>
+                 <p>Grothendieck sought a canonical way to define norms on tensor product spaces to linearize bilinear maps.</p>
+                 <ul>
+                    <li><b>Goal:</b> Given Banach spaces $X, Y$ and a bounded bilinear map $u: X \times Y \to \mathbb{C}$, build a space $X\otimes_\pi Y$ and a linear map $U$ such that $u(x,y) = U(x \otimes y)$ and $\|U\| = \|u\|$.</li>
+                    <li><b>Solution:</b> He defined the <b>projective tensor norm</b> $\|\cdot\|_\pi$ to achieve this "universal linearisation".</li>
+                    <li>The separability problem was unknowingly solved decades earlier in a different context.</li>
+                 </ul>
+            </div>
+        </section>
+        
+        <!-- SLIDE 15: Definition: Tensor Norm -->
+        <section class="slide columns">
+            <div class="column-text">
+                <h2>Definition: Tensor Norm</h2>
+                <p>A tensor norm on $X \otimes Y$ is a norm $\|\cdot\|$ such that it agrees with the product of norms on simple tensors, at both the primal and dual levels:</p>
+                <ul>
+                    <li>$\|x \otimes y\| = \|x\|_X \cdot \|y\|_Y$</li>
+                    <li>$\|\alpha \otimes \beta\|_* = \|\alpha\|_{X^*} \cdot \|\beta\|_{Y^*}$</li>
+                </ul>
+                <p>Where $x \in X, y \in Y$ and $\alpha \in X^*, \beta \in Y^*$.</p>
+            </div>
+            <div class="column-details">
+                <h4>Historical Footnote</h4>
+                <p>
+                    Grothendieck coined the term <em>reasonable cross-norm</em> for norms satisfying (i) and&nbsp;(ii).  
+                    Axiom&nbsp;(i) makes the canonical bilinear map 
+                    \(j:X\times Y \to X\otimes_\alpha Y,\; (x,y)\mapsto x\otimes y\)
+                    an <em>isometry on elementary tensors</em>.  
+                    Axiom&nbsp;(ii) ensures that the adjoint map embeds the space of rank-one bilinear
+                    forms isometrically into \((X\otimes_\alpha Y)^{*}\); hence every bounded bilinear form
+                    extends uniquely and continuously along \(j\).
+                </p>
+
+                <h4>Universal Property</h4>
+                <p>
+                \[
+                \begin{array}{ccc}
+                    X\times Y & \xrightarrow{\;j\;} & X\otimes_\alpha Y\\[8pt]
+                    {\scriptstyle b}\!\!\!\! & \searrow & \!\!\!\!\swarrow {\scriptstyle\tilde b}\\[4pt]
+                    & \mathbb C &
+                \end{array}
+                \qquad
+                \|j\|=1;
+                b\mapsto \tilde b\text{ is an isometry on simple tensors}.
+                \]
+                </p>
+            </div>
+        </section>
+        
+       <!-- SLIDE 16: Definition: Projective Norm -->
+        <section class="slide columns">
+            <div class="column-text">
+                <h2>Projective Norm</h2>
+                <p>The <b>projective norm</b> $\|\cdot\|_\pi$ is defined by decomposition:</p>
+                \[ \|z\|_\pi := \inf \left\{ \sum_{i=1}^k \|x_i\| \|y_i\| : z = \sum_{i=1}^k x_i \otimes y_i \right\} \]
+            </div>
+            <div class="column-details">
+                <h4>Historical Footnote</h4>
+                <p>
+                    Grothendieck selected $\|\cdot\|_\pi$ because it is the norm for which
+                    \((X\otimes_\pi Y)^{*}\simeq B(X,Y)\) holds isometrically, 
+                    turning every bounded bilinear form into a bounded linear functional.
+                </p>
+
+                <h4>Isometry</h4>
+                <p>
+                \[
+                \begin{array}{ccc}
+                    B(X,Y) & \xrightarrow[\text{iso}]{\;\;\;\;\cong\;\;\;\;} & (X\otimes_\pi Y)^{*} \\[6pt]
+                    b & \longmapsto & \tilde b
+                \end{array}
+                \quad
+                \|b\|=\|\tilde b\|.
+                \]
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE 17 -->
+        <section class="slide">
+            <h2>Theorem: Maximal Tensor Norm</h2>
+            <p>If a norm $\|\cdot\|$ on $X \otimes Y$ is a tensor norm then it is upper bounded by the projective norm.</p>
+            <p>For all $z \in X \otimes Y$:</p>
+            <div class="theorem-box" style="padding:15px 20px;">
+            \[ \|z\| \le \|z\|_\pi \]
+            </div>
+        </section>        
+
+        <!-- SLIDE 18: Duality & Injective Norm -->
+        <section class="slide columns">
+            <div class="column-text">
+                <h2>Theorem: Duality & Injective Norm</h2>
+                <p>The injective and projective norms are dual to each other. For Banach spaces $X$ and $Y$:</p>
+                <ul>
+                    <li>$(X \otimes_\varepsilon Y)^* = X^* \otimes_\pi Y^*$</li>
+                    <li style="margin-top:20px;">$(X \otimes_\pi Y)^* = X^* \otimes_\varepsilon Y^*$</li>
+                </ul>
+            </div>
+            <div class="column-details">
+                <h4>Historical Footnote</h4>
+                <p>
+                    The <em>injective norm</em> $\|\cdot\|_\varepsilon$ was introduced as the dual companion of
+                    $\|\cdot\|_\pi$.  
+                   
+                </p>
+
+                <h4>Duality and bilinear maps</h4>
+                <p>
+                \[
+                (X\otimes_\pi Y)^{*}\;\cong\;B(X,Y)
+                
+                \]
+                \[
+                (X\otimes_\varepsilon Y)^{*}\;\cong\;L(X,Y^{*})
+                
+                \]
+                </p>
+            </div>
+        </section> 
+
+        <!-- SLIDE 19: Characterization -->
+        <section class="slide">
+            <h2>Theorem: Minimal Tensor Norm</h2>
+            <p>If a norm $\|\cdot\|$ on $X \otimes Y$ is a tensor norm then it is lower bounded by the injective norm.</p>
+            <p>For all $z \in X \otimes Y$:</p>
+            <div class="theorem-box" style="padding:15px 20px;">
+            \[ \|z\|_\varepsilon \le \|z\|  \]
+            </div>
+        </section>
+
+        <!-- SLIDE 20: Characterization -->
+        <section class="slide">
+            <h2>Theorem: Characterization</h2>
+            <p>A norm $\|\cdot\|$ on $X \otimes Y$ is a tensor norm iff is sandwiched between these two norms.</p>
+            
+            <div class="theorem-box" style="padding:15px 20px;">
+            \[ \|z\|_\varepsilon \le \|z\| \le \|z\|_\pi \]
+            </div>
+        </section>        
+
+
+        <!-- SLIDE 21: Matrix Norms -->
+        <section class="slide columns">
+            <div class="column-text">
+                <h2>Example: Matrix Norms</h2>
+                <p>The operator (spectral) norm and trace (nuclear) norm on matrices arise naturally as tensor norms.</p>
+                <p>For the space of $n \times n$ matrices $\mathcal{M}_n(\mathbb{R}) \cong \ell_2^n \otimes \ell_2^n$:</p>
+                 <ul>
+                    <li>Operator Norm ($s_\infty$):<br>
+                    $(\mathcal{M}_n, \|\cdot\|_{s_\infty}) = \ell_2^n \otimes_\varepsilon \ell_2^n$</li>
+                    <li>Trace Norm ($s_1$):<br>
+                    $(\mathcal{M}_n, \|\cdot\|_{s_1}) = \ell_2^n \otimes_\pi \ell_2^n$</li>
+                 </ul>
+            </div>
+            <div class="column-details">
+                <h4>Historical Footnote</h4>
+                <p>
+                    This identification goes back to Schatten (1950) and
+                    traces its conceptual clarity to Grothendieck’s framework:
+                    the nuclear norm of a matrix is simply the projective tensor norm
+                    coming from the self-dual Hilbert space $\ell_2^n$,
+                    while the spectral norm is the corresponding injective norm.
+                </p>
+
+                <h4>Other examples</h4>
+                <p>
+                    <b>Schatten $p$-norms:</b> For $1 \leq p \leq \infty$, the Schatten $p$-norm on $\mathcal{M}_n$ is defined as
+                    \[
+                        \|A\|_{s_p} = \left(\sum_{i=1}^n \sigma_i(A)^p\right)^{1/p}
+                    \]
+                    where $\sigma_i(A)$ are the singular values of $A$.<br>
+                    The Schatten $p$-norms interpolate between the trace (nuclear) norm ($p=1$) and the operator (spectral) norm ($p=\infty$):
+                    \[
+                        \|A\|_{s_\infty} \leq \|A\|_{s_p} \leq \|A\|_{s_1}
+                    \]
+                    for all $A \in \mathcal{M}_n$ and $1 \leq p \leq \infty$.
+                </p>
+            </div>
+        </section>
+
+
+        <!-- SLIDE 22: Q&A -->
+        <section class="slide centered-text">
+            <h2 style="margin-top: 15vh;">Thank You!</h2>
+            <p style="font-size: 1.6em; margin-top: 50px;">Any Questions?</p>
+        </section>
+
+    </div><!-- end presentation-container -->
+
+    <button id="prevBtn" class="nav-button">Previous (←)</button>
+    <button id="nextBtn" class="nav-button">Next (→)</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.presentation-container .slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const slideCounter = document.querySelector('.slide-counter');
+            const progressBar = document.querySelector('.progress-bar');
+            let currentSlideIndex = 0;
+
+            function updateProgressBar() {
+                const progress = ((currentSlideIndex + 1) / slides.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            function updateSlideCounter() {
+                if (slideCounter) {
+                    slideCounter.textContent = `${currentSlideIndex + 1} / ${slides.length}`;
+                }
+            }
+
+            function showSlide(index) {
+                if (index >= slides.length || index < 0) return;
+                
+                slides.forEach(slide => slide.classList.remove('active'));
+                
+                currentSlideIndex = index;
+                
+                slides[currentSlideIndex].classList.add('active');
+                slides[currentSlideIndex].scrollTop = 0; // Reset scroll for new slide
+                
+                prevBtn.disabled = currentSlideIndex === 0;
+                nextBtn.disabled = currentSlideIndex === slides.length - 1;
+                
+                updateSlideCounter();
+                updateProgressBar();
+            }
+
+            nextBtn.addEventListener('click', () => showSlide(currentSlideIndex + 1));
+            prevBtn.addEventListener('click', () => showSlide(currentSlideIndex - 1));
+            
+            document.addEventListener('keydown', (event) => {
+                const activeElementTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : null;
+                if (['input', 'textarea'].includes(activeElementTag)) return;
+
+                if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'PageDown') {
+                    if (event.key === ' ') event.preventDefault();
+                    if (!nextBtn.disabled) showSlide(currentSlideIndex + 1);
+                } else if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+                    if (!prevBtn.disabled) showSlide(currentSlideIndex - 1);
+                }
+            });
+            
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>
