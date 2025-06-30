@@ -6,7 +6,7 @@ categories: [quantum-probability]
 ---
 
 Part 3 of my notes on entanglement tests using tensor norms and related ideas.
-<a href="{{ '/assets/pdf/tensor-norms-quantum-entanglement-3.pdf' | relative_url }}?download=pdf" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
+<a href="{{ '/assets/pdf/tensor-norms-quantum-entanglement-3.pdf' | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
 
 <!--more-->
 
