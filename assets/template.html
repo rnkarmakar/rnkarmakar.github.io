@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- =================================================================== -->
+    <!-- 1. HEAD SECTION: Basic page metadata and styling.                 -->
+    <!-- =================================================================== -->
+    <title>{{PAGE_TITLE}}</title>
+    
+    <!-- STYLES: This section contains all the styling for the academic paper look. -->
+    <style>
+        html {
+            scroll-behavior: smooth; /* Smooth scrolling for hyperlinks */
+        }
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: #fdfdfd;
+            color: #212529;
+        }
+
+        main {
+            counter-reset: section; /* This initializes the main section counter */
+        }
+
+        /* --- Hyperlink Styling --- */
+        main a {
+            color: #2b6cb0; /* Uniform blue for links */
+            text-decoration: none;
+            border-bottom: 1px dotted #2b6cb0;
+        }
+        main a:hover, main a:focus {
+            color: #0056b3;
+            border-bottom-style: solid;
+        }
+
+        /* --- Academic Paper Header --- */
+        .paper-header {
+            text-align: center;
+            margin: 2rem 0 3rem 0;
+            padding: 0 2rem;
+        }
+        .paper-header h1 {
+            font-size: 2.4rem;
+            font-weight: normal;
+            margin-bottom: 0.5rem;
+            color: #222;
+        }
+        .paper-header .authors {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        .paper-header .metadata {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        .paper-header .abstract {
+            text-align: left;
+            border: 1px solid #ddd;
+            padding: 1rem 1.5rem;
+            background-color: #fafafa;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        .paper-header .abstract h2 {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            border-bottom: none;
+            color: #333;
+        }
+        .paper-header .abstract h2::before {
+             content: "" !important; /* The Abstract title should not have a number */
+        }
+        .paper-header .abstract p {
+            font-size: 1rem;
+            line-height: 1.5;
+            text-indent: 1.5em; /* Standard paragraph indentation for abstract */
+        }
+
+        /* --- Main Content Layout --- */
+        main {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 1rem 2.5rem;
+            background-color: #fff;
+        }
+        p, li {
+            font-size: 1.05rem;
+            margin-bottom: 1.2em;
+        }
+        ul, ol {
+            margin-left: 1.5rem;
+            padding-left: 0.5rem;
+        }
+
+        /* --- Section & Subsection Numbering & Styling --- */
+        h2 { /* Section Titles */
+            color: #2c5282;
+            border-bottom: 2px solid #a0aec0;
+            padding-bottom: 0.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: normal;
+            counter-increment: section; /* Increments the section counter */
+            counter-reset: subsection env-counter; /* Resets subsection and environment counters */
+        }
+        h2::before {
+            content: counter(section) "  "; /* Displays "1", "2", etc. */
+            font-weight: bold;
+        }
+        h3 { /* Subsection Titles */
+            color: #4A5568;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: normal;
+            counter-increment: subsection; /* Increments the subsection counter */
+        }
+        h3::before {
+            content: counter(section) "." counter(subsection) "  "; /* Displays "1.1", "1.2", etc. */
+            font-weight: bold;
+        }
+        
+        /* --- Theorem-like Environments (Definition, Theorem, Remark, etc.) --- */
+        .environment {
+            margin: 1.8em 0;
+            padding: 1em 1.2em;
+            background-color: #f8f9fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+        }
+        .environment p:last-child {
+            margin-bottom: 0;
+        }
+        .env-title {
+            font-weight: bold;
+            display: inline;
+        }
+        .env-title::after {
+            content: ". ";
+        }
+        .environment .env-title::before {
+            counter-increment: env-counter; /* Increments the environment counter */
+            content: counter(section) "." counter(env-counter) " "; /* Displays "1.1", "1.2" for environments in Section 1 */
+        }
+        /* Specific styling for different environments */
+        .theorem {
+            background-color: #f7fafc;
+            border-left: 5px solid #38a169; /* Green for theorems */
+        }
+        .theorem .env-body {
+            font-style: italic; /* Italicize theorem statements */
+        }
+        .definition {
+            border-left: 5px solid #4299e1; /* Blue for definitions */
+        }
+        .remark {
+             border-left: 5px solid #a0aec0; /* Gray for remarks */
+        }
+
+        /* --- Proof Style --- */
+        .proof {
+            font-style: normal;
+            margin: 1.5em 0;
+            padding-left: 1em;
+        }
+        .proof .proof-title {
+            font-style: italic;
+            font-weight: bold;
+            margin-right: 0.5em;
+        }
+        .proof .qed {
+            float: right;
+            font-style: normal;
+        }
+
+        /* --- Other Elements --- */
+        code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            background-color: #edf2f7;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .page-divider {
+            text-align: center;
+            margin: 4rem 0 3rem 0;
+            font-style: italic;
+            color: #718096;
+            border-top: 1px dashed #cbd5e0;
+            padding-top: 1rem;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5em 0;
+        }
+        table.custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+            border: 1px solid #ccc;
+        }
+        table.custom-table th, table.custom-table td {
+            border: 1px solid #ccc;
+            padding: 0.6em 0.8em;
+            text-align: left;
+        }
+        table.custom-table th {
+            background-color: #e2e8f0;
+            font-weight: bold;
+        }
+    </style>
+    
+    <!-- MATHJAX SCRIPT: This enables LaTeX rendering. Do not remove. -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          tags: 'ams' // For equation numbering
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+</head>
+<body>
+
+    <!-- =================================================================== -->
+    <!-- 2. PAPER HEADER: Title, authors, abstract, etc.                   -->
+    <!-- =================================================================== -->
+    <div class="paper-header">
+        <h1>{{ARTICLE_TITLE}}</h1>
+        <div class="authors">{{ARTICLE_SUBTITLE_OR_AUTHORS}}</div>
+        <div class="metadata">
+            Keywords: {{KEYWORDS_GO_HERE}}
+        </div>
+        <div class="abstract">
+            <h2>Abstract</h2>
+            <p>{{ABSTRACT_CONTENT_GOES_HERE}}</p>
+        </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- 3. MAIN CONTENT: Your paper's sections go here.                   -->
+    <!-- =================================================================== -->
+    <main>
+
+        <!-- HOW TO USE THIS TEMPLATE:
+            - Create new sections using the <h2> tag. They will be auto-numbered.
+            - Create subsections with <h3>. They will be numbered like "1.1", "1.2".
+            - Give sections/subsections a unique `id` to link to them, e.g., <h2 id="intro">...</h2>.
+            - Use the component blocks below (Definition, Theorem, Proof, etc.) by copying and pasting them.
+        -->
+
+        <!-- EXAMPLE SECTION 1: Introduction -->
+        <section id="sec-introduction">
+            <!-- The h2 tag creates a new section, automatically numbered. -->
+            <h2>Introduction</h2>
+            
+            <p>
+                This is a paragraph of introductory text. You can write your content here. Use `code` tags for inline code.
+                You can also include inline math like this: $\lambda \in \mathbb{C}$. For more complex, centered math, use display mode:
+                $$ \int_a^b f(x) \, dx = F(b) - F(a) $$
+                You can also create <a href="https://www.example.com" target="_blank">external links</a> or link to other parts of this document, like <a href="#sec-components">the component gallery</a>.
+            </p>
+
+            <!-- A subsection, automatically numbered based on the parent section. -->
+            <h3 id="subsec-motivation">Motivation</h3>
+            <p>
+                This is a paragraph inside a subsection. You can add more lists, definitions, or any other content here.
+            </p>
+            <ul>
+                <li>This is an item in an unordered list.</li>
+                <li>Another item to show the styling.</li>
+            </ul>
+        </section>
+
+        <div class="page-divider">{{OPTIONAL_PAGE_DIVIDER_TEXT}}</div>
+        
+        <!-- =================================================================== -->
+        <!-- 4. COMPONENT GALLERY: Copy/paste these blocks to build your doc.  -->
+        <!-- =================================================================== -->
+        <section id="sec-components">
+            <h2>Template Component Gallery</h2>
+            <p>
+                Below are examples of the different styled components you can use. Copy the HTML block for the component you need and paste it into your document.
+            </p>
+            
+            <!-- COMPONENT: Definition -->
+            <h3 id="comp-definition">Definition Environment</h3>
+            <p>Use the `definition` class for definitions.</p>
+            <div class="environment definition">
+                <p><span class="env-title">Definition</span>
+                A <strong>{{TERM_TO_DEFINE}}</strong> is a concept or object that you wish to define formally. The environment will be automatically numbered within the section.
+                </p>
+            </div>
+
+            <!-- COMPONENT: Theorem -->
+            <h3 id="comp-theorem">Theorem Environment</h3>
+            <p>Use the `theorem` class for theorems, propositions, lemmas, etc. The body text is italicized.</p>
+            <div class="environment theorem">
+                <p><span class="env-title">Theorem</span><span class="env-body">
+                    This is the statement of a theorem. It is automatically numbered and styled. For example, for any $a, b \in \mathbb{R}$, we have $(a+b)^2 = a^2 + 2ab + b^2$.
+                </span></p>
+            </div>
+            
+            <!-- COMPONENT: Proof -->
+            <h3 id="comp-proof">Proof Environment</h3>
+            <p>Use the `proof` class for proofs. The Q.E.D. symbol (□) is automatically floated to the right.</p>
+            <div class="proof">
+                <span class="proof-title">Proof.</span><span class="qed">□</span>
+                <p>
+                    Your proof content goes here. You can have multiple paragraphs.
+                </p>
+                <p>
+                    This is the second paragraph of the proof, leading to the conclusion. Therefore, the statement is true.
+                </p>
+            </div>
+
+            <!-- COMPONENT: Remark -->
+            <h3 id="comp-remark">Remark Environment</h3>
+            <p>Use the `remark` class for remarks, cautions, or side notes.</p>
+            <div class="environment remark">
+                <p><span class="env-title">Remark</span>
+                   This is a remark. It's a good place for asides, non-critical clarifications, or interesting observations that aren't part of a formal proof or definition.
+                </p>
+            </div>
+
+            <!-- COMPONENT: Table -->
+            <h3 id="comp-table">Styled Table</h3>
+            <p>For tables, wrap `<table>` in a `div.table-container` for responsiveness on small screens.</p>
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>{{HEADER_1}}</th>
+                            <th>{{HEADER_2}}</th>
+                            <th>{{HEADER_3}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{Row1_Col1}}</td>
+                            <td>{{Row1_Col2}}</td>
+                            <td>{{Row1_Col3}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{Row2_Col1}}</td>
+                            <td>{{Row2_Col2}}</td>
+                            <td>{{Row2_Col3}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+</body>
+</html>
