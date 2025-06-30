@@ -326,6 +326,28 @@
             <p>For the space of $n \times n$ matrices $\mathcal{M}_n(\mathbb{R}) \cong \ell_2^n \otimes \ell_2^n$:</p>
         </div>
         <div class="column-details">
+                <h4>Historical Footnote</h4>
+                <p>
+                    This identification goes back to Schatten (1950) and
+                    traces its conceptual clarity to Grothendieck’s framework:
+                    the nuclear norm of a matrix is simply the projective tensor norm
+                    coming from the self-dual Hilbert space $\ell_2^n$,
+                    while the spectral norm is the corresponding injective norm.
+                </p>
+
+                <h4>Other examples</h4>
+                <p>
+                    <b>Schatten $p$-norms:</b> For $1 \leq p \leq \infty$, the Schatten $p$-norm on $\mathcal{M}_n$ is defined as
+                    \[
+                        \|A\|_{s_p} = \left(\sum_{i=1}^n \sigma_i(A)^p\right)^{1/p}
+                    \]
+                    where $\sigma_i(A)$ are the singular values of $A$.<br>
+                    The Schatten $p$-norms interpolate between the trace (nuclear) norm ($p=1$) and the operator (spectral) norm ($p=\infty$):
+                    \[
+                        \|A\|_{s_\infty} \leq \|A\|_{s_p} \leq \|A\|_{s_1}
+                    \]
+                    for all $A \in \mathcal{M}_n$ and $1 \leq p \leq \infty$.
+                </p>
         </div>
     </div>
 
