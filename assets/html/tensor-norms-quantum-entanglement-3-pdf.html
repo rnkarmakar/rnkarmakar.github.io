@@ -78,11 +78,17 @@
             border-left: 3px solid #0056b3;
             border-radius: 4px;
             padding: 18px 22px;
-            margin-top: 0.5em;
+            padding-top: 0.5em;
         }
         @media (max-width: 900px) {
             .pdf-container { padding: 18px 8px; }
             .columns { flex-direction: column; gap: 0; }
+        }
+        .columns {
+            display: flex;
+            align-items: flex-start;   /* <-- ensures every child starts at the same top edge */
+            gap: 40px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
@@ -184,7 +190,7 @@
                 <li><b>Rudolph (2000-2003):</b> Formulated the CCN criterion, realizing it was equivalent to $\|\rho\|_{\pi} \le 1$ and was an exact criterion based on the Hahn-Banach theorem.</li>
             </ul>
         </div>
-        <div class="column-text">
+        <div class="column-details">
              <h2>&nbsp;</h2>
              <h3 style="color:#555">Functional Analysis (1950s)</h3>
              <p>Grothendieck sought a canonical way to define norms on tensor product spaces to linearize bilinear maps.</p>
