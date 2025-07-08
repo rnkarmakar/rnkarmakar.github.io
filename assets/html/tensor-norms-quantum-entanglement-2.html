@@ -231,6 +231,13 @@
           stroke: #222;
           stroke-width: 2;
         }
+        .ellipse-label {
+          position: absolute;
+          color: #a00;
+          font-size: 1.1em;
+          pointer-events: none;
+          font-family: inherit;
+        }
     </style>
     <script>
       window.MathJax = {
@@ -427,17 +434,23 @@
                 <span class="axis-label axis-y" style="top: 140px;">|2⟩</span>
               </div>
               <!-- SVG ellipses for the ovals -->
-                          <svg class="tiles-ellipses" width="180" height="180">
-              <ellipse cx="62.5" cy="30" rx="38" ry="15" class="ellipse1"/>
-              <text x="62.5" y="35" text-anchor="middle" font-size="16" fill="#a00">$x_1$</text>
-              <ellipse cx="120" cy="152.5" rx="38" ry="15" class="ellipse2"/>
-              <text x="120" y="157" text-anchor="middle" font-size="16" fill="#a00">$x_2$</text>
-              <ellipse cx="150" cy="60" rx="15" ry="38" class="ellipse3"/>
-              <text x="150" y="65" text-anchor="middle" font-size="16" fill="#a00">$x_3$</text>
-              <ellipse cx="30" cy="125" rx="15" ry="38" class="ellipse4"/>
-              <text x="30" y="130" text-anchor="middle" font-size="16" fill="#a00">$x_4$</text>
-            </svg>
+                          <div class="tiles-upb-figure" style="position: relative;">
+              <div class="tiles-grid">
+                <!-- ...cells and axis labels as before... -->
+              </div>
+              <svg class="tiles-ellipses" width="180" height="180">
+                <ellipse cx="62.5" cy="30" rx="38" ry="15" class="ellipse1"/>
+                <ellipse cx="120" cy="152.5" rx="38" ry="15" class="ellipse2"/>
+                <ellipse cx="150" cy="60" rx="15" ry="38" class="ellipse3"/>
+                <ellipse cx="30" cy="125" rx="15" ry="38" class="ellipse4"/>
+              </svg>
+              <!-- MathJax labels, absolutely positioned at ellipse centers -->
+              <span class="ellipse-label" style="left:50px; top:16px;">\( x_1 \)</span>
+              <span class="ellipse-label" style="left:108px; top:138px;">\( x_2 \)</span>
+              <span class="ellipse-label" style="left:138px; top:46px;">\( x_3 \)</span>
+              <span class="ellipse-label" style="left:18px; top:111px;">\( x_4 \)</span>
             </div>
+            
             <p>A well-known example of a UPB is the "Tiles" basis, which consists of 5 vectors in a 9-dimensional space:</p>
             <ul>
                 <li>$|x_1\rangle = \frac{1}{\sqrt{2}}|0\rangle \otimes (|0\rangle - |1\rangle)$</li>
