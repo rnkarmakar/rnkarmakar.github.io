@@ -274,13 +274,7 @@
 
             <div class="environment" id="def-state">
                 <p><span class="env-title">Definition (Quantum State)</span>
-                A <strong>quantum state</strong> $\rho$ is a positive semi-definite, self-adjoint operator on a complex Hilbert space $\mathcal{H}$ with unit trace. For these notes, we consider a finite $d$-dimensional space, $\mathcal{H} = \mathbb{C}^d$. A state must satisfy:
-                <ol>
-                    <li>$\rho = \rho^\dagger$ (self-adjoint)</li>
-                    <li>$\rho \ge 0$ (positive semi-definite)</li>
-                    <li>$\text{Tr}(\rho) = 1$ (unit trace)</li>
-                </ol>
-                The set of all such operators is denoted $\mathcal{M}_d(\mathbb{C})$.
+                A <strong>quantum state</strong> $\rho$ is a positive semi-definite, self-adjoint operator on a complex Hilbert space $\mathcal{H}$ with unit trace. For these notes, we consider a finite $d$-dimensional space, $\mathcal{H} = \mathbb{C}^d$.
                 </p>
             </div>
 
@@ -307,7 +301,7 @@
 
             <div class="environment" id="def-separable-mixed-state">
                 <p><span class="env-title">Definition (Separable Mixed State)</span>
-                A <strong>separable mixed state</strong> (density operator) $\rho$ on $\mathcal{H} = \mathbb{C}^{d_1} \otimes \cdots \otimes \mathcal{H}^{d_k}$ is a convex combination of product states of density operators:
+                A <strong>separable mixed state</strong> (density operator) $\rho$ on $\mathcal{H} = \mathbb{C}^{d_1} \otimes \cdots \otimes \mathcal{C}^{d_k}$ is a convex combination of product states of density operators:
                 $$ \rho = \sum_i \lambda_i \left( \rho_i^{(1)} \otimes \cdots \otimes \rho_i^{(k)} \right) $$
                 where $\lambda_i \ge 0$, $\sum_i \lambda_i = 1$, and each $\rho_i^{(j)}$ is a density operator on $\mathbb{C}^{d_j}$.
                 <br><em>Remark:</em> By Carathéodory's theorem, the $\rho_i^{(j)}$ can always be chosen to be pure states, i.e., $\rho_i^{(j)} = |\psi_i^{(j)}\rangle\langle\psi_i^{(j)}|$ for some unit vector $|\psi_i^{(j)}\rangle \in \mathbb{C}^{d_j}$.
@@ -391,7 +385,7 @@
             <p>Using a UPB, we can construct a class of PPT-entangled states.</p>
             
             <div class="environment theorem" id="prop-upb-state">
-                <p><span class="env-title">Proposition(Werner-like states from UPBs)</span>
+                <p><span class="env-title">Proposition (Werner-like states from UPBs)</span>
                 <span class="env-body">
                 Let $\{|x_i\rangle\}_{i=1}^k$ be a UPB in a $d$-dimensional space $\mathcal{H}_A \otimes \mathcal{H}_B$. Let $P_{\mathcal{E}} = \sum_{i=1}^k |x_i\rangle\langle x_i|$ be the projector onto the subspace spanned by the UPB. The state defined by
                 $$ \rho_{\mathcal{E}} = \frac{1}{d-k} (\text{Id} - P_{\mathcal{E}}) $$
