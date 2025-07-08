@@ -433,11 +433,7 @@
                 <span class="axis-label axis-y" style="top: 80px;">|1⟩</span>
                 <span class="axis-label axis-y" style="top: 140px;">|2⟩</span>
               </div>
-              <!-- SVG ellipses for the ovals -->
-                          <div class="tiles-upb-figure" style="position: relative;">
-              <div class="tiles-grid">
-                <!-- ...cells and axis labels as before... -->
-              </div>
+              
               <svg class="tiles-ellipses" width="180" height="180">
                 <ellipse cx="62.5" cy="30" rx="38" ry="15" class="ellipse1"/>
                 <ellipse cx="120" cy="152.5" rx="38" ry="15" class="ellipse2"/>
@@ -459,7 +455,19 @@
                 <li>$|x_4\rangle = \frac{1}{\sqrt{2}}(|1\rangle - |2\rangle) \otimes |0\rangle$</li>
                 <li>$|x_5\rangle = \frac{1}{\sqrt{3}}(|0\rangle+|1\rangle+|2\rangle) \otimes (|0\rangle+|1\rangle+|2\rangle)$</li>
             </ul>
-            <p>One can verify that these 5 vectors are orthonormal. The crucial part is to show they are unextendible. Suppose there exists a product vector $|\psi\rangle = |a\rangle \otimes |b\rangle$ such that $\langle x_i | \psi \rangle = 0$ for all $i=1, \dots, 5$. This leads to a set of linear equations on the components of $|a\rangle$ and $|b\rangle$ that has no non-trivial solution, proving unextendibility. The corresponding state $\rho = \frac{1}{4}(\text{Id}_9 - \sum_{i=1}^5|x_i\rangle\langle x_i|)$ is therefore a PPT-entangled state.</p>
+            <p>
+            <strong>Claim:</strong> The set $\{|x_i\rangle\}_{i=1}^5$ is unextendible.<br>
+            Suppose, for contradiction, that there exists a product vector $|\psi\rangle = |a\rangle \otimes |b\rangle$ such that $\langle x_i | \psi \rangle = 0$ for all $i=1,\dots,5$. <br>
+            For each $i$, this gives a linear equation in the components of $|a\rangle$ and $|b\rangle$. <br>
+            Explicitly, for $|x_1\rangle = |0\rangle \otimes (|0\rangle - |1\rangle)$, we have:
+            $$
+            \langle x_1 | \psi \rangle = \langle 0 | a \rangle \cdot (\langle 0 | b \rangle - \langle 1 | b \rangle) = 0
+            $$
+            and similarly for the other $|x_i\rangle$. <br>
+            By pigeonhole principle, this forces $|a\rangle$ or $|b\rangle$ to be orthogonal to at least 3 independent vectors in $\mathbb{C}^3$, which is only possible if $|a\rangle = 0$ or $|b\rangle = 0$. <br>
+            Thus, there is no nonzero product vector orthogonal to all $|x_i\rangle$. <br>
+            Therefore, the set is unextendible.
+            </p>
         </section>
 
         <section>
