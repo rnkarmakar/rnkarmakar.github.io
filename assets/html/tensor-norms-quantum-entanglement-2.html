@@ -310,8 +310,18 @@
                 <span class="qed">□</span>
             </div>
 
-            <p><strong>Remark:</strong> The nuclear norm criterion is equivalent to the positivity of the partial transpose (PPT) criterion, also known as the Peres-Horodecki criterion. If $\rho$ is separable, then $\rho^{\Gamma_B}$ is positive semi-definite. If $\rho^{\Gamma_B}$ has a negative eigenvalue, then $\|\rho^{\Gamma_B}\|_* > 1$ and $\rho$ is entangled. Thus, the two criteria are equivalent for bipartite systems.</p>
-
+            <p>
+            <strong>Remark (Relation to PPT criterion):</strong>
+            <ul>
+                <li><strong>Really used:</strong> If $\rho$ is separable, then $\rho^{\Gamma_B}$ is also a density operator.</li>
+                <li><strong>Can show:</strong> For any state, $(\rho^{\Gamma_B})^* = \rho^{\Gamma_B}$ and $\mathrm{Tr}(\rho^{\Gamma_B}) = 1$ (i.e., $\rho^{\Gamma_B}$ is always Hermitian and trace 1).</li>
+                <li>If $\rho$ is separable, then $\rho^{\Gamma_B}$ is also positive semi-definite.</li>
+            </ul>
+            <div style="margin-top:0.5em;">
+                <strong>Positive Partial Transpose (PPT) Test:</strong>
+                If $\rho^{\Gamma_B} \not\geq 0$, then $\rho$ is entangled.
+            </div>
+            </p>
            
         </section>
         
