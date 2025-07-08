@@ -273,7 +273,7 @@
             <p>We begin by recalling the basic definitions of states in finite-dimensional quantum mechanics.</p>
 
             <div class="environment" id="def-state">
-                <p><span class="env-title">Definition 1.1 (Quantum State)</span>
+                <p><span class="env-title">Definition(Quantum State)</span>
                 A <strong>quantum state</strong> $\rho$ is a positive semi-definite, self-adjoint operator on a complex Hilbert space $\mathcal{H}$ with unit trace. For these notes, we consider a finite $d$-dimensional space, $\mathcal{H} = \mathbb{C}^d$. A state must satisfy:
                 <ol>
                     <li>$\rho = \rho^\dagger$ (self-adjoint)</li>
@@ -285,20 +285,20 @@
             </div>
 
             <div class="environment" id="def-pure-state">
-                <p><span class="env-title">Definition 1.2 (Pure State)</span>
+                <p><span class="env-title">Definition(Pure State)</span>
                 A <strong>pure state</strong> is a state of rank one. It can be written as a projection operator $\rho = |\psi\rangle\langle\psi|$, where $|\psi\rangle \in \mathbb{C}^d$ is a unit vector, i.e., $\langle\psi|\psi\rangle = 1$.
                 </p>
             </div>
 
             <div class="environment" id="def-mixed-state">
-                <p><span class="env-title">Definition 1.3 (Mixed State)</span>
+                <p><span class="env-title">Definition(Mixed State)</span>
                 A <strong>mixed state</strong> is a state that is not pure (i.e., has rank greater than one). Any mixed state can be expressed as a convex combination of pure states:
                 $$ \rho = \sum_i \lambda_i |\psi_i\rangle\langle\psi_i| \quad \text{with} \quad \lambda_i > 0, \sum_i \lambda_i = 1 $$
                 </p>
             </div>
             
             <div class="environment" id="def-separable-pure-state">
-                <p><span class="env-title">Definition 1.4 (Separable Pure State)</span>
+                <p><span class="env-title">Definition(Separable Pure State)</span>
                 A <strong>separable pure state</strong> in a $k$-partite Hilbert space $\mathcal{H} = \mathbb{C}^{d_1} \otimes \mathbb{C}^{d_2} \otimes \cdots \otimes \mathbb{C}^{d_k}$ is a unit vector $|\psi\rangle$ that can be written as a tensor product:
                 $$ |\psi\rangle = |\psi_1\rangle \otimes |\psi_2\rangle \otimes \cdots \otimes |\psi_k\rangle, \quad |\psi_j\rangle \in \mathbb{C}^{d_j} $$
                 That is, $|\psi\rangle$ is separable if and only if it is a product vector across all $k$ subsystems.
@@ -306,7 +306,7 @@
             </div>
 
             <div class="environment" id="def-separable-mixed-state">
-                <p><span class="env-title">Definition 1.5 (Separable Mixed State)</span>
+                <p><span class="env-title">Definition(Separable Mixed State)</span>
                 A <strong>separable mixed state</strong> (density operator) $\rho$ on $\mathcal{H} = \mathbb{C}^{d_1} \otimes \cdots \otimes \mathcal{H}^{d_k}$ is a convex combination of product states of density operators:
                 $$ \rho = \sum_i \lambda_i \left( \rho_i^{(1)} \otimes \cdots \otimes \rho_i^{(k)} \right) $$
                 where $\lambda_i \ge 0$, $\sum_i \lambda_i = 1$, and each $\rho_i^{(j)}$ is a density operator on $\mathbb{C}^{d_j}$.
@@ -325,7 +325,7 @@
             <p>One of the most practical tools for detecting entanglement is the <strong>nuclear norm criterion</strong>, which is equivalent to the famous Positive Partial Transpose (PPT) criterion. We present the nuclear norm test first, then explain its equivalence to the positivity condition.</p>
 
             <div class="environment theorem" id="thm-ppt-test-norm">
-                <p><span class="env-title">Theorem 2.2 (Entanglement Test via Nuclear Norm)</span>
+                <p><span class="env-title">Theorem(Entanglement Test via Nuclear Norm)</span>
                 <span class="env-body">
                 Let $\rho$ be a bipartite density operator on $\mathbb{C}^{d_A} \otimes \mathbb{C}^{d_B}$. If the nuclear norm of its partial transpose is greater than one,
                 $$ \|\rho^{\Gamma_B}\|_* > 1 $$
@@ -383,7 +383,7 @@
             </p>
 
             <div class="environment" id="def-upb">
-                <p><span class="env-title">Definition 3.1 (Unextendible Product Basis)</span>
+                <p><span class="env-title">Definition(Unextendible Product Basis)</span>
                 An <strong>Unextendible Product Basis (UPB)</strong> is a set of orthonormal product vectors $\{|x_i\rangle = |a_i\rangle \otimes |b_i\rangle\}$ that span a proper subspace $\mathcal{E} \subset \mathcal{H}_A \otimes \mathcal{H}_B$, with the property that there is no other product vector $|\psi\rangle = |a\rangle \otimes |b\rangle$ that is orthogonal to every vector in the set. In other words, the orthogonal complement $\mathcal{E}^\perp$ contains no product vectors.
                 </p>
             </div>
@@ -391,7 +391,7 @@
             <p>Using a UPB, we can construct a class of PPT-entangled states.</p>
             
             <div class="environment theorem" id="prop-upb-state">
-                <p><span class="env-title">Proposition 3.2 (Werner-like states from UPBs)</span>
+                <p><span class="env-title">Proposition(Werner-like states from UPBs)</span>
                 <span class="env-body">
                 Let $\{|x_i\rangle\}_{i=1}^k$ be a UPB in a $d$-dimensional space $\mathcal{H}_A \otimes \mathcal{H}_B$. Let $P_{\mathcal{E}} = \sum_{i=1}^k |x_i\rangle\langle x_i|$ be the projector onto the subspace spanned by the UPB. The state defined by
                 $$ \rho_{\mathcal{E}} = \frac{1}{d-k} (\text{Id} - P_{\mathcal{E}}) $$
@@ -483,7 +483,7 @@
             <p>Functional analysis provides a tool for this: the Minkowski functional (or gauge function) of a convex set.</p>
             
             <div class="environment" id="def-minkowski">
-                <p><span class="env-title">Definition 4.1 (Minkowski Functional)</span>
+                <p><span class="env-title">Definition(Minkowski Functional)</span>
                 For a convex set $K$ containing the origin, its Minkowski functional $p_K(x)$ is defined as:
                 $$ p_K(x) = \inf \{ \lambda > 0 : x \in \lambda K \} $$
                 Under suitable conditions (e.g., $K$ is closed and bounded), the set $K$ can be recovered from its functional as $K = \{ x : p_K(x) \le 1 \}$.
@@ -494,7 +494,7 @@
             
        
             <div class="environment theorem" id="thm-minkowski-eval">
-                <p><span class="env-title">Theorem 4.3 (Evaluation of Minkowski Functional for Pure Tensors)</span>
+                <p><span class="env-title">Theorem(Evaluation of Minkowski Functional for Pure Tensors)</span>
                 <span class="env-body">
                 Let $K = \text{conv}\{ x^{(1)} \otimes \cdots \otimes x^{(k)} : \|x^{(l)}\| = 1 \}$ be the convex hull of unit-norm pure tensors in $\mathcal{H}$. Then, for any $\rho \in \mathcal{H}$,
                 $$
@@ -506,7 +506,7 @@
             </div>
             
             <div class="environment" id="def-projective-norm">
-                <p><span class="env-title">Definition 4.2 (Projective Tensor Norm)</span>
+                <p><span class="env-title">Definition(Projective Tensor Norm)</span>
                 Let $\mathcal{H} = \mathbb{C}^{d_1} \otimes \cdots \otimes \mathbb{C}^{d_k}$. For $\rho \in \mathcal{H}$, the <strong>projective tensor norm</strong> is defined as
                 $$
                 \|\rho\|_{\pi} = \inf \left\{ \sum_j \prod_{l=1}^k \|y_j^{(l)}\| : \rho = \sum_j y_j^{(1)} \otimes \cdots \otimes y_j^{(k)} \right\}
