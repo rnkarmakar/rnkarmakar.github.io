@@ -301,7 +301,7 @@
 
             <div class="environment" id="def-separable-mixed-state">
                 <p><span class="env-title">Definition (Separable Mixed State)</span>
-                A <strong>separable mixed state</strong> (density operator) $\rho$ on $\mathcal{H} = \mathbb{C}^{d_1} \otimes \cdots \otimes \mathcal{C}^{d_k}$ is a convex combination of product states of density operators:
+                A <strong>separable mixed state</strong> (density operator) $\rho$ on $\mathcal{H} = \mathbb{C}^{d_1} \otimes \cdots \otimes \mathbb{C}^{d_k}$ is a convex combination of product states of density operators:
                 $$ \rho = \sum_i \lambda_i \left( \rho_i^{(1)} \otimes \cdots \otimes \rho_i^{(k)} \right) $$
                 where $\lambda_i \ge 0$, $\sum_i \lambda_i = 1$, and each $\rho_i^{(j)}$ is a density operator on $\mathbb{C}^{d_j}$.
                 <br><em>Remark:</em> By Carathéodory's theorem, the $\rho_i^{(j)}$ can always be chosen to be pure states, i.e., $\rho_i^{(j)} = |\psi_i^{(j)}\rangle\langle\psi_i^{(j)}|$ for some unit vector $|\psi_i^{(j)}\rangle \in \mathbb{C}^{d_j}$.
@@ -399,7 +399,7 @@
                 <ul>
                     <li><strong>PPT Property:</strong> The partial transpose of $\rho_{\mathcal{E}}$ is $\rho_{\mathcal{E}}^{\Gamma_B} = \frac{1}{d-k}(\text{Id} - P_{\mathcal{E}}^{\Gamma_B})$. The partial transpose of the projector is $P_{\mathcal{E}}^{\Gamma_B} = \sum_i (|a_i\rangle\langle a_i| \otimes |b_i\rangle\langle b_i|)^{\Gamma_B} = \sum_i |a_i\rangle\langle a_i| \otimes |\bar{b_i}\rangle\langle\bar{b_i}|$. Since $\{|x_i\rangle\}$ are orthonormal, the set $\{|a_i\rangle \otimes |\bar{b_i}\rangle\}$ is also an orthonormal set of product vectors. Thus, $P_{\mathcal{E}}^{\Gamma_B}$ is also a projector. This means $\rho_{\mathcal{E}}^{\Gamma_B}$ is proportional to a projector $(\text{Id} - P_{\mathcal{E}}^{\Gamma_B})$ and is therefore positive semi-definite. So, the state is PPT.</li>
                     <li><strong>Entanglement:</strong> 
-                    The <strong>support</strong> of a density operator $\rho$, denoted $\operatorname{supp}(\rho)$, is the the orthogonal complement of its kernel.
+                    The <strong>support</strong> of a density operator $\rho$, denoted $\operatorname{supp}(\rho)$, is the orthogonal complement of its kernel.
                     <br>
                     If a state is separable, its support is spanned by product vectors. The support of $\rho_{\mathcal{E}}$ is the subspace $\mathcal{E}^\perp$. By the definition of a UPB, the subspace $\mathcal{E}^\perp$ contains no product vectors. Therefore, $\rho_{\mathcal{E}}$ cannot be separable.
                 </ul>
@@ -447,7 +447,7 @@
                 <li>$|x_2\rangle = \frac{1}{\sqrt{2}}|2\rangle \otimes (|1\rangle - |2\rangle)$</li>
                 <li>$|x_3\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) \otimes |2\rangle$</li>
                 <li>$|x_4\rangle = \frac{1}{\sqrt{2}}(|1\rangle - |2\rangle) \otimes |0\rangle$</li>
-                <li>$|x_5\rangle = \frac{1}{\sqrt{3}}(|0\rangle+|1\rangle+|2\rangle) \otimes (|0\rangle+|1\rangle+|2\rangle)$</li>
+                <li>$|x_5\rangle = \frac{1}{3}(|0\rangle+|1\rangle+|2\rangle) \otimes (|0\rangle+|1\rangle+|2\rangle)$</li>
             </ul>
             <p>
             <strong>Claim:</strong> The set $\{|x_i\rangle\}_{i=1}^5$ is unextendible.<br>
@@ -457,8 +457,8 @@
             $$
             \langle x_1 | \psi \rangle = \langle 0 | a \rangle \cdot (\langle 0 | b \rangle - \langle 1 | b \rangle) = 0
             $$
-            and similarly for the other $|x_i\rangle$. <br>
-            By pigeonhole principle, this forces $|a\rangle$ or $|b\rangle$ to be orthogonal to at least 3 independent vectors in $\mathbb{C}^3$, which is only possible if $|a\rangle = 0$ or $|b\rangle = 0$. <br>
+            and similarly for the other $|x_i\rangle$. Each equation gives implies orthogonality condition for |a\rangle or |b\rangle<br>
+            There are 5 equations. Hence by pigeonhole principle, this forces $|a\rangle$ or $|b\rangle$ to be orthogonal to at least 3 independent vectors in $\mathbb{C}^3$, which is only possible if $|a\rangle = 0$ or $|b\rangle = 0$. <br>
             Thus, there is no nonzero product vector orthogonal to all $|x_i\rangle$. <br>
             Therefore, the set is unextendible.
             </p>
