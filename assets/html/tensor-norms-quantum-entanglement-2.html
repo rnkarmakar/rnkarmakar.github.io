@@ -187,6 +187,50 @@
         table.custom-table th {
             background-color: #e2e8f0; font-weight: bold;
         }
+        .tiles-upb-figure {
+          position: relative;
+          width: 180px;
+          height: 180px;
+          margin: 2em 0;
+        }
+        .tiles-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 60px);
+          grid-template-rows: repeat(3, 60px);
+          width: 180px;
+          height: 180px;
+          position: absolute;
+          top: 0; left: 0;
+          border: 2px solid #333;
+        }
+        .cell {
+          border: 1px solid #bbb;
+          width: 60px; height: 60px;
+          box-sizing: border-box;
+        }
+        .axis-label {
+          position: absolute;
+          font-size: 0.9em;
+          color: #333;
+        }
+        .axis-x {
+          top: -1.5em;
+          left: 0;
+        }
+        .axis-y {
+          left: -2.5em;
+          top: 0;
+        }
+        .tiles-ellipses {
+          position: absolute;
+          top: 0; left: 0;
+          pointer-events: none;
+        }
+        .tiles-ellipses ellipse {
+          fill: none;
+          stroke: #222;
+          stroke-width: 2;
+        }
     </style>
     <script>
       window.MathJax = {
@@ -356,12 +400,39 @@
                     <li><strong>Entanglement:</strong> 
                     The <strong>support</strong> of a density operator $\rho$, denoted $\operatorname{supp}(\rho)$, is the the orthogonal complement of its kernel.
                     <br>
-                    If a state is separable, its support is spanned by product vectors. The support of $\rho_{\mathcal{E}}$ is the subspace $\mathcal{E}^\perp$. By the definition of a UPB, the subspace $\mathcal{E}^\perp$ contains no product vectors. Therefore, $\rho_{\mathcal{E}}$.
+                    If a state is separable, its support is spanned by product vectors. The support of $\rho_{\mathcal{E}}$ is the subspace $\mathcal{E}^\perp$. By the definition of a UPB, the subspace $\mathcal{E}^\perp$ contains no product vectors. Therefore, $\rho_{\mathcal{E}}$ cannot be separable.
                 </ul>
                 <span class="qed">□</span>
             </div>
 
             <h3>Example: The "Tiles" UPB in $\mathbb{C}^3 \otimes \mathbb{C}^3$</h3>
+            <!-- Tiles UPB Figure -->
+            <div class="tiles-upb-figure">
+              <div class="tiles-grid">
+                <div class="cell" data-label="|0⟩"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <!-- Axis labels -->
+                <span class="axis-label axis-x">|0⟩</span>
+                <span class="axis-label axis-x" style="left: 60px;">|1⟩</span>
+                <span class="axis-label axis-x" style="left: 120px;">|2⟩</span>
+                <span class="axis-label axis-y" style="top: 60px;">|1⟩</span>
+                <span class="axis-label axis-y" style="top: 120px;">|2⟩</span>
+              </div>
+              <!-- SVG ellipses for the ovals -->
+              <svg class="tiles-ellipses" width="180" height="180">
+                <ellipse cx="30" cy="30" rx="28" ry="15" class="ellipse1"/>
+                <ellipse cx="90" cy="90" rx="28" ry="15" class="ellipse2"/>
+                <ellipse cx="150" cy="30" rx="28" ry="15" class="ellipse3"/>
+                <ellipse cx="30" cy="150" rx="28" ry="15" class="ellipse4"/>
+              </svg>
+            </div>
             <p>A well-known example of a UPB is the "Tiles" basis, which consists of 5 vectors in a 9-dimensional space:</p>
             <ul>
                 <li>$|x_1\rangle = \frac{1}{\sqrt{2}}|0\rangle \otimes (|0\rangle - |1\rangle)$</li>
