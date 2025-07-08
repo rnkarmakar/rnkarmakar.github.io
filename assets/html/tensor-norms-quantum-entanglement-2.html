@@ -353,7 +353,10 @@
                 <span class="proof-title">Proof Sketch.</span>
                 <ul>
                     <li><strong>PPT Property:</strong> The partial transpose of $\rho_{\mathcal{E}}$ is $\rho_{\mathcal{E}}^{\Gamma_B} = \frac{1}{d-k}(\text{Id} - P_{\mathcal{E}}^{\Gamma_B})$. The partial transpose of the projector is $P_{\mathcal{E}}^{\Gamma_B} = \sum_i (|a_i\rangle\langle a_i| \otimes |b_i\rangle\langle b_i|)^{\Gamma_B} = \sum_i |a_i\rangle\langle a_i| \otimes |\bar{b_i}\rangle\langle\bar{b_i}|$. Since $\{|x_i\rangle\}$ are orthonormal, the set $\{|a_i\rangle \otimes |\bar{b_i}\rangle\}$ is also an orthonormal set of product vectors. Thus, $P_{\mathcal{E}}^{\Gamma_B}$ is also a projector. This means $\rho_{\mathcal{E}}^{\Gamma_B}$ is proportional to a projector $(\text{Id} - P_{\mathcal{E}}^{\Gamma_B})$ and is therefore positive semi-definite. So, the state is PPT.</li>
-                    <li><strong>Entanglement:</strong> A state is separable if and only if its support is spanned by product vectors. The support of $\rho_{\mathcal{E}}$ is the subspace $\mathcal{E}^\perp$. By the definition of a UPB, the subspace $\mathcal{E}^\perp$ contains no product vectors. Therefore, $\rho_{\mathcal{E}}$ cannot be separable and must be entangled.</li>
+                    <li><strong>Entanglement:</strong> 
+                    <em>Definition (Support):</em> The <strong>support</strong> of a density operator $\rho$, denoted $\operatorname{supp}(\rho)$, is the subspace spanned by the eigenvectors of $\rho$ with nonzero eigenvalues (i.e., the orthogonal complement of its kernel).
+                    <br>
+                    A state is separable if and only if its support is spanned by product vectors. The support of $\rho_{\mathcal{E}}$ is the subspace $\mathcal{E}^\perp$. By the definition of a UPB, the subspace $\mathcal{E}^\perp$ contains no product vectors. Therefore, $\rho_{\mathcal{E}}$ cannot be separable and must be
                 </ul>
                 <span class="qed">□</span>
             </div>
