@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithmic Regularization: Implicit Acceleration</title>
+    <!-- MathJax 3 for rendering LaTeX math -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                macros: {
+                  Tr: '\\operatorname{Tr}',
+                  grad: '\\operatorname{grad}',
+                  Pr: '\\operatorname{Pr}'
+                },
+                packages: {'[+]': ['physics', 'ams']}
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        /* Basic Reset & Body Styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            overflow: hidden; /* Prevent body scrollbar */
+        }
+
+        /* Presentation Container */
+        .presentation-container {
+            position: relative; 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden;
+            background-color: #f8f8f8;
+        }
+
+        /* Slide Styling */
+        .slide {
+            background-color: #ffffff; 
+            border: 1px solid #ddd; 
+            border-radius: 8px;
+            padding: 40px 60px;
+            margin: 0; 
+            width: 100%; 
+            height: 100%; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center;
+            box-sizing: border-box; 
+            position: absolute; 
+            top: 0; 
+            left: 0;
+            opacity: 0; 
+            visibility: hidden; 
+            transition: opacity 0.8s ease-in-out, visibility 0s 0.8s;
+            z-index: 1; 
+            overflow-y: auto; /* Allow scrolling within a single slide if content overflows */
+        }
+        
+        .slide.active {
+            opacity: 1; 
+            visibility: visible; 
+            transition: opacity 0.8s ease-in-out; 
+            z-index: 2;
+        }
+
+        /* Column Layout */
+        .slide.columns {
+            flex-direction: row; 
+            justify-content: space-between; 
+            align-items: stretch; /* Align items to fill height */
+            gap: 30px;
+        }
+        
+        .column-text {
+            flex: 1; 
+            max-width: 50%;
+            padding: 20px 0;
+        }
+        
+        .column-details {
+            flex: 1.2;
+            padding: 20px;
+            background-color: #f9faff;
+            border-left: 3px solid #0056b3;
+            border-radius: 4px;
+            align-self: center;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .column-details h4 {
+            color: #0056b3;
+            margin-top: 0;
+            text-align: left;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            width: 100%;
+            position: relative;
+        }
+        
+        .column-details h4:after { display: none; } /* Disable default h-styles */
+
+        .column-details p { font-size: 1em; text-align: left; }
+        .column-details p em { color: #333; font-weight: 500;}
+
+
+        /* Headings */
+        h1, h2, h3 { 
+            color: #0056b3; 
+            text-align: center; 
+            width: 100%;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h1 { 
+            font-size: 2.4em; 
+            margin-bottom: 15px; 
+            background: linear-gradient(to right, #0056b3, #0088cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 { 
+            font-size: 1.9em; 
+            margin-bottom: 20px; 
+        }
+        
+        h2:after {
+            content: ''; display: block; width: 100px; height: 3px;
+            background: linear-gradient(to right, #0056b3, #80cbe5);
+            position: absolute; bottom: 0; left: 50%;
+            transform: translateX(-50%); border-radius: 2px;
+        }
+        
+        h3 { 
+            font-size: 1.3em; color: #555; margin-top: 5px; font-weight: 500;
+        }
+
+        /* Text Elements */
+        .slide p, .slide ul, .slide ol {
+            margin-bottom: 18px; 
+            font-size: 1.15em; 
+            max-width: 900px; 
+            width: 100%;
+            line-height: 1.7;
+            text-align: left;
+        }
+        
+        .slide.title-slide p, .slide.centered-text p {
+            text-align: center;
+        }
+        
+        .slide ul, .slide ol { padding-left: 40px; }
+        .slide ul li { list-style-type: '▸  '; }
+        .slide li { margin-bottom: 10px; }
+        .slide ul ul, .slide ol ol { margin-left: 30px; margin-top: 8px; }
+        
+        /* Special block for theorems */
+        .theorem-box {
+            border: 2px solid #0056b3;
+            border-radius: 8px;
+            padding: 20px 30px;
+            margin: 20px 0;
+            background-color: #f7faff;
+            box-shadow: 0 2px 8px rgba(0, 86, 179, 0.1);
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+        }
+        .theorem-box p { text-align: left; font-size: 1.1em; }
+
+        /* Title Slide */
+        .title-slide { 
+            text-align: center;
+            background: linear-gradient(to bottom, #ffffff, #f0f8ff);
+        }
+        .title-slide h1 { margin-top: 40px; font-size: 2.8em; }
+        .title-slide h3 { margin-top: 15px; margin-bottom: 20px; color: #444; }
+
+        /* Navigation */
+        .nav-button {
+            position: fixed; bottom: 25px; background-color: rgba(0, 86, 179, 0.8);
+            color: white; border: none; padding: 12px 25px; font-size: 1.3em;
+            border-radius: 30px; cursor: pointer; z-index: 10; 
+            transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .nav-button:hover { background-color: rgba(0, 86, 179, 1); transform: translateY(-2px); }
+        .nav-button:disabled { background-color: rgba(150, 150, 150, 0.5); cursor: not-allowed; transform: none; box-shadow: none; }
+        #prevBtn { left: 25px; }
+        #nextBtn { right: 25px; }
+
+        /* Slide counter & Progress bar */
+        .slide-counter {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6); color: white; padding: 8px 15px;
+            border-radius: 20px; font-size: 0.9em; z-index: 10;
+        }
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 5px; background-color: #0088cc;
+            z-index: 20; transition: width 0.3s ease;
+        }
+        
+        /* Media Queries */
+        @media (max-width: 900px) {
+            .slide { padding: 20px 25px; }
+            .slide.columns { flex-direction: column; align-items: center; }
+            .column-text, .column-details { max-width: 100%; flex: 1; border-left: none; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.6em; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="progress-bar"></div>
+        <div class="slide-counter"></div>
+
+        <!-- SLIDE 1: Title -->
+        <section class="slide title-slide active">
+            <h1>Deep Linear Networks</h1>
+            <h3>Rathindra Nath Karmakar</h3>
+            <h3 style="margin-top:100px;">Session 2 : Implicit Acceleration</h3>
+        </section>
+
+        <!-- SLIDE 2: Recap -->
+        <section class="slide">
+            <h2>Recap: Key Questions for Gradient Flow</h2>
+            <p>For the gradient flow dynamics on a loss surface $\mathcal{L}(\mathbf{W})$:</p>
+            <div class="theorem-box" style="margin-bottom:40px;">
+                \[ \frac{d}{dt} \mathbf{W}(t) = - \nabla_{\mathbf{W}} \mathcal{L}(\mathbf{W}(t)) \]
+            </div>
+            <p>We want to understand:</p>
+            <ul style="margin-top: 20px;">
+                <li>Convergence guarantees? (<em>Yes, for balanced cases</em>)</li>
+                <li><strong>Convergence rate?</strong></li>
+                <li>Characterization of the minimizer reached?</li>
+                <li>Effect of noise and discretization?</li>
+            </ul>
+            <p>Today, we address the second question: can overparameterization improve the **rate of convergence**?</p>
+        </section>
+
+        <!-- SLIDE 3: Motivation -->
+        <section class="slide">
+            <h2>The Counter-Intuitive Message</h2>
+            <p>The conventional wisdom is that increasing depth improves expressiveness but complicates optimization.</p>
+            <p>Today's message, based on Arora, Cohen, & Hazan (2018), is that sometimes:</p>
+            <div class="theorem-box" style="margin-top:50px;">
+                <p style="font-size:1.5em; text-align:center; color:#0056b3;">Increasing depth can <em>accelerate</em> optimization.</p>
+            </div>
+            <p>We will see that overparameterization via depth can act as an implicit preconditioner, combining the effects of momentum and adaptive learning rates.</p>
+        </section>
+
+        <!-- SLIDE 4: Empirical Evidence 1 -->
+        <section class="slide">
+            <h2>Empirical Evidence: Acceleration with Depth</h2>
+            <p>Comparison of gradient descent on a linear regression task with $\ell_p$ loss. (Fig 3 from Arora et al. 2018)</p>
+            <div style="display: flex; justify-content: center; gap: 30px; width:100%;">
+                <img src="C:/Users/Rathindra/Documents/Menon/L2.png" alt="L2 loss convergence" style="width: 36%; border: 1px solid #ccc; border-radius: 8px;">
+                <img src="C:/Users/Rathindra/Documents/Menon/L4.png" alt="L4 loss convergence" style="width: 36%; border: 1px solid #ccc; border-radius: 8px;">
+            </div>
+            <ul>
+                <li><strong>Left ($\ell_2$ loss):</strong> Increasing depth slightly *slows down* convergence, consistent with prior work.</li>
+                <li><strong>Right ($\ell_4$ loss):</strong> Increasing depth provides a **massive acceleration**, outperforming the shallow model significantly.</li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 5: Formalizing the Dynamics -->
+        <section class="slide">
+            <h2>The End-to-End Update Rule</h2>
+            <p>Let $W_e = W_N W_{N-1} \cdots W_1$ be the end-to-end matrix. The paper shows that its gradient flow dynamics can be written purely in terms of $W_e$ itself.</p>
+            <div class="theorem-box">
+                <p><strong>Theorem 1 (Arora et al. 2018).</strong> Under the balanced initialization assumption, $W_{j+1}(t_0)^T W_{j+1}(t_0) = W_j(t_0)W_j(t_0)^T$, the gradient flow for $W_e$ is:</p>
+                \[ \dot{W}_e(t) = - \eta \sum_{j=1}^{N} \left[ W_e(t) W_e(t)^T \right]^{\frac{N-j}{N}} \cdot \nabla\mathcal{L}(W_e(t)) \cdot \left[ W_e(t)^T W_e(t) \right]^{\frac{j-1}{N}} \]
+            </div>
+            <p>The standard gradient $\nabla\mathcal{L}(W_e)$ is pre-multiplied and post-multiplied by fractional matrix powers of $W_e W_e^T$ and $W_e^T W_e$.</p>
+        </section>
+
+        <!-- SLIDE 6: Geometric Interpretation -->
+    <section class="slide">
+        <h2>A Geometric Interpretation</h2>
+        <p>The complex update rule from Theorem 1 seems arbitrary. But it has a beautiful geometric meaning, unifying it with the concepts from our last lecture.</p>
+        <p>Let's define the linear preconditioning operator from Theorem 1 as $A_{N,W_e}$:
+        \[ A_{N,W_e}(Z) = \sum_{k=1}^{N} (W_e W_e^T)^{\frac{N-k}{N}} Z (W_e^T W_e)^{\frac{k-1}{N}} \]
+        So the dynamics are $\dot{W}_e = -A_{N,W_e} (E'(W_e))$, where $E'(W_e) = \nabla\mathcal{L}(W_e)$ is the standard Euclidean gradient.</p>
+        
+        <div class="theorem-box">
+        <p><strong>Definition: A New Metric.</strong></p>
+        <p>Following Menon (Sec 4.3), we define a position-dependent Riemannian metric $g^N$ on the tangent space at $W_e$ via the inner product:</p>
+        \[ g^N(W_e)(Z_1, Z_2) := \text{Tr}\left(Z_1^T (A_{N,W_e})^{-1} Z_2\right) \]
+        <p>(Assuming $W_e$ has full rank, $A_{N,W_e}$ is invertible.)</p>
+        </div>
+
+        <p>Under this specific metric, the complicated dynamics of Theorem 1 become a simple and natural <strong>Riemannian gradient flow</strong>:</p>
+         <div class="theorem-box" style="background-color: #e6f7ff; border-color: #0056b3;">
+        \[ \dot{W}_e(t) = -\text{grad}_{g^N} E(W_e(t)) \]
+        </div>
+    </section>
+
+        <!-- SLIDE 7: Interpreting the Update Rule (Single Output Case) -->
+        <section class="slide">
+            <h2>Interpreting the Dynamics (Single Output Case)</h2>
+            <p>For the special case of a single output ($k=1$), the preconditioning scheme simplifies to a more intuitive form.</p>
+            <div class="theorem-box">
+            <p><strong>Claim 2 (Arora et al. 2018).</strong> For a single output network, the end-to-end dynamics are equivalent to:</p>
+            \[ \dot{W}_e = -\eta \underbrace{\|W_e\|^{2 - \frac{2}{N}}}_{\text{Adaptive LR}} \left( \nabla\mathcal{L}(W_e) + \underbrace{(N-1)\Pr_{W_e}(\nabla\mathcal{L}(W_e))}_{\text{Momentum-like term}} \right) \]
+             <p style="margin-top:10px;">where $\Pr_{W_e}(V)$ is the orthogonal projection of vector $V$ onto the direction of vector $W_e$.</p>
+            </div>
+            <ul>
+            <li><strong>Adaptive Learning Rate:</strong> As the weight vector $\|W_e\|$ grows (moves away from zero init), the effective learning rate increases.</li>
+            <li><strong>Momentum:</strong> The gradient is amplified along the direction of the current weight vector $W_e$. Since $W_e$ is the integral of past updates, this promotes movement along the historical trajectory.</li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 8: Proof Sketch Intro -->
+        <section class="slide centered-text">
+            <h2>Detailed Derivations</h2>
+        </section>
+        
+        <!-- SLIDE 9: Derivation of Theorem 1 (N=2) -->
+        <section class="slide">
+            <h2>Proof of Theorem 1 (N=2 case)</h2>
+            <p>Let's derive the end-to-end dynamics for $W_e = W_2 W_1$. The time derivative is $\dot{W}_e = \dot{W}_2 W_1 + W_2 \dot{W}_1$.</p>
+            <ol>
+                <li>Substitute the gradient flow dynamics for each layer:
+                    \[ \dot{W}_1 = -\eta W_2^T \nabla\mathcal{L}(W_e) \quad , \quad \dot{W}_2 = -\eta \nabla\mathcal{L}(W_e) W_1^T \]
+                </li>
+                <li>Plug these into the expression for $\dot{W}_e$:
+                    \[ \dot{W}_e = (-\eta \nabla\mathcal{L}(W_e) W_1^T) W_1 + W_2 (-\eta W_2^T \nabla\mathcal{L}(W_e)) \]
+                </li>
+                <li>Rearrange the terms:
+                    \[ \dot{W}_e = -\eta \left( (W_2 W_2^T) \nabla\mathcal{L}(W_e) + \nabla\mathcal{L}(W_e) (W_1^T W_1) \right) \]
+                </li>
+                <li>Using the identities for the N=2 case, $W_2 W_2^T = (W_e W_e^T)^{1/2}$ and $W_1^T W_1 = (W_e^T W_e)^{1/2}$:</li>
+            </ol>
+            <div class="theorem-box">
+            \[ \dot{W}_e = -\eta \left( (W_e W_e^T)^{1/2} \nabla\mathcal{L}(W_e) + \nabla\mathcal{L}(W_e) (W_e^T W_e)^{1/2} \right) \]
+            </div>
+            <p>This matches the general formula from Theorem 1 for $N=2$.</p>
+        </section>
+
+        <!-- SLIDE 10: Generalizing the Invariant -->
+        <section class="slide">
+            <h2>Deriving the Preconditioner (1/3): SVD Setup</h2>
+            <p>How do we derive the fractional powers for $N>2$? Let's analyze $N=3$. Let the SVD of each layer be $W_j = U_j \Sigma_j V_j^T$.</p>
+            <ul>
+                <li><strong>Balance Invariants:</strong> $W_2^T W_2 = W_1 W_1^T$</li></strong>
+                Hence, their spectra are equal as well $\implies$ $W_1$ and $W_2$ have the same set of singular values.
+                <li>In terms of Polar decomposition, the balance equation implies:
+                    \[P_2 = W_2^T W_2 = W_1W_1^T = R_1 \]
+                    Hence, $V_2$ (an eigenbasis of $P_2$) and $U_1$ (an eigenbasis of $R_1$) can be chosen to be equal. Therefore, we get the SVD decompositions:
+                    \[W_2 = U_2 \Sigma V_2^T \text{ and } W_1 = V_2 \Sigma V_1^T\]
+                    
+                </li>
+                <li> Similarly using the balance equation for $W_2$ and $W_3$, we get the SVDs
+                    \[W_3 = U_3 \Sigma V_3^T \text{ , } W_2 = V_3 \Sigma V_2^T \text{ and } W_1 = V_2 \Sigma V_1^T\]
+                </li>
+            </ul>
+            <p> 
+        
+        </section>
+        
+        <!-- SLIDE 11: Deriving the Identity (2/3) -->
+        <section class="slide">
+            <h2>Derivation (2/3): Simplifying the Product</h2>
+            <p>Let's express the end-to-end matrix $W_e = W_3 W_2 W_1$ using the SVDs and the relationships we found.</p>
+            <begin{align*}
+            W_e &= (U_3 \Sigma V_3^T) (U_2 \Sigma V_2^T) (U_1 \Sigma V_1^T) \\
+            &= U_3 \Sigma (V_3^T U_2) \Sigma (V_2^T U_1) \Sigma V_1^T
+            \end{align*}
+            <p>The expression simplifies because the intermediate orthogonal matrices cancel out:</p>
+            
+            \[ W_e = U_3 \Sigma^3 V_1^T \]
+            <p>This looks like an SVD for $W_e$, with singular value matrix $\Sigma^3$ and orthogonal matrices $U_3$ and $V_1^T$.</p>
+        </section>
+
+        <!-- SLIDE 12: Deriving the Identity (3/3) -->
+        <section class="slide">
+            <h2>Derivation (3/3): Final Identities</h2>
+            <p>From $W_e = U_3 \Sigma^3 V_1^T$, we can identify the SVD components of $W_e = U_e \Sigma_e V_e^T$ as:</p>
+            \[ U_e = U_3 \quad , \quad \Sigma_e = \Sigma^3 \quad , \quad V_e = V_1 \]
+            <p>Now we can express the individual layer terms using the end-to-end SVD components.</p>
+            <ul>
+                <li>For the last layer, $W_3 W_3^T = U_3 \Sigma^2 U_3^T$. Since $U_3 = U_e$ and $\Sigma = \Sigma_e^{1/3}$:
+                    \[ W_3 W_3^T = U_e (\Sigma_e^{1/3})^2 U_e^T = (U_e \Sigma_e U_e^T)^{2/3} = (W_e W_e^T)^{2/3} \]
+                </li>
+                 <li>For the first layer, $W_1^T W_1 = V_1 \Sigma^2 V_1^T$. Using $\Sigma = \Sigma_e^{1/3}$ and $V_1 = V_e$:
+                    \[ W_1^T W_1 = V_1 (\Sigma_e^{1/3})^2 V_1^T = (V_e^T \Sigma_e V_e)^{2/3} = (W_e^T W_e)^{2/3} \]
+                </li>
+            </ul>
+            <p>This is where the fractional powers in Theorem 1 come from. The exponent is $\frac{N-j}{N}$ for post-multiplication and $\frac{j-1}{N}$ for pre-multiplication.</p>
+        </section>
+
+        <!-- SLIDE 13: Acceleration Derivation Setup -->
+        <section class="slide">
+            <h2>How This Leads to Acceleration (1/4): Setup</h2>
+            <p>We analyze a simple, ill-conditioned linear regression problem with $\ell_4$ loss and $N=2$ overparameterization.</p>
+            <ul>
+                <li><strong>Data:</strong> Two points, $([1,0], y_1)$ and $([0,1], y_2)$.</li>
+                <li><strong>Loss:</strong> $L(w_1, w_2) = \frac{1}{4}(w_1 - y_1)^4 + \frac{1}{4}(w_2 - y_2)^4$.</li>
+                <li><strong>Ill-Conditioning:</strong> Assume $|y_1| \gg |y_2| \approx 1$.</li>
+                <li><strong>Initialization:</strong> Near-zero weights, $w_1^{(0)}=\epsilon_1, w_2^{(0)}=\epsilon_2$, with $\epsilon_2/\epsilon_1 \approx y_2/y_1$.</li>
+            </ul>
+        </section>
+        <section class="slide">
+            <h2>Reference: GD Convergence Bounds</h2>
+            <p>For a general convex function $L(w)$ with an L-Lipschitz continuous gradient, the following bounds provide the context for our analysis:</p>
+            <div style="margin-top: 20px;">
+                <h4>1. Stability Condition</h4>
+                <p>To guarantee that the loss decreases at every step ($L(w_{t+1}) < L(w_t)$), the learning rate $\eta$ must be within the stable range:</p>
+                \[ \eta < \frac{2}{L} \]
+                <p>where $L = \max \|\nabla^2 L(w)\|$ is the Lipschitz constant, which measures the maximum curvature of the loss landscape.</p>
+
+                <h4 style="margin-top: 20px;">2. Convergence Rate</h4>
+                <p>Under this stability condition, the error is guaranteed to decrease with a sublinear rate of $O(1/T)$:</p>
+                \[ L(w_T) - L(w^*) \le \frac{\|w_0 - w^*\|^2}{2\eta T} \]
+                <p>This bound shows that to cut the error in half, you may need to double the number of iterations $T$.</p>
+            </div>
+            </section>
+        <!-- SLIDE 14: Acceleration Derivation Standard GD -->
+        <section class="slide">
+            <h2>How This Leads to Acceleration (2/4): Standard GD</h2>
+            <p>The standard gradient descent update for each coordinate is decoupled:</p>
+            \[ w_i^{(t+1)} \leftarrow w_i^{(t)} - \eta (w_i^{(t)} - y_i)^3 \]
+            <ul>
+                <li>To avoid divergence, the learning rate $\eta$ is limited by the coordinate with the largest gradient, which is $w_1$. The stability condition requires:
+                    \[ \eta < \frac{2}{(w_1-y_1)^2} \approx \frac{2}{y_1^2} \]
+                </li>
+                <li>This very small learning rate, dictated by $y_1$, is then applied to the update for $w_2$.</li>
+                <li>The convergence for $w_2$ is extremely slow. The error $\Delta_2 = w_2 - y_2$ shrinks by a factor of approximately $(1 - \eta y_2^2)$ at each step, which is very close to 1.</li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 15: Acceleration Derivation Overparameterized GD -->
+        <section class="slide">
+            <h2>How This Leads to Acceleration (3/4): Overparameterized GD</h2>
+            <p>For $N=2$, the discrete update rule for a single output network is:</p>
+            \[ \mathbf{w}^{(t+1)} \leftarrow \mathbf{w}^{(t)} - \eta \left( \|\mathbf{w}^{(t)}\| \nabla\mathcal{L}(\mathbf{w}^{(t)}) + \Pr_{\mathbf{w}^{(t)}}(\nabla\mathcal{L}(\mathbf{w}^{(t)})) \right) \]
+            <p>Let's analyze the first iteration ($t=0$). The gradients are $\nabla_1 \approx -y_1^3$ and $\nabla_2 \approx -y_2^3$.</p>
+            <p>The update for each component is:</p>
+            \begin{align*}
+            w_1^{(1)} &\approx \epsilon_1 - \eta \left( \sqrt{\epsilon_1^2+\epsilon_2^2}(-y_1^3) + \frac{\epsilon_1(-y_1^3)+\epsilon_2(-y_2^3)}{\epsilon_1^2+\epsilon_2^2}\epsilon_1 \right) \\
+            w_2^{(1)} &\approx \epsilon_2 - \eta \left( \sqrt{\epsilon_1^2+\epsilon_2^2}(-y_2^3) + \frac{\epsilon_1(-y_1^3)+\epsilon_2(-y_2^3)}{\epsilon_1^2+\epsilon_2^2}\epsilon_2 \right)
+            \end{align*}
+            <p>Using the condition $\epsilon_2/\epsilon_1 \approx y_2/y_1 \ll 1$, we have $\sqrt{\epsilon_1^2+\epsilon_2^2} \approx \epsilon_1$. This simplifies the updates to:</p>
+            \[ w_1^{(1)} \approx \epsilon_1 + \eta(2\epsilon_1 y_1^3) \quad , \quad w_2^{(1)} \approx \epsilon_2 + \eta(\epsilon_1 y_2^3 + \epsilon_2 y_1^3) \]
+        </section>
+        
+        <!-- SLIDE 16: Acceleration Derivation The Punchline -->
+        <section class="slide">
+            <h2>How This Leads to Acceleration (4/4): The Punchline</h2>
+            <p>With the update rules $w_1^{(1)} \approx \epsilon_1 + \eta(2\epsilon_1 y_1^3)$ and $w_2^{(1)} \approx \epsilon_2 + \eta(\epsilon_1 y_2^3 + \epsilon_2 y_1^3)$:</p>
+            <ol>
+                <li><strong>Choose $\eta$:</strong> We can now choose a large learning rate for $w_1$ to make it converge in one step. Let $\eta = \frac{1}{2\epsilon_1 y_1^2}$. This gives $w_1^{(1)} \approx \epsilon_1 + \frac{1}{2\epsilon_1 y_1^2}(2\epsilon_1 y_1^3) \approx y_1$.</li>
+                <li><strong>Analyze $w_2$ update:</strong> With this $\eta$, the update for $w_2$ becomes:
+                    \[ w_2^{(1)} \approx \epsilon_2 + \frac{1}{2\epsilon_1 y_1^2} (\epsilon_1 y_2^3 + \epsilon_2 y_1^3) \approx \frac{y_2^3}{2 y_1^2} + \frac{\epsilon_2}{2\epsilon_1}y_1 \approx \frac{y_2}{2} \]
+                (The first term is negligible, and we used $\epsilon_2/\epsilon_1 \approx y_2/y_1$).</li>
+                <li><strong>Compare Rates:</strong> In one step, $w_2$ has moved halfway to its target $y_2$. The effective learning rate for $w_2$ after $w_1$ converges is $\eta_{OP} \approx \frac{1}{2\epsilon_1 y_1}$. The speedup is:
+                    \[ \frac{\eta_{OP}}{\eta_{GD}} > \frac{1/(2\epsilon_1 y_1)}{2/y_1^2} = \frac{y_1}{4\epsilon_1} \gg 1 \]
+                </li>
+            </ol>
+            <p>Overparameterization allows the large coordinate to "lend" its scale to accelerate the small coordinate.</p>
+        </section>
+
+        <!-- SLIDE 17: Next Time -->
+        <section class="slide centered-text">
+            <h1 style="margin-top: 30vh; font-size: 3em;">Next Time...</h1>
+            <p style="font-size: 1.5em;">Characterizing the Minimizer</p>
+        </section>
+        
+        <!-- SLIDE 18: Q&A -->
+        <section class="slide centered-text">
+            <h2 style="margin-top: 15vh;">Thank You!</h2>
+            <p style="font-size: 1.6em; margin-top: 50px;">Any Questions?</p>
+        </section>
+
+    </div><!-- end presentation-container -->
+
+    <button id="prevBtn" class="nav-button">Previous (←)</button>
+    <button id="nextBtn" class="nav-button">Next (→)</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.presentation-container .slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const slideCounter = document.querySelector('.slide-counter');
+            const progressBar = document.querySelector('.progress-bar');
+            let currentSlideIndex = 0;
+
+            function updateProgressBar() {
+                const progress = ((currentSlideIndex + 1) / slides.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            function updateSlideCounter() {
+                if (slideCounter) {
+                    slideCounter.textContent = `${currentSlideIndex + 1} / ${slides.length}`;
+                }
+            }
+
+            function showSlide(index) {
+                if (index >= slides.length || index < 0) return;
+                
+                slides.forEach(slide => slide.classList.remove('active'));
+                
+                currentSlideIndex = index;
+                
+                slides[currentSlideIndex].classList.add('active');
+                slides[currentSlideIndex].scrollTop = 0; // Reset scroll for new slide
+                
+                prevBtn.disabled = currentSlideIndex === 0;
+                nextBtn.disabled = currentSlideIndex === slides.length - 1;
+                
+                updateSlideCounter();
+                updateProgressBar();
+
+                // Re-render MathJax for the new active slide if necessary
+                if (window.MathJax) {
+                    MathJax.typesetPromise([slides[currentSlideIndex]]).catch(function (err) {
+                        console.log('MathJax reproccessing error:', err.message);
+                    });
+                }
+            }
+
+            nextBtn.addEventListener('click', () => showSlide(currentSlideIndex + 1));
+            prevBtn.addEventListener('click', () => showSlide(currentSlideIndex - 1));
+            
+            document.addEventListener('keydown', (event) => {
+                const activeElementTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : null;
+                if (['input', 'textarea'].includes(activeElementTag)) return;
+
+                if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'PageDown') {
+                    if (event.key === ' ') event.preventDefault();
+                    if (!nextBtn.disabled) showSlide(currentSlideIndex + 1);
+                } else if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+                    if (!prevBtn.disabled) showSlide(currentSlideIndex - 1);
+                }
+            });
+            
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>
