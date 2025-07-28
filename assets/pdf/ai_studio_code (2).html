@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Linear Networks: Characterizing the Minimizer</title>
+    <!-- MathJax 3 for rendering LaTeX math -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                macros: {
+                  Tr: '\\operatorname{Tr}',
+                  grad: '\\operatorname{grad}',
+                  Pr: '\\operatorname{Pr}',
+                  erank: '\\operatorname{erank}'
+                },
+                packages: {'[+]': ['physics', 'ams']}
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        /* Basic Reset & Body Styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Page Container */
+        .page-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #f8f8f8;
+            padding: 1px 0; /* To contain margins of children */
+        }
+
+        /* Section Styling (formerly .slide) */
+        .section-content {
+            background-color: #ffffff; 
+            border: 1px solid #ddd; 
+            border-radius: 8px;
+            padding: 40px 60px;
+            margin: 30px auto; 
+            max-width: 1100px;
+            width: 95%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center;
+            box-sizing: border-box; 
+        }
+        
+        /* Column Layout */
+        .section-content.columns {
+            flex-direction: row; 
+            justify-content: space-between; 
+            align-items: stretch; /* Align items to fill height */
+            gap: 30px;
+        }
+        
+        .column-text {
+            flex: 1; 
+            max-width: 50%;
+            padding: 20px 0;
+        }
+        
+        .column-details {
+            flex: 1.2;
+            padding: 20px;
+            background-color: #f9faff;
+            border-left: 3px solid #0056b3;
+            border-radius: 4px;
+            align-self: center;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .column-details h4 {
+            color: #0056b3;
+            margin-top: 0;
+            text-align: left;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            width: 100%;
+            position: relative;
+        }
+        
+        .column-details h4:after { display: none; } /* Disable default h-styles */
+
+        .column-details p { font-size: 1em; text-align: left; }
+        .column-details p em { color: #333; font-weight: 500;}
+
+
+        /* Headings */
+        h1, h2, h3 { 
+            color: #0056b3; 
+            text-align: center; 
+            width: 100%;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h1 { 
+            font-size: 2.4em; 
+            margin-bottom: 15px; 
+            background: linear-gradient(to right, #0056b3, #0088cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 { 
+            font-size: 1.9em; 
+            margin-bottom: 20px; 
+        }
+        
+        h2:after {
+            content: ''; display: block; width: 100px; height: 3px;
+            background: linear-gradient(to right, #0056b3, #80cbe5);
+            position: absolute; bottom: 0; left: 50%;
+            transform: translateX(-50%); border-radius: 2px;
+        }
+        
+        h3 { 
+            font-size: 1.3em; color: #555; margin-top: 5px; font-weight: 500;
+        }
+
+        /* Text Elements */
+        .section-content p, .section-content ul, .section-content ol {
+            margin-bottom: 18px; 
+            font-size: 1.15em; 
+            max-width: 900px; 
+            width: 100%;
+            line-height: 1.7;
+            text-align: left;
+        }
+        
+        .section-content.title-section p, .section-content.centered-text p {
+            text-align: center;
+        }
+        
+        .section-content ul, .section-content ol { padding-left: 40px; }
+        .section-content ul li { list-style-type: '▸  '; }
+        .section-content li { margin-bottom: 10px; }
+        .section-content ul ul, .section-content ol ol { margin-left: 30px; margin-top: 8px; }
+        
+        /* Special block for theorems */
+        .theorem-box {
+            border: 2px solid #0056b3;
+            border-radius: 8px;
+            padding: 20px 30px;
+            margin: 20px 0;
+            background-color: #f7faff;
+            box-shadow: 0 2px 8px rgba(0, 86, 179, 0.1);
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+        }
+        .theorem-box p { text-align: left; font-size: 1.1em; }
+
+        /* Title Section */
+        .title-section { 
+            text-align: center;
+            background: linear-gradient(to bottom, #ffffff, #f0f8ff);
+        }
+        .title-section h1 { margin-top: 40px; font-size: 2.8em; }
+        .title-section h3 { margin-top: 15px; margin-bottom: 20px; color: #444; }
+
+        /* Media Queries */
+        @media (max-width: 900px) {
+            .section-content { padding: 20px 25px; }
+            .section-content.columns { flex-direction: column; align-items: center; }
+            .column-text, .column-details { max-width: 100%; flex: 1; border-left: none; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.6em; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page-container">
+
+        <!-- Title -->
+        <section class="section-content title-section">
+            <h1>Deep Linear Networks</h1>
+            <h3>Rathindra Nath Karmakar</h3>
+            <h3 style="margin-top:100px;">Session 3 : Characterizing the Minimizer</h3>
+        </section>
+
+        <section class="section-content">
+            <h2>References</h2>
+            <ul style="margin-top: 30px;">
+                <li style="margin-bottom: 18px;"><b>Deep Linear Networks for Matrix Completion - An Infinite Depth Limit</b>, Nadav Cohen, Govind Menon, and Zsolt Veraszto (2023)</li>
+                <li style="margin-bottom: 18px;"><b>Implicit Regularization in Deep Learning May Not Be Explainable by Norms</b>, Noam Razin, Nadav Cohen (2020)</li>
+                <li style="margin-bottom: 18px;"><b>Implicit Regularization in Matrix Factorization</b>, Suriya Gunasekar, Blake Woodworth, Behnam Neyshabur, Srinadh Bhojanapalli, Nathan Srebro (2017)</li>
+                <li style="margin-bottom: 18px;"><b>The geometry of the deep linear network</b>, Govind Menon (2024)</li>
+            </ul>
+        </section>
+
+        <!-- Recap -->
+        <section class="section-content">
+            <h2>Recap: Key Questions for Gradient Flow</h2>
+            <p>For the gradient flow dynamics on a loss surface $\mathcal{L}(\mathbf{W})$:</p>
+            <div class="theorem-box" style="margin-bottom:40px;">
+                \[ \frac{d}{dt} \mathbf{W}(t) = - \nabla_{\mathbf{W}} \mathcal{L}(\mathbf{W}(t)) \]
+            </div>
+            <p>We want to understand:</p>
+            <ul style="margin-top: 20px;">
+                <li>Convergence guarantees? (<em>Yes, for balanced cases</em>)</li>
+                <li>Convergence rate? (<em>Can be accelerated by depth</em>)</li>
+                <li><strong>Characterization of the minimizer reached?</strong></li>
+                <li>Effect of noise and discretization?</li>
+            </ul>
+            <p>Today, we address the third question: among all possible solutions, which one does gradient descent choose?</p>
+        </section>
+
+        <!-- The Central Question -->
+        <section class="section-content">
+            <h2>The Central Question of Implicit Regularization</h2>
+            <p>In overparameterized settings, there are many (often infinite) parameter settings that achieve zero training loss. Gradient descent finds one of them. Why that specific one?</p>
+            <div class="theorem-box" style="margin-top:30px;">
+                <p style="font-size:1.3em; text-align:center; color:#0056b3;">What objective is gradient descent implicitly minimizing?</p>
+            </div>
+            <p>We will investigate three competing hypotheses:</p>
+            <ol>
+                <li><strong>Norm Minimization</strong></li>
+                <li><strong>Rank Minimization</strong></li>
+                <li><strong>Volume Maximization</strong></li>
+            </ol>
+        </section>
+
+        <section class="section-content">
+            <h2>General Problem Formulation</h2>
+            <ul>
+                <li>
+                    The problem is to recover a matrix $W \in \mathbb{R}^{d \times d'}$ from a set of observed entries $\{b_{i,j}\}$ at locations $(i,j) \in \Omega$.
+                </li>
+                <li>
+                    The goal is to find a matrix $W$ that minimizes the squared error loss:
+                    <br>
+                    \[
+                    \ell(W) = \frac{1}{2} \sum_{(i,j) \in \Omega} \left(W_{i,j} - b_{i,j}\right)^2
+                    \]
+                </li>
+                <li>
+                    Instead of optimizing over $W$ directly, the matrix is parameterized as the product of $L$ factor matrices:
+                    <br>
+                    \[
+                    W = W_L W_{L-1} \cdots W_1
+                    \]
+                </li>
+                <li>
+                    The factor matrices $\{W_l\}_{l=1}^L$ are then trained to minimize the loss.
+                </li>
+                <li>
+                    The optimization dynamics are studied under gradient flow:
+                    <br>
+                    \[
+                    \frac{d}{dt}W_l(t) = -\nabla_{W_l} \ell(W(t))
+                    \]
+                </li>
+                <li>
+                    This process starts from a random initialization close to zero that satisfies the "balancedness" condition: $W_{l+1}^T(0)W_{l+1}(0) = W_l^T(0)W_l(0)$.
+                </li>
+            </ul>
+        </section>        
+
+        <!-- Hypothesis 1: Norm Minimization -->
+        <section class="section-content">
+            <h2>Hypothesis 1: Norm Minimization</h2>
+            <p>This is the classical explanation, rooted in linear regression where gradient descent with zero initialization famously converges to the minimum $\ell_2$-norm solution.</p>
+            <p>The hope is that this generalizes to deep learning, perhaps with a different norm (e.g., nuclear norm for matrices).</p>
+            <div class="theorem-box">
+                <p><strong>Conjecture 1 (Gunasekar et al., 2017).</strong> <em>For matrix completion, gradient descent with small initialization converges to the solution with the minimum <strong>nuclear norm</strong>.</em></p>
+            </div>
+            <p>Let's test this hypothesis.</p>
+        </section>
+
+        <!-- A Counterexample to the Norm Hypothesis -->
+        <section class="section-content">
+            <h2>A Counterexample: Norms vs. Rank</h2>
+            <p>Razin & Cohen (2020) constructed a simple 2x2 matrix completion problem to test this hypothesis. Given observations $w_{12} = 1, w_{21} = 1, w_{22} = 0$, the set of solutions is:</p>
+            \[ S = \left\{ W_x = \begin{pmatrix} x & 1 \\ 1 & 0 \end{pmatrix} : x \in \mathbb{R} \right\} \]
+            <p>This setup creates a direct conflict:</p>
+            <p><strong>Minimizing any norm</strong> (e.g., Frobenius $\|W_x\|_F = \sqrt{x^2+2}$) requires $x$ to be bounded (minimum at $x=0$).</p>
+
+        </section>
+
+        <!-- Theorem: Norms Are Not the Answer -->
+        <section class="section-content">
+            <h2>Theorem: Norm Minimization is False</h2>
+            <p>The paper proves that for this problem, gradient flow on a deep matrix factorization ($L \ge 2$) drives the unobserved entry to $\infty$.</p>
+            <div class="theorem-box">
+                <p><strong>Theorem 1 (Razin & Cohen, 2020).</strong> <em>For the matrix completion problem above, with random near-zero balanced initialization and depth $L \ge 2$, if $\det(W(0)) > 0$ (a 50% chance), then as the loss $\ell(t) \to 0$:</em></p>
+                <ol>
+                    <li style="list-style-type: '1. ';"><em>For <strong>any</strong> norm or quasi-norm $\|\cdot\|$, the norm of the solution diverges: $\|W(t)\| \to \infty$.</em></li>
+                    <li style="list-style-type: '2. ';"><em>The effective rank of the solution converges to its minimum possible value: $\erank(W(t)) \to 1$.</em></li>
+                </ol>
+            </div>
+            <p>This definitively shows that implicit regularization in this setting cannot be explained by the minimization of any norm.</p>
+        </section>
+
+        <!-- Experimental Verification -->
+        <section class="section-content">
+            <h2>Experimental Verification for Hypothesis 1</h2>
+            <p>The theory predicts that as the loss decreases, the unobserved entry ($w_{11}$) should grow. (Fig 1 from Razin & Cohen, 2020)</p>
+            <img src="C:/Users/Rathindra/Documents/Menon/quasinorm.png" alt="Plot showing unobserved entry growing as loss decreases" style="width: 80%; max-width: 700px; border: 1px solid #ccc; border-radius: 8px;">
+            <p>The experiments confirm this: as loss decreases (moving right to left on the x-axis), the absolute value of the unobserved entry increases. Since all norms must grow with this entry, this validates the theorem and refutes the norm minimization hypothesis.</p>
+        </section>
+
+        <!-- Hypothesis 2 -->
+        <section class="section-content">
+            <h2>Hypothesis 2: Rank Minimization</h2>
+            <p>The failure of the norm hypothesis suggests a new candidate: perhaps the implicit bias is towards minimizing **rank** (or its continuous surrogate, **effective rank**).</p>
+            <div class="theorem-box">
+                <p><strong>Hypothesis 2.</strong> <em>Gradient descent converges to the solution with the minimum (effective) rank.</em></p>
+            </div>
+            <p>This is consistent with the previous experiment and many empirical observations. But is it the full story?</p>
+        </section>
+
+        <!-- Experimental Test for Hypothesis 2 -->
+        <section class="section-content">
+            <h2>Experiment: Is Rank/Effective Rank Sufficient?</h2>
+            <p>Consider a 2x2 diagonal matrix completion task where all rank-1 solutions lie on a hyperbola. (Fig 4 from Cohen, Menon, Veraszto, 2023)</p>
+            <img src="C:/Users/Rathindra/Documents/Menon/hyperbola.png" alt="Training outcomes on a hyperbola of rank-1 solutions" style="width: 90%; max-width: 800px; border: 1px solid #ccc; border-radius: 8px;">
+            <p><strong>Observation:</strong> The training outcomes cluster tightly around the corners of the hyperbola, indicating a strong preference for these solutions.</p>
+            <ul>
+                <li>All points on the red/green curves are rank-1 minimizers. A simple **rank minimization** principle fails to explain the clustering.</li>
+                <li>The embedded histograms show the **effective rank** is also tightly clustered around 1.0 for all outcomes. Effective rank also fails to explain the preference for the corners.</li>
+            </ul>
+        </section>
+
+        <section class="section-content">
+            <h2>Experiment: Is Rank/Effective Rank Sufficient?</h2>
+            <p>Consider a 3x3 diagonal matrix completion task where all minimizers are rank-2. (Fig 8 from Cohen, Menon, Veraszto, 2023)</p>
+            <img src="C:/Users/Rathindra/Documents/Menon/rankExp2.png" alt="Training outcomes are rank-2 solutions" style="width: 90%; max-width: 800px; border: 1px solid #ccc; border-radius: 8px;">
+            <p><strong>Observation:</strong> The majority of the 500 outputs cluster near one particular rank-two minimizer indicated by the blue dot.</p>
+        </section>       
+        
+   
+        <section class="section-content">
+            <h2>The Volume Element of a Riemannian Manifold</h2>
+            <p>The foundation of the proof is the standard definition of a volume form in Riemannian geometry.</p>
+            <ol>
+                <li>Let $(M, g)$ be a smooth, orientable $n$-dimensional Riemannian manifold. In our context, the manifold $M$ is the general linear group $GL(d, \mathbb{R})$, which is an open subset of the space of all $d \times d$ real matrices, $M_d$. The dimension is $n = d^2$.</li>
+                <li>Let $\{x^1, \dots, x^n\}$ be a local coordinate system on an open set $U \subset M$. The Riemannian metric $g$ is represented in these coordinates by a matrix of its components, $(g_{ij})$, where $g_{ij} = g(\frac{\partial}{\partial x^i}, \frac{\partial}{\partial x^j})$.</li>
+                <li>The canonical volume form $d\text{vol}_g$ on $U$ is the unique $n$-form given by:
+                $
+     d\text{vol}_g = \sqrt{\det(g_{ij})} \, dx^1 \wedge \dots \wedge dx^n 
+    $
+                </li>
+                <li>For this paper, we use the standard coordinates of $M_d$, where $x^k$ corresponds to the matrix entries $W_{ij}$. The standard volume element on $M_d$ is $dW := dW_{11} \wedge \dots \wedge dW_{dd}$. The metric is the tensor $g^N$. The volume form is therefore:
+                $
+     d\text{vol}_{g^N} = \sqrt{\det g^N} \, dW 
+    $
+                where $\det g^N$ is the determinant of the metric tensor's matrix representation in the standard basis of $M_d$.
+                </li>
+            </ol>
+            <p class="assumption"><strong>Assumption:</strong> The analysis is primarily restricted to $W \in GL(d, \mathbb{R})$, the space of full-rank (invertible) matrices. This ensures the metric $g^N$ and its associated operators are well-defined.</p>
+        </section>
+        
+        
+        <!-- Hypothesis 3 -->
+        <section class="section-content">
+            <h2>Hypothesis 3: Bias Towards High State Space Volume</h2>
+            <p>The failure of the rank hypothesis suggests a more refined geometric principle is at play.</p>
+            <div class="theorem-box">
+                <p><strong>Hypothesis 3.</strong> <em>Gradient-based methods are biased towards solutions that can be represented in "more ways" in the parameter space. This size is measured by the volume element induced by the Riemannian metric $g^N$.</em></p>
+            </div>
+            <p>The volume element tells us how to measure the "size" of a small region of matrices. Regions with higher volume are "bigger" targets for the optimization dynamics.</p>
+        </section>
+
+        <!-- Experimental Test for Hypothesis 3 -->
+        <section class="section-content">
+            <h2>Volume as the Predictor</h2>
+            <p>Now let's plot the logarithm of the state space volume on the same plane of solutions. (Fig 5 from Cohen, Menon, Veraszto, 2023)</p>
+            <img src="C:/Users/Rathindra/Documents/Menon/volume.png" alt="Heatmap of volume on the solution space" style="width: 60%; max-width: 600px; border: 1px solid #ccc; border-radius: 8px;">
+            <p>The volume (brighter colors) is highest precisely at the corners of the hyperbola where the training outcomes clustered. This suggests that the dynamics are not just minimizing rank, but are being attracted to the regions of maximal volume within the set of low-rank solutions.</p>
+        </section>
+        
+        <!-- Quantifying Volume (Downstairs) -->
+        <section class="section-content">
+            <h2>Quantifying Volume on the Solution Space</h2>
+            <p>The volume of a small region of end-to-end matrices $W$ is given by $\sqrt{\det g^N} dW$.</p>
+            <p><strong>Vandermonde Determinant.</strong> $\text{van}(\Lambda) = \prod_{1 \le i < j \le d} (\lambda_j - \lambda_i) $
+        
+            <div class="theorem-box">
+                <p><strong>Theorem 1.1 (Cohen, Menon, Veraszto, 2023).</strong> The volume element on the manifold of end-to-end matrices $(\mathcal{M}_d, g^N)$ is given in terms of the singular values $\Sigma$ by:</p>
+                $
+     \sqrt{\det g^N} dW = N^{\frac{d(d-1)}{2}} \det(\Sigma^2)^{\frac{1-N}{2N}} \text{van}(\Sigma^{2/N}) d\Sigma \, dU \, dV 
+    $
+            </div>
+    
+            <p>This formula shows that the volume density <strong>diverges</strong> as any singular value approaches zero (i.e., as the matrix $W$ approaches a lower rank). This divergence indicates a strong geometric bias towards low-rank matrices during the training process.</p>
+        </section>
+
+        <section class="section-content">
+            <h2>Proof of Divergence</h2>
+            <p>Let's analyze the volume density, which is proportional to $\det(\Sigma^2)^{\frac{1-N}{2N}} \text{van}(\Sigma^{2/N})$.</p>
+            <p>1. The first term can be expanded using the singular values $\sigma_1, \dots, \sigma_d$:</p>
+            $
+     \det(\Sigma^2)^{\frac{1-N}{2N}} = \left( \prod_{i=1}^d \sigma_i^2 \right)^{\frac{1-N}{2N}} = \prod_{i=1}^d \sigma_i^{\frac{1-N}{N}} = \prod_{i=1}^d \sigma_i^{\frac{1}{N}-1} 
+    $
+            <p>2. Let's consider the behavior as one singular value, say $\sigma_d$, approaches zero, while the others remain non-zero. The expression can be written as:</p>
+            $
+     \left( \sigma_d^{\frac{1}{N}-1} \right) \cdot \left( \prod_{i=1}^{d-1} \sigma_i^{\frac{1}{N}-1} \right) \cdot \left( \text{van}(\Sigma^{2/N}) \right) 
+    $
+            <p>3. For a network depth $N > 1$, the exponent $\frac{1}{N}-1$ is negative. We can write $\sigma_d^{\frac{1}{N}-1}$ as:</p>
+            $
+     \sigma_d^{\frac{1}{N}-1} = \frac{1}{\sigma_d^{1-\frac{1}{N}}} 
+    $
+            <p>As $\sigma_d \to 0$, the exponent $1-\frac{1}{N}$ is positive, so $\sigma_d^{1-\frac{1}{N}} \to 0$.</p>
+        </section>
+        
+        <!-- Connecting Geometries -->
+        <section class="section-content columns">
+            <div class="column-text">
+                <h2>Connecting Geometries: Riemannian Submersion</h2>
+                <p>How does the "downstairs" geometry on the space of end-to-end matrices relate to the simple "upstairs" Euclidean geometry on the space of factors?</p>
+                <p>The connection is a <strong>Riemannian submersion</strong>. This means the projection map $\phi: \mathcal{M}_r \to M_r$ (from the balanced manifold of factors to the space of rank-r matrices) is a geometry-preserving map.</p>
+                <div class="theorem-box">
+                    <p><strong>Theorem 13 (Menon & Yu, 2023).</strong> For each rank $r$, the metric $g^N$ on $M_r$ is obtained from the map $\phi: \mathcal{M}_r \to M_r$ by Riemannian submersion.</p>
+                </div>
+            </div>
+            <div class="column-details" style="display:flex; align-items:center; justify-content:center; text-align:center; background-color:#fff; border-left: 0px;">
+                <img src="C:/Users/Rathindra/Documents/Menon/submersion.png" alt="Diagram of a Riemannian submersion" style="width: 80%; max-width: 600px; border: 1px solid #ccc; border-radius: 8px;">
+            </div>
+        </section>
+
+        <!-- Quantifying Volume (Upstairs) -->
+        <section class="section-content">
+            <h2>Quantifying Volume of Representations</h2>
+            <p>The "upstairs" space of weights $\mathbf{W} = (W_N, \dots, W_1)$ contains many configurations that map to the same end-to-end matrix $W$. This set is the fiber, or group orbit, $O_W$. Its volume quantifies the degree of overparameterization.</p>
+            <div class="theorem-box">
+                <p><strong>Theorem 10 (Menon & Yu, 2023).</strong> The volume of the group orbit $O_W$ corresponding to an end-to-end matrix $W$ with singular values $\Sigma$ is:</p>
+                 \[ \text{vol}(O_W) = c_d^{N-1} \frac{\text{van}(\Sigma^2)}{\text{van}(\Sigma^{2/N})} \]
+            </div>
+            <p>This provides an "entropic" interpretation: solutions with a larger orbit volume are more numerous and thus more likely to be found. This volume also diverges as singular values approach zero.</p>
+        </section>
+        
+        <!-- Proof Sketch Intro -->
+        <section class="section-content centered-text">
+            <h2>Proof Sketch: Connecting Geometry and Volume</h2>
+        </section>
+        
+ 
+        <section class="section-content">
+            <h2>1. Determinant of the Metric Tensor</h2>
+            <p>The determinant of $g^N$ is computed not by direct calculation, but by exploiting its spectral properties. </p>
+            <ul>
+                <li>The metric tensor $g^N$ at a point $W = U \Sigma V^T$ can be diagonalized via a similarity transformation:
+                $
+     g^N = (V \otimes U) D^N(\Sigma) (V \otimes U)^T 
+    $
+                where $D^N(\Sigma)$ is a diagonal matrix and $(V \otimes U)$ is an orthogonal matrix.</li>
+                <li>The determinant is invariant under similarity transformations by orthogonal matrices. Therefore:
+                $
+     \det g^N = \det\left((V \otimes U) D^N(\Sigma) (V \otimes U)^T\right) = \det D^N(\Sigma) 
+    $
+                </li>
+                <li>The determinant of the diagonal matrix $D^N(\Sigma)$ is the product of its diagonal entries. These entries are the reciprocals of the eigenvalues, $\lambda_{il}^N$, of the linear operator $A_{N,W}$. Thus, we arrive at the key relation:
+                $
+     \det g^N = \prod_{i,l=1}^d \frac{1}{\lambda_{il}^N} 
+    $
+                </li>
+            </ul>
+        </section>
+
+        <section class="section-content">
+            <h2>2. Eigenvalues and Eigenvectors of $A_{N,W}$</h2>
+            <p>The eigenvalues $\lambda_{il}^N$ are provided by the following rigorous result, which is a restatement of Lemma 2.4.</p>
+            <div class="theorem-box">
+                <p><strong>Lemma 2.4 (Spectral Decomposition of $A_{N,W}$).</strong> Let $W \in GL(d, \mathbb{R})$ have the singular value decomposition $W=U\Sigma V^T$. The linear operator $A_{N,W}: M_d \to M_d$ has $d^2$ eigenvalues $\lambda_{il}^N$ for $i, l \in \{1, \dots, d\}$.
+                
+                <p>For a network of finite depth $N$, these eigenvalues are given by:</p>
+                $
+     \lambda_{il}^N = \frac{1}{N} \sum_{j=1}^N (\sigma_i^2)^{\frac{N-j}{N}} (\sigma_l^2)^{\frac{j-1}{N}} 
+    $</p>
+                <p>In the special case where $i=l$, this simplifies to $\lambda_{ll}^N = (\sigma_l^2)^{(N-1)/N}$.</p>
+                
+                <p>The corresponding eigenvectors, which are independent of $N$, are given by $T_{il} = U E_{il} V^T$, where $E_{il}$ is the standard basis matrix with a 1 in the $(i,l)$ position and zeros elsewhere.</p>
+            </div>
+        </section>
+
+        <section class="section-content">
+            <h2>3. The Need for a Change of Coordinates</h2>
+            <p>The expression for $\det g^N$ is a function of the singular values $\sigma_i$ of the matrix $W$. However, the volume element $dW$ is expressed in the coordinates of the matrix entries $W_{ij}$.</p>
+    
+            <p>To derive a coherent and insightful formula for the volume form, we must express all components in a single, consistent coordinate system. The natural choice is the coordinate system provided by the Singular Value Decomposition, $(U, \Sigma, V)$.</p>
+            
+            <p>This change of variables allows us to directly analyze how the geometric volume changes with the singular values, which is essential for understanding the dynamics of training and the geometric source of implicit regularization.</p>
+        </section>
+    
+        <section class="section-content">
+            <h2>4. The Jacobian of the SVD Map</h2>
+            <p>Changing from matrix entry coordinates to SVD coordinates requires the introduction of a Jacobian determinant, which accounts for the distortion of volume under this nonlinear map.</p>
+            <p class="assumption"><strong>Assumption:</strong> To define the map rigorously, we consider $W$ in the open set of matrices with distinct, non-zero singular values, $\sigma_1 > \sigma_2 > \dots > \sigma_d > 0$. The results are then extended to the full space by continuity.</p>
+    
+            <div class="theorem-box">
+                 <p><strong>Lemma 2.7 (Jacobian of SVD).</strong> The change of variables from the volume element $dW$ on $M_d$ to the volume elements on the SVD components is given by:</p>
+                $$
+     dW = \text{van}(\Sigma^2) \, d\Sigma \wedge dU \wedge dV 
+    $$
+                <p>where $d\Sigma = d\sigma_1 \wedge \dots \wedge d\sigma_d$, $dU$ and $dV$ are the Haar measures on the orthogonal group $O(d)$, and $\text{van}(\Sigma^2)$ is the Vandermonde determinant of the squared singular values:</p>
+                $$
+     \text{van}(\Sigma^2) = \prod_{1 \le i < j \le d} (\sigma_i^2 - \sigma_j^2) 
+    $$
+            </div>
+        </section>
+    
+        <section class="section-content">
+            <h2>5. Final Form of the Volume Element</h2>
+            <p>The final step is to assemble the determinant of the metric (in terms of $\lambda_{il}^N$) and the Jacobian of the SVD map.</p>
+            <ol>
+                <li>Starting with the definition:
+                $
+     d\text{vol}_{g^N} = \sqrt{\det g^N} \, dW 
+    $
+                </li>
+                <li>We substitute the expressions from steps 2 and 5:
+                $
+     d\text{vol}_{g^N} = \left( \prod_{i,l=1}^d \frac{1}{\lambda_{il}^N} \right)^{1/2} \text{van}(\Sigma^2) \, d\Sigma \, dU \, dV
+    $
+                </li>
+                <li>After performing the product over the eigenvalues $\lambda_{il}^N$ and simplifying the resulting expression (as detailed in Section 2.3 of the paper), we arrive at the final result stated in Theorem 1.1.</li>
+            </ol>
+            <div class="theorem-box">
+                <p><strong>Theorem 1.1 (Volume Form for Finite Depth $N$).</strong> The volume form for the metric $g^N$ is:</p>
+                $$
+     d\text{vol}_{g^N} = N^{d(d-1)/2} \det(\Sigma^2)^{(1-N)/(2N)} \text{van}(\Sigma^{2/N}) \, d\Sigma \, dU \, dV 
+    $$        </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="section-content">
+            <h2>Summary of Findings</h2>
+            <ul>
+                <li>The classical hypothesis that implicit regularization is equivalent to norm minimization is incorrect. There are natural problems where gradient descent drives all norms to infinity.</li>
+                <li>A more robust heuristic is **rank minimization**, which correctly predicts the behavior in the counterexample.</li>
+                <li>However, rank alone is insufficient to explain why specific low-rank solutions are preferred over others.</li>
+                <li>The most fundamental explanation appears to be a bias towards regions of **maximal state space volume**, a concept made precise by the Riemannian geometry of the DLN. The volume is largest near low-rank solutions, and can distinguish between different solutions of the same rank.</li>
+            </ul>
+        </section>
+
+        <!-- Next Time -->
+        <section class="section-content centered-text">
+            <h1 style="margin-top: 10vh; font-size: 3em;">Next Time...</h1>
+            <p style="font-size: 1.5em;">Effect of noise and discretization</p>
+        </section>
+        
+        <!-- Q&A -->
+        <section class="section-content centered-text">
+            <h2 style="margin-top: 10vh;">Thank You!</h2>
+            <p style="font-size: 1.6em; margin-top: 50px;">Any Questions?</p>
+        </section>
+
+    </div><!-- end page-container -->
+</body>
+</html>
