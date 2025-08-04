@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Linear Networks: Effect of Noise</title>
+    <!-- MathJax 3 for rendering LaTeX math -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                macros: {
+                  Tr: '\\operatorname{Tr}',
+                  grad: '\\operatorname{grad}',
+                  Pr: '\\operatorname{Pr}',
+                  erank: '\\operatorname{erank}'
+                },
+                packages: {'[+]': ['physics', 'ams']}
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        /* Basic Reset & Body Styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            overflow: hidden; /* Prevent body scrollbar */
+        }
+
+        /* Presentation Container */
+        .presentation-container {
+            position: relative; 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden;
+            background-color: #f8f8f8;
+        }
+
+        /* Slide Styling */
+        .slide {
+            background-color: #ffffff; 
+            border: 1px solid #ddd; 
+            border-radius: 8px;
+            padding: 40px 60px;
+            margin: 0; 
+            width: 100%; 
+            height: 100%; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center;
+            box-sizing: border-box; 
+            position: absolute; 
+            top: 0; 
+            left: 0;
+            opacity: 0; 
+            visibility: hidden; 
+            transition: opacity 0.8s ease-in-out, visibility 0s 0.8s;
+            z-index: 1; 
+            overflow-y: auto; /* Allow scrolling within a single slide if content overflows */
+        }
+        
+        .slide.active {
+            opacity: 1; 
+            visibility: visible; 
+            transition: opacity 0.8s ease-in-out; 
+            z-index: 2;
+        }
+
+        /* Column Layout */
+        .slide.columns {
+            flex-direction: row; 
+            justify-content: space-between; 
+            align-items: stretch; /* Align items to fill height */
+            gap: 30px;
+        }
+        
+        .column-text {
+            flex: 1; 
+            max-width: 50%;
+            padding: 20px 0;
+        }
+        
+        .column-details {
+            flex: 1.2;
+            padding: 20px;
+            background-color: #f9faff;
+            border-left: 3px solid #0056b3;
+            border-radius: 4px;
+            align-self: center;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .column-details h4 {
+            color: #0056b3;
+            margin-top: 0;
+            text-align: left;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            width: 100%;
+            position: relative;
+        }
+        
+        .column-details h4:after { display: none; } /* Disable default h-styles */
+
+        .column-details p { font-size: 1em; text-align: left; }
+        .column-details p em { color: #333; font-weight: 500;}
+
+
+        /* Headings */
+        h1, h2, h3 { 
+            color: #0056b3; 
+            text-align: center; 
+            width: 100%;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h1 { 
+            font-size: 2.4em; 
+            margin-bottom: 15px; 
+            background: linear-gradient(to right, #0056b3, #0088cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 { 
+            font-size: 1.9em; 
+            margin-bottom: 20px; 
+        }
+        
+        h2:after {
+            content: ''; display: block; width: 100px; height: 3px;
+            background: linear-gradient(to right, #0056b3, #80cbe5);
+            position: absolute; bottom: 0; left: 50%;
+            transform: translateX(-50%); border-radius: 2px;
+        }
+        
+        h3 { 
+            font-size: 1.3em; color: #555; margin-top: 5px; font-weight: 500;
+        }
+
+        /* Text Elements */
+        .slide p, .slide ul, .slide ol {
+            margin-bottom: 18px; 
+            font-size: 1.15em; 
+            max-width: 900px; 
+            width: 100%;
+            line-height: 1.7;
+            text-align: left;
+        }
+        
+        .slide.title-slide p, .slide.centered-text p {
+            text-align: center;
+        }
+        
+        .slide ul, .slide ol { padding-left: 40px; }
+        .slide ul li { list-style-type: '▸  '; }
+        .slide li { margin-bottom: 10px; }
+        .slide ul ul, .slide ol ol { margin-left: 30px; margin-top: 8px; }
+        
+        /* Special block for theorems */
+        .theorem-box {
+            border: 2px solid #0056b3;
+            border-radius: 8px;
+            padding: 20px 30px;
+            margin: 20px 0;
+            background-color: #f7faff;
+            box-shadow: 0 2px 8px rgba(0, 86, 179, 0.1);
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+        }
+        .theorem-box p { text-align: left; font-size: 1.1em; }
+
+        /* Title Slide */
+        .title-slide { 
+            text-align: center;
+            background: linear-gradient(to bottom, #ffffff, #f0f8ff);
+        }
+        .title-slide h1 { margin-top: 40px; font-size: 2.8em; }
+        .title-slide h3 { margin-top: 15px; margin-bottom: 20px; color: #444; }
+
+        /* Navigation */
+        .nav-button {
+            position: fixed; bottom: 25px; background-color: rgba(0, 86, 179, 0.8);
+            color: white; border: none; padding: 12px 25px; font-size: 1.3em;
+            border-radius: 30px; cursor: pointer; z-index: 10; 
+            transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .nav-button:hover { background-color: rgba(0, 86, 179, 1); transform: translateY(-2px); }
+        .nav-button:disabled { background-color: rgba(150, 150, 150, 0.5); cursor: not-allowed; transform: none; box-shadow: none; }
+        #prevBtn { left: 25px; }
+        #nextBtn { right: 25px; }
+
+        /* Slide counter & Progress bar */
+        .slide-counter {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6); color: white; padding: 8px 15px;
+            border-radius: 20px; font-size: 0.9em; z-index: 10;
+        }
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 5px; background-color: #0088cc;
+            z-index: 20; transition: width 0.3s ease;
+        }
+        
+        /* Media Queries */
+        @media (max-width: 900px) {
+            .slide { padding: 20px 25px; }
+            .slide.columns { flex-direction: column; align-items: center; }
+            .column-text, .column-details { max-width: 100%; flex: 1; border-left: none; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.6em; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="progress-bar"></div>
+        <div class="slide-counter"></div>
+
+        <!-- SLIDE 1: Title -->
+        <section class="slide title-slide active">
+            <h1>Deep Linear Networks</h1>
+            <h3>Rathindra Nath Karmakar</h3>
+            <h3 style="margin-top:100px;">Session 4: Effect of Noise and Discretization</h3>
+        </section>
+
+        <!-- SLIDE 1.5: References -->        
+
+        <section class="slide">
+            <h2>References</h2>
+            <ul style="margin-top: 30px;">
+                <li style="margin-bottom: 18px;"><b>Motion by mean curvature and Dyson Brownian motion</b>, C.-P. Huang, D. Inauen, and G. Menon (2023)</li>
+                <li style="margin-bottom: 18px;"><b>An entropy formula for the deep linear network</b>, G. Menon and T. Yu (2024)</li>
+                <li style="margin-bottom: 18px;"><b>The geometry of the deep linear network</b>, G. Menon (2024)</li>
+            </ul>
+        </section>        
+
+        <!-- SLIDE 2: Recap -->
+        <section class="slide">
+            <h2>Recap: Key Questions for Gradient Flow</h2>
+            <p>For the gradient flow dynamics on a loss surface $\mathcal{L}(\mathbf{W})$:</p>
+            <div class="theorem-box" style="margin-bottom:40px;">
+                \[ \frac{d}{dt} \mathbf{W}(t) = - \nabla_{\mathbf{W}} \mathcal{L}(\mathbf{W}(t)) \]
+            </div>
+            <p>We want to understand:</p>
+            <ul style="margin-top: 20px;">
+                <li>Convergence guarantees? (<em>Yes, for balanced cases</em>)</li>
+                <li>Convergence rate? (<em>Can be accelerated by depth</em>)</li>
+                <li>Characterization of the minimizer? (<em>Bias towards max volume</em>)</li>
+                <li><strong>Effect of noise and discretization?</strong></li>
+            </ul>
+            <p>Today, we address the final question. What happens when we add stochastic noise to the dynamics?</p>
+        </section>
+
+        <!-- SLIDE 3: Motivation -->
+        <section class="slide">
+            <h2>Stochasticity in Deep Learning</h2>
+            <p>Real-world training is not a clean gradient descent. Noise arises from many sources:</p>
+            <ul>
+                <li><strong>Stochastic Gradient Descent (SGD):</strong> Gradients are computed on mini-batches of data, which is a noisy estimate of the true gradient.</li>
+                <li><strong>Discretization Error:</strong> Using a finite step size $\eta > 0$ introduces error.</li>
+                <li><strong>Round-off Errors:</strong> Floating point arithmetic introduces small, random perturbations.</li>
+            </ul>
+            <p>How do these stochastic effects interact with the Riemannian geometry of the problem? One tool is the <strong>Riemannian Langevin Equation (RLE)</strong>.</p>
+        </section>
+
+        <section class="slide">
+            <h2>Stochasticity in Deep Learning</h2>
+            <p>Real-world training is not a clean gradient descent. Noise arises from many sources:</p>
+            <ul>
+                <li><strong>Stochastic Gradient Descent (SGD):</strong> Gradients are computed on mini-batches of data, which is a noisy estimate of the true gradient.</li>
+                <li><strong>Discretization Error:</strong> Using a finite step size $\eta > 0$ introduces error.</li>
+                <li><strong>Round-off Errors:</strong> Floating point arithmetic introduces small, random perturbations.</li>
+            </ul>
+            <p>How do these stochastic effects interact with the Riemannian geometry of the problem? One tool is the <strong>Riemannian Langevin Equation (RLE)</strong>.</p>
+            <p>Can be used to model <strong>noise due to round-off errors</strong></p>
+        </section>        
+
+        
+        <!-- SLIDE 5: The Central Idea -->
+        <section class="slide centered-text">
+            <h2>The Central Idea</h2>
+            <p style="font-size:1.4em; text-align:center;">Noise in the "upstairs" parameter space (along redundant directions) induces a deterministic, curvature-driven drift in the "downstairs" solution space.</p>
+        </section>
+
+        <!-- SLIDE 6: Warm-Up Example -->
+        <section class="slide">
+            <h2>Warm-Up: Dyson Brownian Motion</h2>
+            <p>To build intuition, we study a famous model from random matrix theory.</p>
+            <ul>
+                <li><strong>Downstairs Dynamics (Eigenvalues):</strong> A system of interacting particles (eigenvalues) $x_1 < \dots < x_d$ evolves according to:
+                 \[ dx_i = \sum_{j \neq i} \frac{1}{x_i - x_j} dt + \sqrt{\frac{2}{\beta}} dW_i \]
+                 This is **Dyson Brownian Motion**, combining repulsion and random noise.
+                </li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 7: Prerequisites -->
+        <section class="slide">
+            <h2>Prerequisites for Theorem 15</h2>
+            <ul>
+                <li>Let $\text{Her}_d$ be the space of $d \times d$ Hermitian matrices.</li>
+                <li>Given a vector of eigenvalues $x \in \mathbb{R}^d$, the **isospectral orbit** $O_x$ is the set of all Hermitian matrices with those eigenvalues:
+                \[ O_x = \{ M \in \text{Her}_d \,|\, M = UXU^*, U \in U_d \} \]
+                where $X = \text{diag}(x)$ and $U_d$ is the unitary group.
+                </li>
+                <li>We can model noise on the full matrix space ("upstairs") using a standard Wiener process $H_t$ on $\text{Her}_d$. Let $P_M$ and $P_M^\perp$ be projections onto the tangent and normal spaces of the orbit $O_x$ at point $M$.</li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 8: Theorem 15 -->
+        <section class="slide">
+            <h2>Theorem 15: Noise Upstairs, Curvature Downstairs</h2>
+            <p>Consider the "upstairs" SDE for a matrix $M_t$ evolving on the isospectral orbit $O_{x_t}$ subject to isotropic noise:</p>
+             \[ dM_t = P_{M_t} dH_t + \sqrt{\frac{2}{\beta}} P_{M_t}^\perp dH_t \]
+            <div class="theorem-box">
+                <p><strong>Theorem 15 (Huang, Inauen, Menon, informal).</strong></p>
+                <ol>
+                    <li style="list-style-type: '(a) ';"><em>The eigenvalues of the matrix $M_t$ have the same law as the solution $x_t$ to Dyson Brownian Motion.</em></li>
+                    <li style="list-style-type: '(b) ';"><em>In the zero-noise limit ($\beta \to \infty$), noise purely tangential to the orbit ($P_{M_t}dH_t$) induces a deterministic drift normal to the orbit, equal to motion by (minus one half) **mean curvature**.</em></li>
+                </ol>
+            </div>
+            <p>This is a profound result: purely random fluctuations in the "gauge" directions (upstairs) create a deterministic, geometry-driven motion (a drift) in the observable space (downstairs).</p>
+        </section>
+
+        <!-- SLIDE 9: General Geometric Framework -->
+        <section class="slide centered-text">
+            <h2>General Geometric Framework</h2>
+        </section>
+
+        <!-- SLIDE 10: General Principles 1 -->
+        <section class="slide">
+            <h2>General Principles 1: Submersion with Group Action</h2>
+            <p>We formalize the "upstairs/downstairs" picture.</p>
+            <ul>
+                <li>Let $(\mathcal{M}, g)$ be a reference Riemannian manifold .</li>
+                <li>Let $G$ be a Lie group that acts on $\mathcal{M}$ by isometries .</li>
+                <li>The "downstairs" space is the quotient space $M = \mathcal{M}/G$, equipped with a metric $h$ via **Riemannian submersion**.</li>
+                <li>The map $\phi: \mathcal{M} \to M$ is the projection. The inverse image $\phi^{-1}(x) = O_x$ is the group orbit over $x$.</li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 11: General Principles 2 -->
+        <section class="slide">
+            <h2>General Principles 2: The "Upstairs" RLE</h2>
+            <p>We define stochastic gradient descent via the RLE of a lifted loss function $L = E \circ \phi$.</p>
+            <div class="theorem-box">
+                <p>Consider the "upstairs" dynamics for $m \in \mathcal{M}$ given by the SDE:</p>
+                \[ dm^{\beta,\kappa} = -\text{grad}_g L(m) dt + P_m d\mathbf{M}^\beta + \sqrt{\kappa} P_m^\perp d\mathbf{M}^\beta \]
+            </div>
+            <ul>
+                <li>The first term is the standard gradient of the lifted loss.</li>
+                <li>$P_m$ and $P_m^\perp$ are projections onto directions tangential and normal to the group orbit $O_{\phi(m)}$.</li>
+                <li>$\mathbf{M}^\beta$ is Brownian motion on $\mathcal{M}$. $\kappa$ modulates the anisotropy of the noise.</li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 12: General Principles 3 -->
+        <section class="slide">
+            <h2>General Principles 3: The "Downstairs" SDE</h2>
+            <p>The "upstairs" stochastic flow projects to a stochastic flow downstairs.</p>
+            <div class="theorem-box">
+                <p>The flow of $m_t$ projects to the RLE for the **free energy** downstairs:</p>
+                \[ dx = -\text{grad}_h F_\beta(x) dt + dX^{\beta/\kappa} \]
+                <p>where the free energy is defined as:</p>
+                \[ F_\beta(x) = L(x) - \frac{1}{\beta}S(x) \quad \text{and} \quad S(x) = \log\text{vol}(O_x) \]
+            </div>
+            <p>Noise in the redundant "gauge" directions upstairs manifests as an entropic term that modifies the energy landscape downstairs. In the limit $\kappa \to 0$, the upstairs noise is purely tangential, and the downstairs flow becomes deterministic: $\dot{x} = -\text{grad}_h F_\beta(x)$.</p>
+        </section>
+        
+        <!-- SLIDE 13: Application to DLN -->
+        <section class="slide centered-text">
+            <h2>Application to the Deep Linear Network</h2>
+        </section>
+
+        <!-- SLIDE 14: RLE for DLN: Upstairs Dynamics -->
+        <section class="slide">
+            <h2>RLE for DLN: Upstairs Dynamics</h2>
+            <p>Applying the general principle to the DLN, the "upstairs" RLE on the balanced manifold $\mathcal{M}$ is:</p>
+            <div class="theorem-box">
+                \[ d\mathbf{W}^{\beta,\kappa} = -\nabla_{\mathbf{W}} E(\phi(\mathbf{W})) dt + d\mathbf{M}^{\beta,\kappa} \]
+            </div>
+            <p>This is standard gradient descent on the lifted loss function $L=E \circ \phi$, plus a noise term $d\mathbf{M}^{\beta,\kappa}$ that represents Brownian motion on the balanced manifold (with the Frobenius metric).</p>
+        </section>
+
+        <!-- SLIDE 15: RLE for DLN: Downstairs Dynamics -->
+        <section class="slide">
+            <h2>RLE for DLN: Downstairs Dynamics</h2>
+            <p>The law of the end-to-end matrix $W_t = \phi(\mathbf{W}_t)$ is then given by the "downstairs" RLE:</p>
+            <div class="theorem-box">
+                \[ dW^{\beta,\kappa} = -\text{grad}_{g^N} F_\beta(W^{\beta,\kappa}) dt + dX^{\beta/\kappa} \]
+            </div>
+            <ul>
+                <li>The drift term is the Riemannian gradient of the free energy $F_\beta(W) = E(W) - \frac{1}{\beta}S(W)$.</li>
+                <li>The noise term $dX^{\beta/\kappa}$ is Brownian motion on the downstairs manifold $(M_d, g^N)$.</li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 16: The Free Energy Gradient -->
+    <section class="slide">
+        <h2>The Free Energy Gradient in the DLN</h2>
+        <p>The gradient of the free energy, which drives the system's evolution, can be computed explicitly. It balances the drive to minimize loss with an opposing entropic force.</p>
+        <div class="theorem-box">
+            \[ \text{grad}_{g^N} F_\beta(W) = \underbrace{A_{N,W}(E'(W))}_{\text{Loss Term}} - \underbrace{\frac{1}{\beta}\text{grad}_{g^N}S(W)}_{\text{Entropic/Curvature Term}} \]
+        </div>
+        <p>The second term is the entropic force arising from the geometry of overparameterization. For the DLN, it takes the specific form:</p>
+        <div class="theorem-box">
+            \[ \frac{1}{\beta}\text{grad}_{g^N}S(W) = \frac{1}{\beta} Q_N \Sigma' Q_0^T \]
+        </div>
+    </section>
+
+        <!-- SLIDE 16.5: The Explicit Downstairs SDE -->    
+
+    <section class="slide">
+        <h2>The Free Energy Gradient in the DLN</h2>
+        <p>For the DLN, it takes the specific form:</p>
+        <div class="theorem-box">
+            \[ \frac{1}{\beta}\text{grad}_{g^N}S(W) = \frac{1}{\beta} Q_N \Sigma' Q_0^T \]
+        </div>
+        <ul>
+            <li>
+                <b>\( W = Q_N \Sigma Q_0^T \):</b> This is the Singular Value Decomposition (SVD) of the end-to-end matrix. \(Q_N\) and \(Q_0\) are orthogonal matrices, and \(\Sigma\) is a diagonal matrix containing the singular values \( \sigma_k \).
+            </li>
+            <li>
+                <b>\( \Sigma' \):</b> A diagonal matrix whose entries are functions of the singular values \( \sigma_k \) and network depth \( N \). It acts as a repulsive force between the singular values, pushing the system away from low-rank solutions. The paper notes this "physical effect" is strictly due to the geometry of the DLN.
+            </li>
+        </ul>
+    </section>    
+
+        <!-- SLIDE 16.6: The Explicit Downstairs SDE -->
+
+        <section class="slide">
+            <h2>The Explicit Downstairs SDE</h2>
+            <p>The Menon & Yu paper provides an explicit formula for the Brownian motion $dX^{\beta/\kappa}$ on $(M_d, g^N)$.</p>
+            <div class="theorem-box">
+                <p><strong>Theorem 18 (Menon & Yu, 2023).</strong> The solution $X_t^\beta$ to the following Itô SDE with initial condition $X_0=W_0$ is Brownian motion on $(M_d, g^N)$:</p>
+                \[ dX_t^\beta = \sqrt{\frac{2}{\beta}} \begin{pmatrix} \sqrt{N}\lambda_1^{N-1}dB_{11}^{1,1} & \dots \\ \vdots & \ddots \end{pmatrix} + \frac{1}{\beta} Q_N \Sigma'' Q_0^T dt \]
+            </div>
+            <p>Here, $\Lambda = \Sigma^{1/N}$, $dB$ is a matrix of standard Wiener processes, and $\Sigma''$ is a diagonal matrix of drift terms (related to mean curvature) that arises from the Itô correction.</p>
+        </section>        
+
+        <!-- SLIDE 17: Proof Sketch Intro -->
+
+    <section class="slide">
+        <h2>Proof for 2x2 Matrices: The Goal</h2>
+        <p>Let's prove Theorem 15 for the simple case of $d=2$. We want to show that the eigenvalues $x_1, x_2$ of the matrix $M_t$ evolving by:</p>
+        \[ dM_t = P_{M_t} dH_t + \sqrt{\frac{2}{\beta}} P_{M_t}^\perp dH_t \]
+        <p>follow the Dyson Brownian Motion equations:</p>
+        \[ dx_1 = \frac{1}{x_1 - x_2} dt + \sqrt{\frac{2}{\beta}} dW_1 \]
+        \[ dx_2 = \frac{1}{x_2 - x_1} dt + \sqrt{\frac{2}{\beta}} dW_2 \]
+    </section>
+
+    <section class="slide">
+        <h2>Proof Step 1: Simplification</h2>
+        <p>The dynamics are invariant under unitary transformations ($M \to UMU^*$). This allows us to analyze the process at a point where the matrix $M_t$ is diagonal, without loss of generality.</p>
+        <ul>
+            <li>Let's fix a time $t$ and assume $M_t$ is the diagonal matrix $X = \text{diag}(x_1, x_2)$.</li>
+            <li><strong>Normal Space ($T_X^\perp O_x$):</strong> The normal space to the orbit at $X$ consists of all 2x2 Hermitian matrices that commute with $X$. These are the diagonal matrices.
+                \[ T_X^\perp O_x = \left\{ \begin{pmatrix} a & 0 \\ 0 & b \end{pmatrix}, a, b \in \mathbb{R} \right\} \]
+            </li>
+            <li><strong>Tangent Space ($T_X O_x$):</strong> The tangent space is the orthogonal complement. It consists of all 2x2 Hermitian matrices with zeros on the diagonal.
+                \[ T_X O_x = \left\{ \begin{pmatrix} 0 & z \\ \bar{z} & 0 \end{pmatrix}, z \in \mathbb{C} \right\} \]
+            </li>
+        </ul>
+    </section>
+  
+    <section class="slide">
+        <h2>Proof Step 2: Decomposing the Noise</h2>
+        <p>We express the "upstairs" noise $dH_t$ using an orthonormal basis for 2x2 Hermitian matrices that respects our tangent/normal split.</p>
+        <p><b>Normal Basis:</b> $E_a = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$, $E_b = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}$</p>
+        <p><b>Tangent Basis:</b> $E_c = \frac{1}{\sqrt{2}}\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$, $E_d = \frac{1}{\sqrt{2}}\begin{pmatrix} 0 & i \\ -i & 0 \end{pmatrix}$</p>
+        <p>The matrix noise term $dH_t$ can be written with four independent Wiener processes $W_a, W_b, W_c, W_d$:</p>
+        \[ dH_t = E_a dW_a + E_b dW_b + E_c dW_c + E_d dW_d \]
+        <p>Projecting this noise onto the tangent ($P_X$) and normal ($P_X^\perp$) spaces at $X$ gives our SDE for $dM_t$:</p>
+        \[ dM_t = \underbrace{(E_c dW_c + E_d dW_d)}_{\text{Tangent Part}} + \sqrt{\frac{2}{\beta}} \underbrace{(E_a dW_a + E_b dW_b)}_{\text{Normal Part}} \]
+    </section>
+
+    <section class="slide">
+        <h2>Proof Step 3: Itô's Formula for Eigenvalues</h2>
+        <p>To find the dynamics of an eigenvalue, say $x_1(M_t)$, we use Itô's formula. This requires the first and second derivatives of the eigenvalue with respect to changes in the matrix.</p>
+        <p>For a function $f(M_t)$, Itô's formula is: $df = \text{D}f(dM_t) + \frac{1}{2}\text{D}^2f(dM_t, dM_t)$</p>
+        <ul>
+            <li><strong>First Derivative (captures noise):</strong> The change in an eigenvalue is most sensitive to the corresponding diagonal entry.
+                \[ \text{D}x_1(A) = A_{11} \]
+            </li>
+            <li><strong>Second Derivative (captures drift):</strong> The second-order change depends on interactions between off-diagonal elements. For a matrix $A$:
+                 \[ \text{D}^2x_1(A, A) = 2 \frac{|A_{12}|^2}{x_1 - x_2} \]
+            </li>
+        </ul>
+        <p>Now we just need to plug our $dM_t$ into these formulas.</p>
+    </section>
+
+    <section class="slide">
+        <h2>Proof Step 4: The Final Calculation</h2>
+        <p>Let's compute the terms for $dx_1$.</p>
+        <ul>
+            <li><strong>Noise Term:</strong> We apply the first derivative to $dM_t$. Only the normal part contributes to the diagonal.
+            \[ \text{D}x_1(dM_t) = (dM_t)_{11} = \left(\sqrt{\frac{2}{\beta}} (E_a dW_a + E_b dW_b)\right)_{11} = \sqrt{\frac{2}{\beta}} dW_a \]
+            This gives the Brownian motion part of the equation. Let's call $W_a$ our new $W_1$.
+            </li>
+            <li><strong>Drift Term:</strong> We apply the second derivative. Only the tangent part has off-diagonal entries. The quadratic variation of $dM_t$ in the off-diagonal is $[E_c,E_c]dt + [E_d,E_d]dt$.
+            \[ \frac{1}{2} \text{D}^2x_1(dM_t, dM_t) = \frac{1}{2} \left( \underbrace{\text{D}^2x_1(E_c,E_c)dt}_{\text{from }dW_c^2} + \underbrace{\text{D}^2x_1(E_d,E_d)dt}_{\text{from }dW_d^2} \right) \]
+            \[ = \frac{1}{2} \left( 2\frac{|(E_c)_{12}|^2}{x_1 - x_2} + 2\frac{|(E_d)_{12}|^2}{x_1 - x_2} \right) dt = \frac{1}{x_1 - x_2} \left( \left|\frac{1}{\sqrt{2}}\right|^2 + \left|\frac{i}{\sqrt{2}}\right|^2 \right) dt = \frac{1}{x_1 - x_2} dt \]
+            </li>
+        </ul>
+        <p>Combining these gives: $dx_1 = \frac{1}{x_1 - x_2} dt + \sqrt{\frac{2}{\beta}} dW_1$. The proof for $x_2$ is identical.</p>
+    </section>
+
+        
+      
+
+        <!-- SLIDE 19: Sketch of Proof of Theorem 18 -->
+
+
+        <!-- SLIDE 20: Summary -->
+        <section class="slide">
+            <h2>Summary of Findings</h2>
+            <ul>
+                <li>Noise in training can be modeled rigorously using the **Riemannian Langevin Equation**.</li>
+            </ul>
+        </section>
+
+        <section class="slide">
+            <h2>Summary of Findings</h2>
+            <ul>
+                <li>Noise in training can be modeled rigorously using the **Riemannian Langevin Equation**.</li>
+                <li>There is a deep connection, via Riemannian submersion, between stochastic dynamics in the "upstairs" parameter space and the resulting dynamics in the "downstairs" solution space.</li>
+            </ul>
+        </section>
+        
+        <section class="slide">
+            <h2>Summary of Findings</h2>
+            <ul>
+                <li>Noise in training can be modeled rigorously using the **Riemannian Langevin Equation**.</li>
+                <li>There is a deep connection, via Riemannian submersion, between stochastic dynamics in the "upstairs" parameter space and the resulting dynamics in the "downstairs" solution space.</li>
+                <li>Noise that is tangential to the fibers (group orbits) upstairs induces a deterministic drift downstairs related to the **mean curvature** of the fibers. This drift is equivalent to the gradient of the **Boltzmann entropy** (volume).</li>
+            </ul>
+        </section>
+        
+        <section class="slide">
+            <h2>Summary of Findings</h2>
+            <ul>
+                <li>Noise in training can be modeled rigorously using the **Riemannian Langevin Equation**.</li>
+                <li>There is a deep connection, via Riemannian submersion, between stochastic dynamics in the "upstairs" parameter space and the resulting dynamics in the "downstairs" solution space.</li>
+                <li>Noise that is tangential to the fibers (group orbits) upstairs induces a deterministic drift downstairs related to the **mean curvature** of the fibers. This drift is equivalent to the gradient of the **Boltzmann entropy** (volume).</li>
+                <li>For the DLN, we have explicit formulas for this stochastic process, which corresponds to gradient descent of a **free energy** functional, combining the original loss with an entropic term that favors high-volume, low-rank solutions.</li>
+            </ul>
+        </section>        
+        
+        <!-- SLIDE 21: Q&A -->
+        <section class="slide centered-text">
+            <h2 style="margin-top: 15vh;">Thank You!</h2>
+            <p style="font-size: 1.6em; margin-top: 50px;">Any Questions?</p>
+        </section>
+
+    </div><!-- end presentation-container -->
+
+    <button id="prevBtn" class="nav-button">Previous (←)</button>
+    <button id="nextBtn" class="nav-button">Next (→)</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.presentation-container .slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const slideCounter = document.querySelector('.slide-counter');
+            const progressBar = document.querySelector('.progress-bar');
+            let currentSlideIndex = 0;
+
+            function updateProgressBar() {
+                const progress = ((currentSlideIndex + 1) / slides.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            function updateSlideCounter() {
+                if (slideCounter) {
+                    slideCounter.textContent = `${currentSlideIndex + 1} / ${slides.length}`;
+                }
+            }
+
+            function showSlide(index) {
+                if (index >= slides.length || index < 0) return;
+                
+                slides.forEach(slide => slide.classList.remove('active'));
+                
+                currentSlideIndex = index;
+                
+                slides[currentSlideIndex].classList.add('active');
+                slides[currentSlideIndex].scrollTop = 0; // Reset scroll for new slide
+                
+                prevBtn.disabled = currentSlideIndex === 0;
+                nextBtn.disabled = currentSlideIndex === slides.length - 1;
+                
+                updateSlideCounter();
+                updateProgressBar();
+
+                // Re-render MathJax for the new active slide if necessary
+                if (window.MathJax) {
+                    MathJax.typesetPromise([slides[currentSlideIndex]]).catch(function (err) {
+                        console.log('MathJax reproccessing error:', err.message);
+                    });
+                }
+            }
+
+            nextBtn.addEventListener('click', () => showSlide(currentSlideIndex + 1));
+            prevBtn.addEventListener('click', () => showSlide(currentSlideIndex - 1));
+            
+            document.addEventListener('keydown', (event) => {
+                const activeElementTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : null;
+                if (['input', 'textarea'].includes(activeElementTag)) return;
+
+                if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'PageDown') {
+                    if (event.key === ' ') event.preventDefault();
+                    if (!nextBtn.disabled) showSlide(currentSlideIndex + 1);
+                } else if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+                    if (!prevBtn.disabled) showSlide(currentSlideIndex - 1);
+                }
+            });
+            
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>
