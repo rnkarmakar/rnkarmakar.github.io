@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Problems in Deep Linear Networks (PDF Style)</title>
+    <!-- MathJax 3 for rendering LaTeX math -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                macros: {
+                  Tr: '\\operatorname{Tr}',
+                  grad: '\\operatorname{grad}',
+                  argmin: ['\\operatorname*{argmin}'],
+                  vol: '\\operatorname{vol}',
+                  van: '\\operatorname{van}'
+                },
+                packages: {'[+]': ['physics', 'ams']}
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0 auto;
+            padding: 0 0 40px 0;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.7;
+            max-width: 900px;
+        }
+        .pdf-container {
+            background: #fff;
+            margin: 40px auto 0 auto;
+            padding: 40px 60px;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        }
+        h1, h2, h3, h4 {
+            color: #0056b3;
+            margin-top: 2.2em;
+            margin-bottom: 0.7em;
+            font-weight: 600;
+        }
+        h1 { font-size: 2.3em; margin-top: 0.5em; text-align: center; }
+        h2 { font-size: 1.6em; border-bottom: 2px solid #a0aec0; padding-bottom: 0.2em; }
+        h3 { font-size: 1.2em; color: #444; }
+        h4 { font-size: 1.1em; color: #0056b3; margin-top: 1.5em; }
+        p, ul, ol {
+            font-size: 1.13em;
+            margin-bottom: 1.2em;
+        }
+        ul, ol { padding-left: 2em; }
+        ul li { list-style-type: disc; }
+        .theorem-box {
+            border: 2px solid #0056b3;
+            border-radius: 8px;
+            padding: 20px 30px;
+            margin: 30px 0;
+            background-color: #f7faff;
+            box-shadow: 0 2px 8px rgba(0, 86, 179, 0.08);
+        }
+        .theorem-box p { 
+            text-align: left; 
+            font-size: 1.1em; 
+            font-weight: normal; 
+        }
+        @media (max-width: 900px) {
+            .pdf-container { padding: 18px 8px; }
+        }
+    </style>
+</head>
+<body>
+<div class="pdf-container">
+    <h1>Deep Linear Networks</h1>
+    <h3 style="text-align:center; color:#444; margin-top:-1.2em;">Session 5: Open Problems</h3>
+    <h3 style="text-align:center; color:#555; font-weight:500; margin-top:-0.5em;">Rathindra Nath Karmakar</h3>
+
+    <h2>Recall: The Deep Linear Network (DLN) Setup</h2>
+    <p>We study a deep linear network that produces an end-to-end matrix $W$ by multiplying $N$ factor matrices:</p>
+    $$W = \phi(\mathbf{W}) = W_N W_{N-1} \cdots W_1$$
+    <p>Training dynamics are modeled by a gradient flow on a loss function $E(W)$ (e.g., squared error for matrix completion). This induces a flow on the factor matrices $\mathbf{W} = (W_N, \dots, W_1)$.</p>
+
+    <p>\[ \frac{d}{dt} \mathbf{W}(t) = - \nabla_{\mathbf{W}} \mathcal{L}(\mathbf{W}(t)) \]</p>
+    
+    <div class="theorem-box"> 
+        <p>The key insight is that under balanced initialization, this flow is a <strong>Riemannian gradient flow</strong> on the "downstairs" manifold of end-to-end matrices $(\mathcal{M}_d, g^N)$:</p>
+        $$ \frac{dW}{dt} = -\grad_{g^N} E(W) $$
+        <p>The geometry is encoded by the metric $g^N$, which depends on the network depth $N$ and the current matrix $W$.</p>
+    </div>
+
+    <h2>A Landscape of Open Questions</h2>
+    <p>The geometric theory of the DLN uncovers deep and challenging questions at the intersection of dynamical systems, geometry, and machine learning. We will explore:</p>
+    <ul>
+        <li><strong>The Nature of Convergence:</strong> Where does the flow go, and why?</li>
+        <li><strong>The Role of Randomness:</strong> How does noise shape the outcome?</li>
+        <li><strong>Extending the Theory:</strong> What happens at the boundaries of the model (low rank, infinite depth)?</li>
+        <li><strong>Hidden Mathematical Structures:</strong> Are there other physical or mathematical principles at play?</li>
+    </ul>
+
+    <h2>Problem 1: Convergence to a Low-Rank Matrix</h2>
+    <h4>The Problem</h4>
+    <p>For matrix completion, even in simple cases, the dynamics show a strong preference for low-rank solutions. Can we prove this rigorously?</p>
+    <div class="theorem-box">
+        <p><strong>Example:</strong> Consider a $2 \times 2$ matrix completion task where we observe $W_{11} = 1$ and $W_{22} = 1$. The energy is $E(W) = \frac{1}{2}((W_{11}-1)^2 + (W_{22}-1)^2)$.</p>
+        <p>The set of zero-energy solutions is any matrix of the form $W = \begin{pmatrix} 1 & a \\ b & 1 \end{pmatrix}$.</p>
+        <p>The rank-1 solutions in this set satisfy $1-ab=0$, forming a hyperbola $b=1/a$.</p>
+        <p><strong>Question:</strong> Can one establish that the solution $W(t)$ to the Riemannian gradient flow converges to a rank-1 minimizer as $t \to \infty$?</p>
+    </div>
+    
+    <h4>Recent Progress & Directions</h4>
+    <ul>
+        <li><strong>Progress:</strong> <em>Shin &amp; Yun (2025)</em> prove that for diagonal observations as above, gradient flow in deep matrix factorization converges to a <strong>rank-1</strong> minimizer iff the dynamics are <em>coupled</em> (which holds for depth $L \ge 3$ except for purely diagonal initializations).</li>
+        <li><strong>Directions:</strong> Extend the coupling-based analysis to depth $L=2$ and strictly diagonal initializations.</li>
+    </ul>
+    <p><strong>Reference:</strong> Baekrok Shin and Chulhee Yun, “Implicit Bias and Loss of Plasticity in Matrix Completion: Depth Promotes Low-Rank Solutions,” <em>ICML 2025 Workshop on High-dimensional Learning Dynamics (HiLD)</em>, 2025. <a href="https://openreview.net/forum?id=MzGS2mFn8N">https://openreview.net/forum?id=MzGS2mFn8N</a></p>
+
+    <h2>Problem 2: Convergence to Other Minimizers</h2>
+    <h4>The Problem</h4>
+    <p>The zero-energy set from Problem 1 also contains full-rank matrices (e.g., the identity matrix). Is it possible for the gradient flow to converge to these solutions?</p>
+    <div class="theorem-box">
+      <p><strong>Question:</strong> Are there initial conditions $W(0)$ with positive energy ($E(W(0)) > 0$) for which the solution $W(t)$ converges to a full-rank minimizer of $E$? Or is the bias towards low rank absolute?</p>
+    </div>
+  
+    <h4>Recent Progress & Directions</h4>
+    <ul>
+      <li><strong>Progress:</strong> <em>Shin &amp; Yun (2025)</em> prove that for diagonal observations as above, gradient flow in deep matrix factorization converges to a <strong>rank-1</strong> minimizer iff the dynamics are <em>coupled</em> (which holds for depth $L \ge 3$ except for purely diagonal initializations).</li>
+      <li><strong>Directions:</strong> Extend this analysis beyond diagonal observations and remove remaining technical assumptions (e.g., the “assume convergence” step in the depth-2 case) to characterize basins of attraction for full-rank vs. low-rank minimizers more generally.</li>
+    </ul>
+    <p><strong>Reference:</strong> Baekrok Shin and Chulhee Yun, <em>Implicit Bias and Loss of Plasticity in Matrix Completion: Depth Promotes Low-Rank Solutions</em>, HiLD 2025: 3rd Workshop on High-dimensional Learning Dynamics, 2025. URL: <a href="https://openreview.net/forum?id=MzGS2mFn8N">https://openreview.net/forum?id=MzGS2mFn8N</a>.</p>
+
+    <h2>Problem 3: The Free Energy Landscape</h2>
+    <h4>The Problem</h4>
+    <p>Adding entropy to the energy gives the free energy $F_{\beta}(W) = E(W) - \frac{1}{\beta}S(W)$, which governs stochastic dynamics. The entropy $S(W) = \log \vol(O_W)$ depends on the volume of the set of factorizations for $W$. How does this landscape look?</p>
+    <div class="theorem-box">
+        <p><strong>Question:</strong> What is the structure of the set of free energy minimizers, $S_{\beta} = \argmin_W F_{\beta}(W)$? How does this set change as the inverse temperature $\beta$ (noise level) and depth $N$ vary?</p>
+    </div>
+    
+    <h4>Recent Progress & Directions</h4>
+    <ul>
+        <li><strong>Progress:</strong> Exact formulas for the entropy $S(W)$ are known (Thm. 10), providing the necessary components to define $F_{\beta}$.</li>
+        <li><strong>Direction:</strong> For the simple $2 \times 2$ matrix completion task, explicitly compute the minimizers of $F_{\beta}$. This would provide a concrete model for how noise and depth interact to select a solution, potentially resolving the ambiguity left by rank-minimization alone.</li>
+    </ul>
+
+    <h2>Problem 4: The Infinite Depth Limit</h2>
+    <h4>The Problem</h4>
+    <p>In the limit $N \to \infty$, the Riemannian metric $g^N$ converges to a limit $g^\infty$ that depends only on the "downstairs" matrix $W$. The "upstairs" space of factor matrices, which is central to the finite-depth theory, seems to vanish from the equations.</p>
+    <div class="theorem-box">
+        <p><strong>Question:</strong> Is there a limiting mathematical framework for Riemannian submersion as $N \to \infty$? What is the correct way to think about the geometry when the fiber space of factorizations disappears?</p>
+    </div>
+
+    <h4>Recent Progress & Directions</h4>
+    <ul>
+        <li><strong>Progress:</strong> Veraszto’s Ph.D. thesis reports <em>partial results</em> toward a differential–geometric understanding of the infinite–depth limit, specifically partial results on <em>curvature</em> and <em>geodesics</em> of the limiting metric $g^\infty$ on the balanced manifold; the thesis positions these as steps toward a full geometric theory when the “upstairs” flow is no longer well-defined.</li>
+        <li><strong>Direction:</strong> Wait for the thesis to be published.</li>
+    </ul>
+    <p><em>Reference:</em> Z. Veraszto, <span style="font-style:italic;">The Deep Linear Network—Dynamics, Riemannian Geometry and Overparametrization</span>, Ph.D. thesis, Brown University, 2023.</p>
+
+    <h2>Problems 5 & 6: The Low-Rank Setting</h2>
+    <h4>The Problem</h4>
+    <p>Most of the rigorous results for the DLN (e.g., Riemannian submersion, RLE) rely on the matrix $W$ being full-rank. This ensures the manifold is smooth. However, the dynamics are empirically attracted to low-rank matrices, where these assumptions break down.</p>
+    <div class="theorem-box">
+      <p><strong>Question 5:</strong> How can the theories of Riemannian submersion and the Riemannian Langevin Equation (RLE) be extended to handle the singularities at low-rank matrices?</p>
+      <p><strong>Question 6:</strong> What is the geometric structure of the G-balanced varieties $M_G$ at the singular points corresponding to low-rank matrices?</p>
+    </div>
+  
+    <h4>Recent Progress & Directions</h4>
+    <ul>
+      <li>
+        <strong>Progress:</strong> RLE has been constructed and numerically validated on a <em>single smooth fixed-rank stratum</em> (the manifold of $n\times n$ PSD matrices of rank $p$), the embedded metric and one under the quotient metric obtained from the low-rank factorization map $Y\mapsto YY^T$.
+      </li>
+      <li>
+        <strong>Directions:</strong> Extend the analysis to the quotient metric obtained from the end-to-end map $(W_1,W_2,\ldots W_N) \mapsto W_NW_{N-1}\ldots W_1$.
+      </li>
+    </ul>
+    <p><strong>Reference:</strong> T. Yu, S. Zheng, J. Lu, G. Menon, X. Zhang, “Riemannian Langevin Monte Carlo schemes for sampling PSD matrices with fixed rank,” <em>Arxiv preprint</em>, 2025. <a href="https://arxiv.org/pdf/2309.04072">https://arxiv.org/pdf/2309.04072</a></p>
+
+    <h2>Problem 7: Motion by Curvature towards Balance</h2>
+    <h4>The Problem</h4>
+    <p>The G-balanced varieties $M_G$ (where $W^T_{p+1}W_{p+1} - W_p W_p^T = G_p \neq 0$) are invariant under deterministic flow. However, noise should break this invariance. The "most balanced" state is $M_0$ (where $G_p=0$).</p>
+    <div class="theorem-box">
+        <p><strong>Conjecture:</strong> A stochastic flow (RLE) with noise tangential to the fibers, when started on an unbalanced variety $M_G$, will be driven towards the balanced variety $M_0$.</p>
+    </div>
+
+    <h4>Recent Progress & Directions</h4>
+    <ul>
+        <li><strong>Progress:</strong> Huang–Inauen–Menon construct Dyson Brownian motion by projecting Euclidean Brownian motion onto isospectral orbits via a Riemannian submersion, showing that the Itô correction produces a deterministic <em>mean-curvature drift</em> of the orbit leaves.</li>
+        <li><strong>Direction:</strong> Port their submersion-based construction to the DLN fibration where fibers are factorization orbits of $W$. For RLE with fiber-tangential noise, prove that the induced normal drift on $M_G$ equals (or controls) the mean curvature of the $M_G$ leaves, yielding a monotone entropy (e.g., $\log\!\operatorname{vol}(\text{fiber})$) and convergence toward $M_0$.</li>
+    </ul>
+    <p><strong>Reference:</strong> Ching-Peng Huang, Dominik Inauen, and Govind Menon, “Motion by mean curvature and Dyson Brownian Motion,” <em>Electronic Communications in Probability</em> 28 (2023), 1–10. <a href="https://doi.org/10.1214/23-ECP540">https://doi.org/10.1214/23-ECP540</a></p>
+
+    <h2>Problem 8: Gradient and Hamiltonian Structures</h2>
+    <h4>The Problem</h4>
+    <p>The DLN training dynamics are a gradient flow, which dissipates energy. However, they also possess conserved quantities ($G$ on $M_G$), a hallmark of energy-preserving Hamiltonian systems.</p>
+    <div class="theorem-box">
+        <p><strong>Question:</strong> Does the DLN possess a hidden, complementary Hamiltonian structure? This would place it in a rare class of systems that are both gradient-like and completely integrable.</p>
+    </div>
+ 
+    <h4>Recent Progress &amp; Directions</h4>
+    <ul>
+        <li><strong>Progress (template for coexistence):</strong> Completely integrable systems that are simultaneously gradient-like on orbits, exist.</li>
+        <li><strong>Progress (conserved quantities in DLN-style flows):</strong> Conservation laws for gradient flows in neural architectures can be characterized algebraically.</li>
+        <li><strong>Direction :</strong> Check if the Hamiltonian equations can be recovered entirely from conserved quantities.</li>
+    </ul>
+    <p><strong>Reference:</strong> A. M. Bloch, R. W. Brockett, T. S. Ratiu, “Completely integrable gradient flows,” <em>Communications in Mathematical Physics</em> 147 (1992), 57-74. <a href="https://link.springer.com/article/10.1007/BF02099528">https://link.springer.com/article/10.1007/BF02099528</a></p>
+    <p><strong>Reference:</strong> S. Marcotte, R. Gribonval, G. Peyré, “Abide by the Law and Follow the Flow: Conservation Laws for Gradient Flows,” <em>NeurIPS</em> 36 (2024). <a href="https://openreview.net/forum?id=kMueEV8Eyy">https://openreview.net/forum?id=kMueEV8Eyy</a></p>
+
+    <h2>Problem 9: Rigorous Theory for "Jumps in Rank"</h2>
+    <h4>The Problem</h4>
+    <p>Numerical experiments show that the effective rank of $W(t)$ often plateaus for long periods and then drops suddenly. This mirrors the "scale-by-scale" fitting observed in practical deep learning.</p>
+    <div class="theorem-box">
+        <p><strong>Question:</strong> Can this phenomenon of "sudden jumps" in rank be rigorously formulated and proven?</p>
+    </div>
+    
+    <div style="height: 60px;"></div>
+</div>
+</body>
+</html>
