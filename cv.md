@@ -11,7 +11,7 @@ nav_order: 2
   <h2>Education</h2>
   <ul class="cv-list">
     <li>
-      <strong>Research Student</strong>, Kyushu University, Fukuoka, Japan <span class="cv-year">2025</span>
+      <strong>Research Student</strong>, Kyushu University, Fukuoka, Japan <span class="cv-year">(Ongoing)</span>
     </li>
     <li>
       <strong>M.Math (Honours)</strong>, Indian Statistical Institute, Kolkata, India <span class="cv-year">2024</span>
