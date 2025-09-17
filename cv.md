@@ -11,6 +11,9 @@ nav_order: 2
   <h2>Education</h2>
   <ul class="cv-list">
     <li>
+      <strong>Research Student</strong>, Kyushu University, Fukuoka, Japan <span class="cv-year">2025</span>
+    </li>
+    <li>
       <strong>M.Math (Honours)</strong>, Indian Statistical Institute, Kolkata, India <span class="cv-year">2024</span>
     </li>
     <li>
@@ -29,7 +32,7 @@ nav_order: 2
   <h2>Employment History</h2>
   <ul class="cv-list">
     <li>
-      <strong>Research Assistant</strong>, Department of Mathematics, National University of Singapore &mdash; <em>2024&ndash;present</em>
+      <strong>Research Assistant</strong>, Department of Mathematics, National University of Singapore &mdash; <em>July, 2024&ndash;August, 2025</em>
     </li>
   </ul>
 </section>
