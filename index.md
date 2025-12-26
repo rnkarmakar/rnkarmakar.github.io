@@ -12,5 +12,3 @@ Hi, I’m **Rathin**. I’m currently a **Research Student** at **Kyushu Univers
 I am an aspiring mathematical scientist with a keen interest in probability and statistics, machine learning and several related areas. As a side hustle, I like learning Asian languages and discussing the application of tech to reducing the learning curve!
 
 This website collects my research work, notes and other random stuff. Feel free to explore and reach out!
-
-Looking for a quick way to test math ideas with GPT? Try the new [Math Problem Solver](/math-solver/) with stored API keys and Drive export.
