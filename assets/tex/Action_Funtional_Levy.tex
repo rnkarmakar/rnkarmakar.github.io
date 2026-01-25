@@ -1,0 +1,57 @@
+\documentclass[10pt,reqno]{amsart}
+\usepackage{graphicx}
+   % MODIFYING AMSART.CLS:
+     \makeatletter
+     \def\section{\@startsection{section}{1}%
+     \z@{.7\linespacing\@plus\linespacing}{.5\linespacing}%
+     {\bfseries%\normalfont\scshape
+     \centering
+     }}
+     \def\@secnumfont{\bfseries}
+     \makeatother
+   % END OF MODIFICATION OF AMSART.CLS.
+\setlength{\textheight}{19.5 cm}
+\setlength{\textwidth}{12.5 cm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\numberwithin{equation}{section}
+\setcounter{page}{1}
+%%%%% End of setup (Do not change) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\begin{theorem}[Contraction Principle]
+Let $(M_{1},d_{1})$, $(M_{2},d_{2})$ be metric spaces and $f: M_{1}\rightarrow M_{2}$ be a continuous function. Suppose that a family $(\mu_{\varepsilon})_{\varepsilon>0}$ of probability measures on $M_{1}$ satisfies a large deviation principle with action functional $I$.
+Then the sequence of image measures $(\nu_{\varepsilon})_{\varepsilon>0}$ defined by $\nu_{\varepsilon}:=\mu_{\varepsilon}\circ f^{-1}$ on $M_{2}$, obeys a large deviation principle with action functional
+\begin{equation*}
+S(y):=\inf\{I(x): x\in M_{1}, y=f(x)\}.
+\end{equation*}
+\end{theorem}
+\begin{proof}
+Since $I$ is lower semicontinuous, it attains its minimum on compact sets. This implies that for any $y\in M_{2}$ and $S(y)<\infty$,
+there exists $x\in M_{1}$ such that $f(x)=y$ and $S(y)=I(x)$. Then
+\begin{equation*}
+\Phi_{S}(r)=\{y\in M_{2}; S(y)\leq r\}=f(\Phi_{I}(r))~~~~\text{for}~~~~r\geq0.
+\end{equation*}
+In particular, $\Phi_{S}(r)$ is compact, i.e., $S$ is an action functional. Now let $U$ be an open set in $M_{1}$. Since $f$ is continuous, we know
+$f^{-1}(U)$ is open. Apply the large deviation lower bound to $f^{-1}(U)$  and obtain
+\begin{equation*}
+\liminf_{\varepsilon\rightarrow0}\varepsilon\log\nu_{\varepsilon}(U)=\liminf_{\varepsilon\rightarrow0}\varepsilon\log\mu_{\varepsilon}(f^{-1}(U))\geq-\inf_{x\in f^{-1}(U)}I(x)=-\inf_{y\in U}S(y).
+\end{equation*}
+When $F$ is a closed set in $M_{1}$, the upper bound
+\begin{equation*}
+\limsup_{\varepsilon\rightarrow0}\varepsilon\log\nu_{\varepsilon}(F)=\limsup_{\varepsilon\rightarrow0}\varepsilon\log\mu_{\varepsilon}(f^{-1}(F))\leq-\inf_{x\in f^{-1}(F)}I(x)=-\inf_{y\in F}S(y)
+\end{equation*}
+follows in the same way.
+\end{proof}
+
+
+\end{document}
