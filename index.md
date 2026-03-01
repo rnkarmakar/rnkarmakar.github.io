@@ -9,7 +9,7 @@ nav_order: 1
 
 Hi, I'm **Rathin**. I'm currently a **Research Student** at **Kyushu University**.
 
-I am an interested in probability and statistics, machine learning and several related areas. As a side hustle, I like learning Asian languages and discussing the application of tech to reducing the learning curve!
+I am interested in probability and statistics, machine learning and several related areas. As a side hustle, I like learning Asian languages and discussing the application of tech to reducing the learning curve!
 
 This website collects my research work, notes and other random stuff. Feel free to explore and reach out!
 
