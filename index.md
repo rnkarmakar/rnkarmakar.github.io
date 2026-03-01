@@ -13,7 +13,7 @@ I am interested in probability and statistics, machine learning and several rela
 
 This website collects my research work, notes and other random stuff. Feel free to explore and reach out!
 
----
+
 
 <section class="noticeboard">
   <div class="noticeboard__header">
@@ -36,7 +36,7 @@ This website collects my research work, notes and other random stuff. Feel free 
   </ul>
 </section>
 
----
+
 
 <section class="contact-section">
   <h2 class="contact-section__title">Contact</h2>
