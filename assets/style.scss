@@ -106,3 +106,119 @@ header.site-header .menu .dropdown:hover .dropdown-content {
 }
 
 /* Allow iframes to extend full viewport width */
+
+/* ---------- noticeboard (updates) ---------- */
+.noticeboard {
+  background: #fffdf0;
+  border: 1px solid #e6d96a;
+  border-left: 4px solid #c8a600;
+  border-radius: 6px;
+  padding: 1rem 1.25rem 1.1rem;
+  margin: 1.75rem 0;
+  box-shadow: 2px 3px 10px rgba(0,0,0,0.06);
+}
+
+.noticeboard__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.noticeboard__pin {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.noticeboard__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7a6000;
+}
+
+.noticeboard__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.noticeboard__item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px dashed #e0d080;
+}
+
+.noticeboard__item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.noticeboard__date {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #9a7800;
+  width: 4.5rem;
+  text-align: right;
+}
+
+.noticeboard__text {
+  color: #333;
+}
+
+.noticeboard__text a {
+  color: #7a6000;
+  text-decoration: underline;
+}
+
+/* ---------- contact section ---------- */
+.contact-section {
+  margin: 1.75rem 0;
+}
+
+.contact-section__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.75rem;
+}
+
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
+}
+
+.contact-list__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.contact-list__icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.contact-list__item a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.contact-list__item a:hover {
+  text-decoration: underline;
+}
