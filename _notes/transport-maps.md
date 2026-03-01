@@ -5,7 +5,7 @@ date: 2025-06-05
 categories: [probability-statistics]
 ---
 
-A write-up of my notes on entanglement tests using tensor norms and related ideas.
+A write-up of my notes on estimation of optimal transport maps.
 <a href="{{ '/assets/pdf/transport-maps.pdf' | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
 
 <!--more-->
