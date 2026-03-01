@@ -22,7 +22,7 @@ This website collects my research work, notes and other random stuff. Feel free 
   </div>
   <ul class="noticeboard__list">
     <li class="noticeboard__item">
-      <span class="noticeboard__date">Jul 2025</span>
+      <span class="noticeboard__date">September 2025</span>
       <span class="noticeboard__text">Started as a Research Student at Kyushu University, Fukuoka.</span>
     </li>
     <li class="noticeboard__item">
@@ -43,11 +43,11 @@ This website collects my research work, notes and other random stuff. Feel free 
   <ul class="contact-list">
     <li class="contact-list__item">
       <span class="contact-list__icon" aria-hidden="true">✉️</span>
-      <a href="mailto:your.email@example.com">your.email@example.com</a>
+      <a href="mailto:rnka09122001@gmail.com">rnka09122001@gmail.com</a>
     </li>
     <li class="contact-list__item">
       <span class="contact-list__icon" aria-hidden="true">🎓</span>
-      <a href="https://scholar.google.com/citations?user=YOURID" target="_blank" rel="noopener">Google Scholar</a>
+      <a href="https://scholar.google.com/citations?user=7MDuQY8AAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>
     </li>
     <li class="contact-list__item">
       <span class="contact-list__icon" aria-hidden="true">🐙</span>
