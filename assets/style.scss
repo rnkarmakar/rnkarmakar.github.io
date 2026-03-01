@@ -222,3 +222,86 @@ header.site-header .menu .dropdown:hover .dropdown-content {
 .contact-list__item a:hover {
   text-decoration: underline;
 }
+
+/* --- Academic/Compact Styles --- */
+
+/* Use a serif font for that "academic" feel */
+.academic-page {
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #333;
+  
+  h1, h2, h3 {
+    font-family: "Georgia", "Times New Roman", serif;
+    color: #111;
+    border-bottom: none; /* Remove heavy borders */
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 { font-size: 1.4rem; font-weight: bold; }
+  a { text-decoration: none; color: #0056b3; }
+  a:hover { text-decoration: underline; }
+}
+
+/* Compact Lists (for Research & Notes) */
+ul.compact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin-bottom: 0.5rem; /* Tight spacing */
+    line-height: 1.5;
+    font-size: 1.05rem;
+  }
+
+  .date-label {
+    font-weight: bold;
+    color: #555;
+    margin-right: 0.5rem;
+    min-width: 40px;
+    display: inline-block;
+  }
+
+  .meta-links {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+    
+    a {
+      color: #666;
+      margin-right: 0.3rem;
+    }
+    a:hover { color: #000; }
+  }
+}
+
+/* CV Specifics */
+.cv-section {
+  margin-bottom: 2rem;
+  
+  h3 {
+    font-size: 1.2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+  }
+}
+
+.cv-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  
+  .cv-left { flex: 1; }
+  .cv-right { 
+    text-align: right; 
+    min-width: 100px; 
+    font-feature-settings: "tnum"; /* Tabular numbers for dates */
+    color: #666;
+  }
+}
+
+@media(max-width: 600px) {
+  .cv-item { flex-direction: column; }
+  .cv-right { text-align: left; font-size: 0.9em; margin-top: 2px; }
+}
