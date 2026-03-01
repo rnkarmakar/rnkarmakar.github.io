@@ -11,7 +11,7 @@ nav_order: 4
 
 <!-- Group notes by Category -->
 {% assign all_notes = site.notes | sort: "title" %}
-{% assign grouped_notes = all_notes | group_by: "categories" %}
+{% assign grouped_notes = all_notes | group_by: "item", "item.categories[0]" %}
 
 {% for group in grouped_notes %}
   <!-- Category Heading -->
