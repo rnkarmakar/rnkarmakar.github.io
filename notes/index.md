@@ -2,17 +2,41 @@
 layout: page
 title: "Notes"
 permalink: /notes/
-nav_order: 4 # Assuming Home is 1, CV is 2, Research is 3
+nav_order: 4
 ---
 
-<ul class="post-list">
-{% assign posts = site.notes | sort: "date" | reverse %}
-{% for post in posts %}
-  <li>
-    <h3>{{ post.title }}</h3>
-    <small>{{ post.date | date: '%-d %b %Y' }}</small>
-    <p>{{ post.excerpt | strip_html | truncatewords: 40 }}</p>
-    <a href="{{ post.url | relative_url }}">Read more →</a>
-  </li>
+<div class="academic-page">
+
+<p>A collection of notes, expositions, and slides from my studies.</p>
+
+<!-- Group notes by Category -->
+{% assign all_notes = site.notes | sort: "title" %}
+{% assign grouped_notes = all_notes | group_by: "categories" %}
+
+{% for group in grouped_notes %}
+  <!-- Category Heading -->
+  <h2>
+    {% if group.name[0] %}
+      {{ group.name[0] | replace: '-', ' ' | capitalize }}
+    {% else %}
+      Uncategorized
+    {% endif %}
+  </h2>
+
+  <ul class="compact-list">
+    {% for note in group.items %}
+      <li>
+        <a href="{{ note.url | relative_url }}">{{ note.title }}</a>
+        <span class="meta-links">
+           <!-- Links to the generated HTML page -->
+           [<a href="{{ note.url | relative_url }}">Web</a>]
+           
+           <!-- Logic to guess PDF link location, or use front matter 'pdf_url' if available -->
+           [<a href="/assets/pdf/{{ note.slug }}.pdf">PDF</a>]
+        </span>
+      </li>
+    {% endfor %}
+  </ul>
 {% endfor %}
-</ul>
+
+</div>
