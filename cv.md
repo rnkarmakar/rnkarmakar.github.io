@@ -51,7 +51,7 @@ nav_order: 2
 </div>
 
 <p style="margin-top: 3rem;">
-  <a href="/assets/pdf/cv.pdf" target="_blank">[Download full CV as PDF]</a>
+  <a href="/assets/pdf/cv_2026.pdf" target="_blank">[Download full CV as PDF]</a>
 </p>
 
 </div>
