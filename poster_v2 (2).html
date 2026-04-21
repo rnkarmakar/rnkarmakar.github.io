@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Landscape Storyboard Poster Template</title>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --grid-color: #e6e6e6;
+      --ink-black: #050505;
+      --ink-gray: #555555;
+      --ink-light: #cccccc;
+      --panel-bg: rgba(255,255,255,0.86);
+      --placeholder-bg: rgba(250,250,250,0.92);
+      --placeholder-soft: rgba(255,255,255,0.72);
+      --font-heading: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-body: 'Georgia', 'Times New Roman', serif;
+      /* Structural accent — deep navy */
+      --accent: #1C3566;
+      --accent-light: #EBF0FA;
+      --accent-mid: rgba(28, 53, 102, 0.12);
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: var(--font-body);
+    }
+
+    .stage {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    .poster {
+      width: 2079px;
+      height: 1414px;
+      background: var(--bg-color);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      transform: scale(0.52);
+      transform-origin: center center;
+      flex: 0 0 auto;
+    }
+
+    .geometric-scaffold {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .geometric-scaffold svg { width: 100%; height: 100%; display: block; }
+
+
+    .template-title {
+      position: absolute;
+      left: 64px;
+      top: 22px;
+      z-index: 5;
+      width: 1000px;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 12px;
+    }
+    .template-title h1 {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: 46px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      line-height: 1.05;
+      color: var(--ink-black);
+    }
+    .template-title p {
+      margin: 10px 0 0 0;
+      font-family: var(--font-heading);
+      font-size: 14px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--ink-gray);
+    }
+
+    .content-layer {
+      position: absolute;
+      z-index: 3;
+      user-select: none;
+      
+      transition: border .15s ease, box-shadow .15s ease, background .15s ease;
+      box-sizing: border-box;
+      min-width: 120px;
+      min-height: 70px;
+    }
+    
+
+    
+
+    
+
+    .placeholder-box { background: var(--panel-bg); padding: 18px; }
+    .placeholder-box h2, .placeholder-box h3 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--ink-black);
+    }
+    .placeholder-box h2 { font-size: 16px; }
+    .placeholder-box h3 { font-size: 14px; }
+    .placeholder-box p, .placeholder-box li { margin: 0; font-size: 17px; line-height: 1.55; color: var(--ink-gray); }
+    .placeholder-box ul { margin: 0; padding-left: 18px; }
+
+    .slim-note { background: rgba(255,255,255,0.82); padding: 14px 16px; border-left: 3px solid var(--accent); border-radius: 4px; }
+    .slim-note .mini {
+      display: block; font-family: var(--font-heading); font-size: 11px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--ink-gray); margin-bottom: 7px;
+    }
+
+    .story-card { background: var(--placeholder-bg); border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-radius: 8px; }
+    .story-pic { padding: 16px; }
+    .story-pic .frame {
+      width: 100%; height: 100%; min-height: 160px; border: 1.5px solid var(--ink-black);
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,245,245,0.92)),
+                  repeating-linear-gradient(45deg, transparent 0 14px, rgba(0,0,0,0.025) 14px 28px);
+      position: relative; overflow: hidden; box-sizing: border-box;
+    }
+    .story-pic .frame::before,
+    .story-pic .frame::after {
+      content: ""; position: absolute; inset: 14px; border: 1px solid rgba(5,5,5,0.05); pointer-events: none;
+    }
+    .story-pic .frame::after { inset: auto 0 50% 0; border: none; border-top: 1px dashed rgba(5,5,5,0.08); }
+    .story-pic .label {
+      position: absolute; top: 14px; left: 16px; font-family: var(--font-heading); font-size: 11px;
+      letter-spacing: 1.8px; text-transform: uppercase; color: #fff;
+      background: var(--accent); padding: 5px 9px;
+    }
+    .story-pic .meta {
+      position: absolute; bottom: 16px; right: 16px; font-family: var(--font-heading); font-size: 11px;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--ink-gray); background: rgba(255,255,255,0.82); padding: 5px 7px;
+    }
+
+    .story-text { padding: 16px 18px; background: var(--placeholder-soft);  }
+    .story-text .kicker {
+      display: block; font-family: var(--font-heading); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--ink-gray); margin-bottom: 8px;
+    }
+    .story-text .bigline { font-size: 23px; line-height: 1.28; color: var(--ink-black); margin-bottom: 8px; }
+    .story-text .smallline { font-size: 15px; line-height: 1.5; color: var(--ink-gray); }
+
+    /* ── Column alignment: consistent left, width, and top for each row ── */
+    #col1-head { left: 24px; top: 160px; width: 292px; height: 262px; }
+    #col1-mid  { left: 24px; top: 436px; width: 292px; height: 192px; display: block; }
+    #col1-low  { left: 24px; top: 642px; width: 292px; height: 748px; display: block; }
+    #col2-head { left: 330px; top: 160px; width: 292px; height: 262px; }
+    #col2-mid  { left: 330px; top: 436px; width: 292px; height: 228px; display: block; } /* extra height for quantum covariance */
+    #col2-low  { left: 330px; top: 678px; width: 292px; height: 712px; display: block; } /* shifted down to follow col2-mid */
+    #pic-1 { left: 630px; top: 168px; width: 469px; height: 253px; } /* moved down 30px so author line clears */
+    #text-1 { left: 638px; top: 429px; width: 463px; height: 206px; }
+    #pic-2 { left: 1113px; top: 249px; width: 459px; height: 382px; }
+    #text-2 { left: 1108px; top: 33px; width: 459px; height: 205px; }
+    #pic-3 { left: 1590px; top: 7px; width: 442px; height: 383px; }
+    #text-3 { left: 1598px; top: 397px; width: 432px; height: 285px; }
+    #pic-4 { left: 1594px; top: 699px; width: 455px; height: 298px; }
+    #text-4 { left: 1596px; top: 1005px; width: 469px; height: 386px; }
+    #pic-5 { left: 645px; top: 660px; width: 944px; height: 483px; } /* moved down 15px to clear text-1 bottom */
+    #text-5 { left: 652px; top: 1152px; width: 935px; height: 241px; }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    .story-pic.quantum .frame {
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,248,248,0.94));
+    }
+    .story-pic.quantum svg {
+      width: 100%; height: 100%; display:block;
+    }
+    .story-pic.quantum .label { z-index: 2; }
+    .story-pic.quantum .meta { z-index: 2; }
+    .story-text.filled .kicker { color: var(--ink-black); }
+    .story-text.filled .bigline { font-family: var(--font-heading); font-size: 20px; font-weight: 700; letter-spacing: 0.3px; text-transform: none; line-height: 1.15; margin-bottom: 10px; color: var(--accent); border-bottom: 1.5px solid var(--accent-mid); padding-bottom: 8px; }
+    .story-text.filled .smallline { font-size: 12.6px; line-height: 1.26; text-align: left; }
+    .story-text.filled .formula-inline { display:block; margin-top:6px; font-family: 'Cambria Math', 'Times New Roman', serif; font-size: 12.8px; line-height: 1.18; color: var(--ink-black); }
+    .story-text.filled p{margin:0 0 6px 0;}
+    .story-text.filled ul{margin:0; padding-left:16px;}
+    .story-text.filled li{margin:0 0 4px 0; font-size:12.4px; line-height:1.24; color: var(--ink-gray);}
+    .story-text.filled mjx-container{font-size:90% !important; max-width:100%; overflow:hidden;}
+    .story-text.filled mjx-container[jax="CHTML"][display="true"]{margin:0.12em 0 !important;}
+    .story-text.filled strong{color:var(--ink-black); font-family:var(--font-heading); font-size:12px;}
+
+  
+    #col1-head, #col1-mid, #col1-low,
+    #col2-head, #col2-mid, #col2-low {
+      padding: 14px 12px 14px 12px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.96);
+      border: none; border-radius: 8px;
+      box-shadow: none;
+    }
+
+    /* Accent left-borders: Classical = warm charcoal, Quantum = navy */
+    #col1-head, #col1-mid, #col1-low {
+      border-left: 3px solid rgba(80, 60, 30, 0.35);
+    }
+    #col2-head, #col2-mid, #col2-low {
+      border-left: 3px solid var(--accent);
+      background: var(--accent-light);
+    }
+
+    .compare-column {
+      font-family: var(--font-body);
+      color: var(--ink-gray);
+    }
+    .compare-column .mini {
+      display: none !important;
+    }
+    .compare-main-title {
+      margin: 0 0 8px 0;
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      color: var(--ink-black);
+      line-height: 1.08;
+    }
+    .compare-side-label {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      font-size: 20px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 8px;
+    }
+    .compare-section {
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(5,5,5,0.05); padding-bottom: 14px; margin-bottom: 14px;
+    }
+    .compare-section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .compare-box-title {
+      margin: 0 0 6px 0;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .compare-item {
+      margin: 0 0 6px 0;
+      font-size: 11.2px;
+      line-height: 1.28;
+      color: var(--ink-gray);
+      text-align: left;
+      text-wrap: pretty;
+    }
+    .compare-item strong {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--ink-black);
+    }
+    .compare-eq {
+      margin: 3px 0 7px 0;
+      font-size: 11.4px;
+      line-height: 1.12;
+      color: var(--ink-black);
+      overflow-wrap: anywhere;
+    }
+    .compare-eq mjx-container[jax="CHTML"][display="true"] {
+      margin: 0.16em 0 !important;
+    }
+    .compare-note {
+      margin: 0 0 6px 0;
+      font-size: 10.8px;
+      line-height: 1.22;
+      color: var(--ink-gray);
+      text-align: left;
+      text-wrap: pretty;
+    }
+
+    .compare-column mjx-container {
+      font-size: 94% !important;
+    }
+    .compare-column mjx-container[jax="CHTML"][display="true"] {
+      margin: 0.08em 0 !important;
+    }
+
+    .compare-column > * { max-width: 100%; }
+    .compare-column mjx-container { max-width: 100%; overflow: hidden; }
+
+    /* ── PRINT ──────────────────────────────────────────────────────────
+       Target: 42in x 28.5in (Standard academic poster, easily fits 48x36 boards). */
+    @media print {
+      @page { size: 42in 28.5in; margin: 0; }
+      html, body {
+        background: white !important;
+        display: block;
+        height: auto;
+        overflow: visible;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .stage {
+        display: block;
+        padding: 0;
+        overflow: visible;
+        width: 100%;
+        height: 100%;
+      }
+      .poster {
+        /* 42 inches = 4032px. 4032 / 2079 = ~1.939 */
+        transform: scale(1.939) !important;
+        transform-origin: top left !important;
+        box-shadow: none !important;
+      }
+    }
+
+  </style>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        processEscapes: true,
+        packages: {'[+]': ['ams']},
+        macros: {
+          R: '\\mathbb{R}',
+          C: '\\mathbb{C}',
+          N: '\\mathbb{N}',
+          E: '\\mathbb{E}',
+          P: '\\mathbb{P}',
+          Var: '\\operatorname{Var}',
+          Ree: '\\operatorname{Re}',
+          Imm: '\\operatorname{Im}',
+          id: '\\mathbf{1}',
+          Hsp: '\\mathcal{H}',
+          Lop: '\\mathcal{L}',
+          cP: '\\mathcal{P}',
+          cS: '\\mathcal{S}',
+          cE: '\\mathcal{E}',
+          cM: '\\mathcal{M}',
+          parallelsum: '\\mathbin{\\#}',
+          Law: '\\operatorname{Law}',
+          Tr: '\\operatorname{Tr}'
+        }
+      },
+      chtml: {
+        scale: 0.88,
+        displayAlign: 'left',
+        displayIndent: '0',
+        mtextInheritFont: true,
+        linebreaks: {automatic: true, width: 'container'}
+      },
+      output: {
+        displayOverflow: 'linebreak'
+      }
+    };
+  </script>
+  <script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+
+</head>
+<body>
+  <div class="stage">
+    <div class="poster" id="poster-canvas">
+      <div class="geometric-scaffold">
+        <svg viewBox="0 0 2200 1200" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <rect width="40" height="40" fill="none" stroke="var(--grid-color)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="var(--bg-color)"/>
+          <rect width="100%" height="100%" fill="url(#grid)"/>
+          <!-- Zone separator: comparison columns | narrative story -->
+          <line x1="628" y1="130" x2="628" y2="1390" stroke="#1C3566" stroke-width="1" stroke-opacity="0.14"/>
+        </svg>
+      </div>
+      <div class="template-title">
+        <h1>Testing Quantum Hypotheses — Entanglement Detection</h1>
+        <p>RATHINDRA NATH KARMAKAR • SAMRIDDHA LAHIRY • KOICHI YAMAGATA</p>
+      </div>
+
+      
+      <div id="col1-head" class="content-layer placeholder-box slim-note compare-column">
+        <div class="compare-side-label">Classical</div>
+        <div class="compare-section">
+          <div class="compare-box-title">Models &amp; Simple Tests</div>
+          <div class="compare-item"><strong>Model:</strong> A probability measure \(P\) on a measurable space \((\Omega, \mathcal{F})\). We observe a random variable \(X\).</div>
+          <div class="compare-item"><strong>Simple Test:</strong> To decide \(H_0: P_0\) vs \(H_1: P_1\), a test is a measurable function \(\phi: \Omega \to [0,1]\).</div>
+          <div class="compare-item"><strong>Errors:</strong></div>
+          <div class="compare-eq">\[\alpha(\phi) = \E_{P_0}[\phi(X)]\]</div>
+          <div class="compare-eq">\[\beta(\phi) = \E_{P_1}[1-\phi(X)]\]</div>
+        </div>
+        
+      </div>
+      <div id="col1-mid" class="content-layer placeholder-box compare-column">
+        <div class="compare-section">
+          <div class="compare-box-title">Gaussian Distributions (The Limit Objects)</div>
+          <div class="compare-item"><strong>Gaussian \(\mathcal{N}_2(\mu, V)\):</strong> A random vector \(X \in \mathbb{R}^2\) completely characterized by its characteristic function:</div>
+          <div class="compare-eq">\[\E[\exp(i u^\top X)] = \exp\big(i u^\top \mu - \frac{1}{2} u^\top V u\big)\]</div>
+          <div class="compare-note">where \(V\) is a positive definite covariance matrix. All classical variables commute.</div>
+        </div>
+        
+      </div>
+      <div id="col1-low" class="content-layer placeholder-box compare-column">
+        <div class="compare-section">
+          <div class="compare-box-title">Local Testing &amp; Likelihood Expansion</div>
+          <div class="compare-item"><strong>Local Problem:</strong> Given \(n\) i.i.d. samples from \(P_\theta\), test \(H_0: \theta = \theta_0\) vs \(H_1: \theta_{n,h} = \theta_0 + h/\sqrt{n}\).</div>
+          <div class="compare-item"><strong>Test statistic:</strong> We can work with either the log-likelihood ratio or expand it to get the score statistic \(Z_n\):</div>
+          <div class="compare-eq">\[\log \prod \frac{p_{\theta_{n,h}}}{p_{\theta_0}} = h^\top Z_n - \frac{1}{2} h^\top I_{\theta_0} h + o_P(1)\]</div>
+          <div class="compare-note">where \(I_{\theta_0}\) is the Fisher Information matrix.</div>
+        </div>
+        <div class="compare-section">
+          <div class="compare-box-title">Convergence &amp; Asymptotic Representation</div>
+          <div class="compare-item"><strong>Convergence:</strong> By the CLT, the score converges in distribution under \(H_0\):</div>
+          <div class="compare-eq">\[Z_n \xrightarrow{d} \mathcal{N}(0, I_{\theta_0})\]</div>
+          <div class="compare-item"><strong>Representation (Le Cam):</strong> Consider any sequence of statistics \(T^{(n)}\). If, for each fixed \(h\), the law of \(T^{(n)}\) under \(P_{\theta_0+h/\sqrt n}^{\otimes n}\) converges, then there exists a (possibly randomized) statistic \(T^{(\infty)}\) on the Gaussian shift experiment</div>
+          <div class="compare-eq">\[\Bigl\{ \mathcal{N}(I_{\theta_0}h,\; I_{\theta_0}) : h \in \R^d \Bigr\}\]</div>
+          <div class="compare-item">such that</div>
+          <div class="compare-eq">\[\Law_{P^{\otimes(n)}_{\theta_0+h/\sqrt n}}\!\bigl(T^{(n)}\bigr) \Longrightarrow \Law_{\mathcal{N}(I_{\theta_0}h,\; I_{\theta_0})}(T^{(\infty)})\]</div>
+          <div class="compare-note">So any asymptotic testing or estimation procedure for the local i.i.d. model has a limit procedure on the Gaussian shift model.</div>
+        </div>
+        
+      </div>
+
+      <div id="col2-head" class="content-layer placeholder-box slim-note compare-column">
+        <div class="compare-side-label">Quantum</div>
+        <div class="compare-section">
+          <div class="compare-box-title">Models &amp; Simple Tests</div>
+          <div class="compare-item"><strong>Model:</strong> A complex Hilbert space \(\mathcal{H}\). A state is a density operator \(\rho\) (self-adjoint, \(\rho \ge 0, \Tr(\rho)=1\)).</div>
+          <div class="compare-item"><strong>Simple Test:</strong> To decide \(H_0: \rho_0\) vs \(H_1: \rho_1\), a test dictates a measurement choice via an operator \(T \in \Lop(\Hsp)\) where \(0 \le T \le I\).</div>
+          <div class="compare-item"><strong>Errors:</strong></div>
+          <div class="compare-eq">\[\alpha(T) = \Tr(\rho_0 T)\]</div>
+          <div class="compare-eq">\[\beta(T) = \Tr(\rho_1(I-T))\]</div>
+        </div>
+        
+      </div>
+      <div id="col2-mid" class="content-layer placeholder-box compare-column">
+        <div class="compare-section">
+          <div class="compare-box-title">Gaussian Distributions (The Limit Objects)</div>
+          <div class="compare-item"><strong>Quantum Gaussian \(\mathcal{N}_2(\mu, \Sigma)\):</strong> A pair \((\rho, R)\), where \(\rho\) operates on canonical observables \(R = (Q, P)^\top\) that strictly do not commute: \([Q, P] = 2i\).</div>
+          <div class="compare-item">Characterized by the non-commutative analogue of the characteristic function:</div>
+          <div class="compare-eq">\[\Tr\big(\rho \exp(i u^\top R)\big) = \exp\big(i u^\top \mu - \frac{1}{2} u^\top V u\big)\]</div>
+          <div class="compare-item"><strong>Covariance:</strong> \(\Sigma = V + \frac{i}{2}S \ge 0\), where \(S\) encodes the canonical commutation relation.</div>
+        </div>
+        
+      </div>
+      <div id="col2-low" class="content-layer placeholder-box compare-column">
+        <div class="compare-section">
+          <div class="compare-box-title">Local Testing &amp; Likelihood Expansion</div>
+          <div class="compare-item"><strong>Local Problem:</strong> Given \(n\) copies of a state \(\rho_\theta\), test \(H_0: \theta = \theta_0\) vs \(H_1: \theta_{n,h} = \theta_0 + h/\sqrt{n}\).</div>
+          <div class="compare-item"><strong>Quantum statistic:</strong> In q-LAN the relevant expansion uses the quantum log-likelihood ratio \(\mathcal{R}_h^{(n)}\):</div>
+          <div class="compare-eq">\[\log \big(\mathcal{R}_h^{(n)}\big)^2 = h^\top \Delta^{(n)} - \frac{1}{2} h^\top J_{\theta_0} h + o_D(1)\]</div>
+          <div class="compare-note">where \(\Delta^{(n)}\) are Symmetric Logarithmic Derivatives and \(J_{\theta_0}\) is the Quantum Fisher Info.</div>
+        </div>
+        <div class="compare-section">
+          <div class="compare-box-title">Convergence &amp; Asymptotic Representation</div>
+          <div class="compare-item"><strong>Convergence:</strong> The SLD observables converge in distribution to a Quantum Gaussian state:</div>
+          <div class="compare-eq">\[\big(\rho_{\theta_0}^{\otimes n},\Delta^{(n)}\big) \rightsquigarrow \mathcal{N}_2(0, J_{\theta_0})\]</div>
+          <div class="compare-item"><strong>Representation:</strong> Consider any sequence of measurements \(T^{(n)}\). If, for each fixed \(h\), the corresponding outcome law converges weakly, then there exists a measurement \(T^{(\infty)}\) on the limiting quantum Gaussian shift experiment</div>
+          <div class="compare-eq">\[\Bigl\{ \mathcal{N}\bigl((\Ree \tau)h,\; \Sigma\bigr) : h \in \R^d \Bigr\}\]</div>
+          <div class="compare-item">such that</div>
+          <div class="compare-eq">\[\Law_{\rho_{\theta_0+h/\sqrt{n}}^{\otimes n}}\!\bigl(T^{(n)}\bigr) \Longrightarrow \Law_{\phi_h}(T^{(\infty)})\]</div>
+          <div class="compare-note">where \(\phi_h \sim \mathcal{N}((\Ree \tau)h,\Sigma)\) is the limiting quantum Gaussian state. So any asymptotic measurement procedure for the local i.i.d. quantum model has a limit procedure on the quantum Gaussian shift model.</div>
+        </div>
+        
+      </div>
+<div id="pic-1" class="content-layer story-card story-pic quantum"><div class="frame"><div class="label">The Separability Hypothesis</div><svg aria-hidden="true" viewBox="0 0 100 60"><path d="M 0 10 Q 50 15 100 5" fill="none" stroke="#efefef" stroke-width="0.5"></path><path d="M 0 25 Q 50 30 100 20" fill="none" stroke="#efefef" stroke-width="0.5"></path><path d="M 0 40 Q 50 45 100 35" fill="none" stroke="#efefef" stroke-width="0.5"></path><path d="M 0 55 Q 50 60 100 50" fill="none" stroke="#efefef" stroke-width="0.5"></path><path d="M 15 0 Q 25 30 20 60" fill="none" stroke="#efefef" stroke-width="0.5"></path><path d="M 40 0 Q 50 30 45 60" fill="none" stroke="#efefef" stroke-width="0.5"></path><path d="M 65 0 Q 75 30 70 60" fill="none" stroke="#efefef" stroke-width="0.5"></path><path d="M 90 0 Q 100 30 95 60" fill="none" stroke="#efefef" stroke-width="0.5"></path><g transform="rotate(-12 45 35)"><ellipse cx="45" cy="35" rx="26" ry="17" fill="#f8f8f8" stroke="#050505" stroke-width="1.1"></ellipse><ellipse cx="45" cy="35" rx="18" ry="11.5" fill="none" stroke="#cccccc" stroke-width="0.6" stroke-dasharray="2,1.5"></ellipse><ellipse cx="45" cy="35" rx="10" ry="6" fill="none" stroke="#cccccc" stroke-width="0.6" stroke-dasharray="2,1.5"></ellipse></g><text fill="#050505" font-family="sans-serif" font-size="4.5" font-weight="bold" x="45" y="32" text-anchor="middle">H₀</text><text fill="#555555" font-family="sans-serif" font-size="3.5" x="45" y="36.5" text-anchor="middle">Separable</text><text fill="#050505" font-family="Georgia,serif" font-size="3.5" x="45" y="42" text-anchor="middle">‖ρ<tspan dy="1.2" font-size="2.5">θ</tspan><tspan dy="-1.2">‖<tspan dy="1.2" font-size="2.5">π</tspan><tspan dy="-1.2">² ≤ 1</tspan></text><text fill="#050505" font-family="sans-serif" font-size="4.5" font-weight="bold" x="84" y="38" text-anchor="middle">H₁</text><text fill="#555555" font-family="sans-serif" font-size="3.5" x="84" y="42.5" text-anchor="middle">Entangled</text><text fill="#555555" font-family="Georgia,serif" font-size="3.5" x="84" y="48" text-anchor="middle">‖ρ<tspan dy="1.2" font-size="2.5">θ</tspan><tspan dy="-1.2">‖<tspan dy="1.2" font-size="2.5">π</tspan><tspan dy="-1.2">² &gt; 1</tspan></text><circle cx="68.5" cy="25" r="0.8" fill="#050505"></circle><text fill="#050505" font-family="Georgia,serif" font-style="italic" font-size="4" x="65" y="28">ρ<tspan dy="1.2" font-size="2.5">θ₀</tspan><tspan dy="-1.2"></tspan></text><line x1="68.5" y1="25" x2="80" y2="13.5" stroke="#050505" stroke-width="0.8"></line><polygon points="81,12.5 77.5,13.5 80,16" fill="#050505"></polygon><text fill="#050505" font-family="Georgia,serif" font-size="3.5" x="80" y="10.5">∇‖ρ<tspan dy="1.2" font-size="2.5">θ</tspan><tspan dy="-1.2">‖<tspan dy="1.2" font-size="2.5">π</tspan><tspan dy="-1.2">²</tspan></text></svg></div></div>
+      <div id="text-1" class="content-layer story-card story-text filled"><div class="bigline">The Separability Hypothesis (Projective Norm)</div><div class="smallline"><p>Let \(\rho_\theta \in \cS(\mathcal{H}_A \otimes \mathcal{H}_B)\) be a parameterized bipartite quantum state. Entanglement is geometrically quantified by the <strong>projective tensor norm</strong>:</p><span class="formula-inline">\[\|\rho_\theta\|_\pi = \inf \left\{ \sum_i \|A_i\|_1 \|B_i\|_1 \;\middle|\; \rho_\theta = \sum_i A_i \otimes B_i \right\}\]</span><p>For a normalized state, it is separable if and only if \(\|\rho_\theta\|_\pi = 1\). The test for entanglement is the non-linear boundary test:</p><span class="formula-inline">\[H_0: \|\rho_\theta\|_\pi^2 - 1 \le 0 \quad \text{(Separable)} \quad \text{vs} \quad H_1: \|\rho_\theta\|_\pi^2 - 1 > 0 \quad \text{(Entangled)}\]</span></div></div>
+      <div id="pic-2" class="content-layer story-card story-pic quantum"><div class="frame"><div class="label">Unique Dual Witness</div><svg aria-hidden="true" viewBox="0 0 100 60">
+      <path d="M 0 15 Q 50 25 60 75 L 0 75 Z" fill="#f8f8f8"></path>
+      <path d="M 0 15 Q 50 25 60 75" fill="none" stroke="#cccccc" stroke-width="1.2"></path>
+      <text x="5" y="47" font-family="sans-serif" font-size="3.5" fill="#555555">Separable Set</text>
+      <text x="5" y="52" font-family="Georgia,serif" font-size="3.5" fill="#555555">
+        ‖ρ<tspan dy="1" font-size="2.5">θ</tspan><tspan dy="-1">‖<tspan dy="1" font-size="2.5">π</tspan><tspan dy="-1">² ≤ 1</tspan>
+      </text>
+      <line x1="15" y1="10" x2="65" y2="60" stroke="#050505" stroke-width="0.8" stroke-dasharray="1.5 1.5"></line>
+      <text x="10" y="7" font-family="sans-serif" font-size="3.5" fill="#555555">Dual Witness Half-Space</text>
+      <text x="18" y="11" font-family="Georgia,serif" font-size="3.5" fill="#555555">
+        W<tspan dy="1" font-size="2.5">θ₀</tspan>
+      </text>
+      <path d="M 41.4 36.4 L 42.8 35 L 41.4 33.6" fill="none" stroke="#050505" stroke-width="0.6"></path>
+      <circle cx="40" cy="35" r="1.2" fill="#050505"></circle>
+      <text x="35" y="39" font-family="Georgia,serif" font-style="italic" font-size="4.5" fill="#050505">
+        θ<tspan dy="1" font-size="3" font-style="normal">0</tspan>
+      </text>
+      <line x1="40" y1="35" x2="52" y2="23" stroke="#050505" stroke-width="1.1"></line>
+      <polygon points="0,0 -3,1.5 -3,-1.5" fill="#050505" transform="translate(52, 23) rotate(-45)"></polygon>
+      <text x="54" y="22" font-family="Georgia,serif" font-size="4.5" fill="#050505">
+        c = ∇f(θ<tspan dy="1" font-size="3">0</tspan><tspan dy="-1">)</tspan>
+      </text>
+    </svg></div></div>
+      <div id="text-2" class="content-layer story-card story-text filled"><div class="bigline">Differentiating the Boundary</div><div class="smallline"><p>Fix a separable boundary state at parameter \(\theta_0\), where \(\|\rho_{\theta_0}\|_\pi = 1\). Let \(W_{\theta_0}\) be a dual witness satisfying \(\|W_{\theta_0}\|_\epsilon = 1\) and \(\Ree \Tr(W_{\theta_0} \rho_{\theta_0}) = 1\).</p><p>If \(W_{\theta_0}\) is unique, the squared norm \(f(\theta) = \|\rho_\theta\|_\pi^2\) is Fréchet differentiable at \(\theta_0\). The gradient \(c = \nabla f(\theta_0)\) is the vector:</p><span class="formula-inline">\[c = 2 \left( \Ree \Tr \left( W_{\theta_0} \frac{\partial \rho_\theta}{\partial \theta_j}\Big|_{\theta_0} \right) \right)_{j=1}^2\]</span><p>This successfully linearizes the geometric boundary of separable states.</p></div></div>
+      <div id="pic-3" class="content-layer story-card story-pic quantum"><div class="frame"><div class="label">The Limiting Half-Space Test</div><svg aria-hidden="true" viewBox="0 0 100 60"><rect x="0" y="35" width="100" height="25" fill="#f8f8f8"></rect><line x1="10" y1="35" x2="90" y2="35" stroke="#efefef" stroke-width="0.6"></line><line x1="50" y1="10" x2="50" y2="58" stroke="#efefef" stroke-width="0.6"></line><path d="M 10 55 Q 50 15 90 55" fill="none" stroke="#cccccc" stroke-width="0.8" stroke-dasharray="1.5 1"></path><path d="M 10 45 Q 50 25 90 45" fill="none" stroke="#999999" stroke-width="0.9" stroke-dasharray="2 1.5"></path><path d="M 10 38 Q 50 32 90 38" fill="none" stroke="#555555" stroke-width="1.0" stroke-dasharray="3 2"></path><line x1="5" y1="35" x2="95" y2="35" stroke="#050505" stroke-width="1.2"></line><text x="70" y="33" font-family="Georgia,serif" font-size="4" fill="#050505">cᵀθ<tspan dy="1.5" font-size="3">h</tspan><tspan dy="-1.5"> = 0</tspan></text><text x="15" y="48" font-family="sans-serif" font-size="5" font-weight="bold" fill="#555555">H<tspan dy="2" font-size="3.5">0</tspan></text><text x="15" y="25" font-family="sans-serif" font-size="5" font-weight="bold" fill="#050505">H<tspan dy="2" font-size="3.5">1</tspan></text><circle cx="50" cy="35" r="1.2" fill="#050505"></circle><text x="44" y="39" font-family="Georgia,serif" font-style="italic" font-size="4" fill="#050505">h = 0</text><line x1="50" y1="35" x2="50" y2="15" stroke="#050505" stroke-width="1.1"></line><polygon points="50,15 48.5,17.5 51.5,17.5" fill="#050505"></polygon><text x="52" y="16" font-family="Georgia,serif" font-style="italic" font-size="4.5" fill="#050505">c</text><line x1="25" y1="50" x2="25" y2="38" stroke="#555555" stroke-width="0.6"></line><polygon points="25,38 23.8,39.5 26.2,39.5" fill="#555555"></polygon><text x="27" y="47" font-family="sans-serif" font-size="3.5" fill="#555555">n → ∞</text><text x="5" y="10" font-family="sans-serif" font-size="4.5" fill="#555555" font-weight="bold">1/√n zoom</text></svg></div></div>
+      <div id="text-3" class="content-layer story-card story-text filled"><div class="bigline">The Limiting Half-Space Test</div><div class="smallline"><p>By the qLAN Representation Theorem, the i.i.d. sequence of local experiments \(\{\rho_{\theta_0 + h/\sqrt{n}}^{\otimes n}\}\) converges to the limiting Quantum Gaussian Shift Experiment</p><span class="formula-inline">\[\cE_\infty = \{ \rho_{\theta_h,\Sigma} \mid h \in \mathbb{R}^2 \},\qquad \theta_h = (\Ree \tau) h,\]</span><p>represented on canonical observables</p><span class="formula-inline">\[R = (Q,P)^\top .\]</span><p>Under this \(1/\sqrt{n}\) zooming, the non-linear separability constraint locally flattens. In the Gaussian limit experiment, the induced testing problem becomes the half-space test</p><span class="formula-inline">\[H_0: c^\top \theta_h \le 0 \quad \text{vs} \quad H_1: c^\top \theta_h > 0,\]</span><p>where \(\theta_h = (\Ree\tau)h\) is the mean parameter of the limiting Gaussian shift model.</p></div></div>
+      <div id="pic-4" class="content-layer story-card story-pic quantum"><div class="frame"><div class="label">Nuisance Elimination</div><svg aria-hidden="true" viewBox="0 0 200 100">
+      <line x1="100" y1="10" x2="100" y2="90" stroke="#e0e0e0" stroke-width="0.5" stroke-dasharray="2,2"></line>
+
+      <line x1="15" y1="60" x2="85" y2="60" stroke="#cccccc" stroke-width="1"></line>
+      <polygon points="85,60 82,58 83,60 82,62" fill="#cccccc"></polygon>
+      <line x1="50" y1="90" x2="50" y2="25" stroke="#cccccc" stroke-width="1"></line>
+      <polygon points="50,25 48,28 50,27 52,28" fill="#cccccc"></polygon>
+      <text x="82" y="57" font-family="Georgia,serif" font-size="5" fill="#050505">c</text>
+      <text x="53" y="27" font-family="Georgia,serif" font-size="5" fill="#050505">d</text>
+      <path d="M 35 28 Q 48 44 35 60 T 35 92" fill="none" stroke="#555555" stroke-width="0.8" stroke-dasharray="1.5,1.5"></path>
+      <text x="30" y="55" font-family="Georgia,serif" font-size="5" fill="#555555">β<tspan dy="1.5" font-size="3.5">T</tspan></text>
+      <line x1="45" y1="28" x2="45" y2="92" stroke="#050505" stroke-width="1.2"></line>
+      <text x="35" y="85" font-family="Georgia,serif" font-size="5" fill="#050505">β<tspan dy="1.5" font-size="3.5">T</tspan><tspan dy="1.5" font-size="3">inv</tspan></text>
+      <line x1="38" y1="60" x2="42.5" y2="60" stroke="#555555" stroke-width="0.8"></line>
+      <polygon points="43.5,60 41,58.5 41.5,60 41,61.5" fill="#555555"></polygon>
+      <text x="39" y="57" font-family="Georgia,serif" font-size="6" fill="#555555">∫</text>
+
+      <ellipse cx="150" cy="60" rx="36" ry="26" stroke="#cccccc" stroke-width="1" fill="none"></ellipse>
+      <line x1="110" y1="65" x2="190" y2="65" stroke="#050505" stroke-width="1.2"></line>
+      <text x="160" y="71" font-family="Georgia,serif" font-size="4.5" fill="#050505">T<tspan dy="1.5" font-size="3.5">inv</tspan>= f(A<tspan dy="1.5" font-size="3">c</tspan><tspan dy="-1.5">)</tspan></text>
+      <circle cx="130" cy="42" r="1.2" fill="#555555"></circle>
+      <text x="125" y="41" font-family="Georgia,serif" font-size="5" fill="#555555">T</text>
+      <path d="M 130 42 Q 150 32 170 42" fill="none" stroke="#555555" stroke-width="0.8"></path>
+      <text x="150" y="30" text-anchor="middle" font-family="Georgia,serif" font-size="4.5" fill="#555555">V<tspan dy="1.5" font-size="3">t</tspan><tspan dy="-1.5"> T V</tspan><tspan dy="1.5" font-size="3">t</tspan><tspan dy="-2" font-size="3">*</tspan></text>
+      <line x1="130" y1="43" x2="130" y2="63" stroke="#555555" stroke-width="0.5" stroke-dasharray="1,1"></line>
+      <polygon points="130,64 128.5,62 130,62.5 131.5,62" fill="#555555"></polygon>
+      <line x1="150" y1="37" x2="150" y2="63" stroke="#555555" stroke-width="0.5" stroke-dasharray="1,1"></line>
+      <polygon points="150,64 148.5,62 150,62.5 151.5,62" fill="#555555"></polygon>
+      <line x1="170" y1="43" x2="170" y2="63" stroke="#555555" stroke-width="0.5" stroke-dasharray="1,1"></line>
+      <polygon points="170,64 168.5,62 170,62.5 171.5,62" fill="#555555"></polygon>
+      <text x="152" y="55" font-family="Georgia,serif" font-size="7" fill="#555555">∫</text>
+      <circle cx="150" cy="65" r="1.5" fill="#050505"></circle>
+    </svg></div></div>
+      <div id="text-4" class="content-layer story-card story-text filled"><div class="bigline">Nuisance Parameter Elimination</div><div class="smallline"><p>We orthogonally decompose the mean parameter \(\theta_h\) of the Gaussian shift:</p><span class="formula-inline">\[\theta_h = \theta_\eta \frac{c}{\|c\|^2} + \theta_\xi \frac{d}{\|d\|^2},\qquad d=\begin{pmatrix}-c_2\ c_1\end{pmatrix},\qquad c^\top d=0,\]</span><p>where</p><span class="formula-inline">\[\theta_\eta = c^\top \theta_h,\qquad \theta_\xi = d^\top \theta_h.\]</span><p>Thus \(\theta_\eta\) is the parameter of interest and \(\theta_\xi\) is the nuisance parameter.</p><p>Translations along the nuisance direction are implemented by</p><span class="formula-inline">\[V_t = D_{td} = \exp\!\left(i\frac{t}{2} c^\top R\right),\]</span><p>and satisfy</p><span class="formula-inline">\[V_t \rho_{\theta_h,\Sigma} V_t^* = \rho_{\theta_h + td,\Sigma}.\]</span><p>By the <strong>Quantum Hunt-Stein Theorem</strong>, minimizing worst-case error forces the optimal test \(T\) to be invariant under \(V_t\), i.e., \(V_tTV_t^*=T\quad (\forall t\in\mathbb R).\) Thus, by the spectral theorem, every invariant test is of the form</p><span class="formula-inline">\[T=f(A_c),\qquad A_c=c^\top R,\]</span><p>for some bounded Borel function \(f:\R\to[0,1]\).</p></div></div>
+      <div id="pic-5" class="content-layer story-card story-pic quantum"><div class="frame"><div class="label">Optimal Half-Space Test</div><svg aria-hidden="true" viewBox="0 0 100 100">
+      <line x1="15" y1="80" x2="90" y2="80" stroke="#cccccc" stroke-width="1"></line>
+      <polygon points="90,80 87,78 88,80 87,82" fill="#cccccc"></polygon>
+      <text x="81" y="87" font-family="Georgia,serif" font-size="5" fill="#555555">Z=A<tspan dy="1.5" font-size="3.5">c</tspan></text>
+      <path d="M 65 52 C 72 65, 76 80, 80 80 L 65 80 Z" fill="#eeeeee"></path>
+      <path d="M 20 80 C 30 80, 35 40, 50 40 C 65 40, 70 80, 80 80" fill="none" stroke="#050505" stroke-width="1.2"></path>
+      <line x1="50" y1="80" x2="50" y2="40" stroke="#cccccc" stroke-width="0.8" stroke-dasharray="1.5,1.5"></line>
+      <text x="46" y="87" font-family="Georgia,serif" font-size="5" fill="#555555">cᵀθ</text>
+      <line x1="65" y1="80" x2="65" y2="45" stroke="#050505" stroke-width="1.2"></line>
+      <text x="67" y="48" font-family="Georgia,serif" font-size="5" fill="#050505">z<tspan dy="1.5" font-size="3.5">α</tspan><tspan dy="-1.5">σ</tspan></text>
+      <text x="68" y="75" font-family="sans-serif" font-size="3.5" font-weight="bold" fill="#050505">Reject</text>
+    </svg></div></div>
+      <div id="text-5" class="content-layer story-card story-text filled"><div class="bigline">Final Form of the Optimal Test</div><div class="smallline"><p>Because \(A_c = c^\top R = c_1Q + c_2P\) is a single operator, measuring it yields a classical random variable. Under the Gaussian limit state \(\rho_{\theta_h,\Sigma}\), the outcome is distributed as</p><span class="formula-inline">\[A_c \sim \mathcal{N}(c^\top \theta_h,\; c^\top V c),\qquad V=\Ree(\Sigma).\]</span><ul><li><strong>The Limiting Test:</strong> Let \(\sigma = \sqrt{c^\top V c}\) and \(z_\alpha = \Phi^{-1}(1-\alpha)\). The Uniformly Most Powerful invariant level-\(\alpha\) test rejects \(H_0\) if \(A_c \ge z_\alpha \sigma\):<span class="formula-inline">\[T_\alpha = \mathbf{1}_{[z_\alpha \sigma, \infty)}(A_c)\]</span></li><li><strong>The Finite-\(n\) Test:</strong> For \(n\) independent copies, let \(L = c_1 Q + c_2 P\). The statistic \(A_c\) corresponds to the normalized sum of local observables:<span class="formula-inline">\[A_c^{(n)} = \frac{1}{\sqrt{n}} \sum_{j=1}^n I^{\otimes (j-1)} \otimes L \otimes I^{\otimes (n-j)}\]</span>The finite-sample test \(T_n = \mathbf{1}_{[z_\alpha \sigma, \infty)}(A_c^{(n)})\) achieves the asymptotic power bound.</li></ul></div></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const ids = [
+        'col1-head','col1-mid','col1-low','col2-head','col2-mid','col2-low',
+        'text-1','text-2','text-3','text-4','text-5'
+      ];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        el.innerHTML = el.innerHTML.replace(/\\/g, '\\');
+      }
+    })();
+  </script>
+</body>
+</html>
