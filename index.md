@@ -4,8 +4,7 @@ title: "Welcome!"
 nav_order: 1
 ---
 
-<!-- Replace /assets/profile.jpg with the actual path/filename of your photo -->
-<img src="/assets/profile.png" alt="Rathindra Nath Karmakar" style="width:180px;height:180px;object-fit:cover;border-radius:50%;float:right;margin:0 0 1rem 1rem;transform:translateY(-20px)" />
+<img src="/assets/profile.svg" alt="Rathindra Nath Karmakar" style="width:180px;height:180px;object-fit:cover;border-radius:50%;float:right;margin:0 0 1rem 1rem;transform:translateY(-20px)" />
 
 Hi, I'm **Rathin**. I'm currently a **PhD student** at **Kyushu University**.
 
