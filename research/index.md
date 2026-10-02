@@ -28,7 +28,7 @@ nav_order: 3
           [<a href="{{ post.url | relative_url }}">HTML</a>]
           <!-- Example: Check if a PDF exists in assets with the slug name -->
           <!-- You can customize this logic based on how you store PDFs -->
-          [<a href="/assets/pdf/{{ post.slug }}.pdf">PDF</a>]
+          [<a href="{{ post.pdf_url | relative_url }}">PDF</a>]
         </span>
       </li>
     {% endfor %}

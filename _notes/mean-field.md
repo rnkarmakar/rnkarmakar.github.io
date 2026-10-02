@@ -3,10 +3,11 @@ layout: page
 title: "Mean Field Neural Networks and Transformers"
 date: 2025-06-05
 categories: [probability-statistics, machine learning]
+pdf_url: '/assets/pdf/mean-field.pdf'
 ---
 
 A write-up of my notes on mean field neural networks and transformers.
-<a href="{{ '/assets/pdf/mean-field.pdf' | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
+<a href="{{ page.pdf_url | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
 
 <!--more-->
 

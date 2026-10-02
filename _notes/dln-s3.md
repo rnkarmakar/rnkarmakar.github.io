@@ -4,11 +4,12 @@ title:  "Deep Linear Networks: Characterizing the Minimizer"
 date:   2025-07-22
 categories: [machine-learning]
 tags: [neural networks, function classes]
+pdf_url: '/assets/pdf/S3.pdf'
 ---
 
 This article is about characterization of the minimizer reached by gradient descent in deep neural networks.
 Part 3 of my notes on implicit regularisation in Deep Linear Networks.
-<a href="{{ '/assets/pdf/S3.pdf' | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
+<a href="{{ page.pdf_url | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
 
 <!--more-->
 

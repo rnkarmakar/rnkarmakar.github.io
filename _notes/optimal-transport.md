@@ -3,10 +3,11 @@ layout: page
 title: "Optimal Transport"
 date: 2025-06-05
 categories: [probability-statistics]
+pdf_url: '/assets/pdf/optimal-transport.pdf'
 ---
 
 Part 1 of my notes on optimal transport.
-<a href="{{ '/assets/pdf/optimal-transport.pdf' | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
+<a href="{{ page.pdf_url | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
 
 <!--more-->
 
