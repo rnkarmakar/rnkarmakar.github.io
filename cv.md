@@ -11,8 +11,13 @@ nav_order: 2
   <h3>Education</h3>
   
   <div class="cv-item">
-    <div class="cv-left"><strong>Research Student</strong>, Kyushu University, Japan</div>
+    <div class="cv-left"><strong>PhD in Mathematics</strong>, Kyushu University, Japan</div>
     <div class="cv-right">Ongoing</div>
+  </div>
+  
+  <div class="cv-item">
+    <div class="cv-left"><strong>Research Student</strong>, Kyushu University, Japan</div>
+    <div class="cv-right">2026</div>
   </div>
   
   <div class="cv-item">
