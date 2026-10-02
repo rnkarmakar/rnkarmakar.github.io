@@ -3,10 +3,11 @@ layout: page
 title: "Tensor Norms for Quantum Entanglement - 2"
 date: 2025-06-05
 categories: [quantum-probability]
+pdf_url: '/assets/pdf/tensor-norms-quantum-entanglement-2.pdf'
 ---
 
 Part 2 of my notes on entanglement tests using tensor norms and related ideas.
-<a href="{{ '/assets/pdf/tensor-norms-quantum-entanglement-2.pdf' | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
+<a href="{{ page.pdf_url | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
 
 <!--more-->
 

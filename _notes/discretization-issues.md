@@ -3,10 +3,11 @@ layout: page
 title: "Discretization Issues in Sampling"
 date: 2025-06-05
 categories: [probability-statistics]
+pdf_url: '/assets/pdf/discretization-issues.pdf'
 ---
 
 A write-up of my notes on entanglement tests using tensor norms and related ideas.
-<a href="{{ '/assets/pdf/discretization-issues.pdf' | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
+<a href="{{ page.pdf_url | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
 
 <!--more-->
 

@@ -40,7 +40,7 @@ nav_order: 4
            [<a href="{{ note.url | relative_url }}">Web</a>]
            
            <!-- Link to PDF (assumes file exists at /assets/pdf/slug.pdf) -->
-           [<a href="/assets/pdf/{{ note.slug }}.pdf">PDF</a>]
+           [<a href="{{ note.pdf_url | relative_url }}">PDF</a>]
         </span>
       </li>
     {% endfor %}

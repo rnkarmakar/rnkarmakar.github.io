@@ -4,10 +4,11 @@ title:  "ERGM Max Entropy"
 date:   2025-05-20
 categories: [probability-statistics]
 tags: [random graphs, max entropy]
+pdf_url: 'https://arxiv.org/pdf/2602.20844'
 ---
 
 This article is about the use of Jaynes' maximum entropy principle to test the parameters of an exponential random graph model.
-<a href="{{ 'https://arxiv.org/pdf/2602.20844' | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
+<a href="{{ page.pdf_url | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.75rem 1.5rem; text-decoration:none; font-weight:bold; margin-left:1rem;">Download as PDF</a>
 
 <!--more-->
 
