@@ -7,7 +7,7 @@ nav_order: 1
 <!-- Replace /assets/profile.jpg with the actual path/filename of your photo -->
 <img src="/assets/profile.png" alt="Rathindra Nath Karmakar" style="width:180px;height:180px;object-fit:cover;border-radius:50%;float:right;margin:0 0 1rem 1rem;transform:translateY(-20px)" />
 
-Hi, I'm **Rathin**. I'm currently a **Research Student** at **Kyushu University**.
+Hi, I'm **Rathin**. I'm currently a **PhD student** at **Kyushu University**.
 
 I am interested in probability and statistics, machine learning and several related areas. As a side hustle, I like learning Asian languages and discussing the application of tech to reducing the learning curve!
 
@@ -23,16 +23,16 @@ This website collects my research work, notes and other random stuff. Feel free 
   </div>
   <ul class="noticeboard__list">
     <li class="noticeboard__item">
+      <span class="noticeboard__date">October 2026</span>
+      <span class="noticeboard__text">Advanced from Research Student to PhD  at Kyushu University, Fukuoka.</span>
+    </li>    
+    <li class="noticeboard__item">
       <span class="noticeboard__date">September 2025</span>
       <span class="noticeboard__text">Started as a Research Student at Kyushu University, Fukuoka.</span>
     </li>
     <li class="noticeboard__item">
       <span class="noticeboard__date">Aug 2025</span>
       <span class="noticeboard__text">Completed Research Assistant position at the Department of Mathematics, NUS.</span>
-    </li>
-    <li class="noticeboard__item">
-      <span class="noticeboard__date">Jun 2025</span>
-      <span class="noticeboard__text">New notes on <a href="/notes/probability-statistics/">discretization issues in sampling</a> posted.</span>
     </li>
   </ul>
 </section>
