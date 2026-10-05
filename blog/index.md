@@ -7,7 +7,10 @@ nav_order: 5
 
 <section class="clarity-blog" aria-labelledby="blog-heading">
   <header class="clarity-blog__hero">
-    <p class="clarity-blog__eyebrow">Rathin’s corner · Blog</p>
+    <div class="clarity-blog__hero-topline">
+      <p class="clarity-blog__eyebrow">Rathin’s corner · Blog</p>
+      <a class="clarity-blog__back-link clarity-blog__back-link--site" href="{{ '/' | relative_url }}">← Back to website</a>
+    </div>
     <h1 id="blog-heading" class="clarity-blog__title">Unfiltered</h1>
     <p class="clarity-blog__abstract">Short reflections, explanations, and occasional explorations from mathematics and beyond.</p>
   </header>
