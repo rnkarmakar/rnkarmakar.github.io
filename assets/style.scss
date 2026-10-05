@@ -529,7 +529,7 @@ ul.compact-list {
 .clarity-demo__selection { display: grid; grid-template-columns: auto minmax(9rem,12rem); align-items: center; gap: .7rem 1rem; margin: 1rem 0 2rem; padding: 1rem; border-radius: 5px; background: #f3f5f6; font-family: $font-base; }
 .clarity-demo__selection label { font-size: .88rem; font-weight: 600; }
 .clarity-demo__selection select { padding: .45rem .6rem; border: 1px solid #aeb8be; border-radius: 4px; background: #fff; font: .88rem $font-base; }
-.clarity-demo__selection-art { grid-column: 1/-1; display: flex; align-items: end; justify-content: center; gap: .8rem; min-height: 10rem; padding: 1rem; overflow: hidden; border-radius: 4px; background: linear-gradient(145deg,#e2f0f3,#f4f7f8); }
+.clarity-demo__selection-art { grid-column: 1/-1; display: flex; height: 12rem; align-items: end; justify-content: center; gap: .8rem; min-height: 10rem; padding: 1rem; overflow: hidden; border-radius: 4px; background: linear-gradient(145deg,#e2f0f3,#f4f7f8); }
 .clarity-demo__selection-art span { width: 12%; border-radius: 50% 50% 8% 8%; background: #36859b; animation: clarity-demo-float 2.4s ease-in-out infinite alternate; }
 .clarity-demo__selection-art span:nth-child(1) { height: 45%; }
 .clarity-demo__selection-art span:nth-child(2) { height: 72%; animation-delay: -.7s; }
