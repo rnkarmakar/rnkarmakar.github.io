@@ -6,7 +6,7 @@ categories: [probability-statistics]
 pdf_url: '/assets/pdf/discretization-issues.pdf'
 ---
 
-A write-up of my notes on entanglement tests using tensor norms and related ideas.
+A write-up of my notes on discretization issues in sampling.
 
 
 <!--more-->
