@@ -36,11 +36,16 @@ nav_order: 4
         <!-- <span style="color:#666; font-size: 0.9em;"> – {{ note.excerpt | strip_html | truncatewords: 10 }}</span> -->
 
         <span class="meta-links">
-           <!-- Link to the web page -->
-           [<a href="{{ note.url | relative_url }}">Web</a>]
-           
-           <!-- Link to PDF (assumes file exists at /assets/pdf/slug.pdf) -->
-           [<a href="{{ note.pdf_url | relative_url }}">PDF</a>]
+          {% if note.resource_links %}
+            {% for link in note.resource_links %}
+              [<a href="{{ link.url }}">{{ link.label | escape }}</a>]
+            {% endfor %}
+          {% else %}
+            [<a href="{{ note.url | relative_url }}">Web</a>]
+            {% if note.pdf_url %}
+              [<a href="{{ note.pdf_url | relative_url }}">PDF</a>]
+            {% endif %}
+          {% endif %}
         </span>
       </li>
     {% endfor %}

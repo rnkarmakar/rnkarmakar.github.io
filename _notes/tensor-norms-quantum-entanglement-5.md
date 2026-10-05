@@ -3,17 +3,18 @@ layout: page
 title: "Tensor Norms for Quantum Entanglement - 5"
 date: 2025-06-05
 categories: [quantum-probability]
-pdf_url: '/assets/pdf/tensor-norms-quantum-entanglement-5.ipynb'
+resource_links:
+  - label: Colab
+    url: "https://colab.research.google.com/drive/1YdmKOzj_Osbab5BwX4Fg5vMdaodOXAGJ?usp=sharing"
 ---
 
 Part 5 of my notes on entanglement tests using tensor norms and related ideas.
- 
 
 <!--more-->
 
-  <div class="note-box" style="border:1px solid #ccc; padding:1rem; margin-top:1rem;">
-      <div class="embed-toolbar" style="display:flex; justify-content:flex-end; margin:0 0 0.75rem;">
-          <a href="{{ page.pdf_url | relative_url }}" download class="btn download-btn" style="background:#007acc; color:#fff; padding:0.45rem 0.9rem; text-decoration:none; font-weight:bold;">Open PDF</a>
-      </div>
-      <iframe src="https://colab.research.google.com/drive/1YdmKOzj_Osbab5BwX4Fg5vMdaodOXAGJ?usp=sharing" width="100%" height="600px" style="border:none; margin-top:1rem;" loading="lazy"></iframe>
-  </div>
+<div class="note-box" style="border:1px solid #ccc; padding:1rem; margin-top:1rem;">
+  <p>This notebook is hosted in Google Colab and opens directly there.</p>
+  {% for link in page.resource_links %}
+    <a href="{{ link.url }}" class="btn" style="display:inline-block; background:#007acc; color:#fff; padding:0.45rem 0.9rem; text-decoration:none; font-weight:bold;">Open in {{ link.label | escape }}</a>
+  {% endfor %}
+</div>
