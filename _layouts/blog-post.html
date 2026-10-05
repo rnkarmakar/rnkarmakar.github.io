@@ -12,6 +12,10 @@ layout: default
     {{ content }}
   </div>
 
+  {% if page.clarity_demo %}
+  <script src="{{ '/assets/js/clarity-demo.js' | relative_url }}" defer></script>
+  {% endif %}
+
   <footer class="clarity-blog__post-footer">
     <a class="clarity-blog__back-link" href="{{ '/blog/' | relative_url }}">← All blog posts</a>
     <p class="clarity-blog__credit">Article styling is adapted from <a href="https://shikun.io/projects/clarity">Clarity</a> by Shikun Liu. This site’s templates and styles are maintained in this repository.</p>
