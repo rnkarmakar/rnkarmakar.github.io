@@ -210,8 +210,11 @@ header.site-header .menu .dropdown:hover .dropdown-content {
 }
 
 .contact-list__icon {
-  font-size: 1rem;
-  line-height: 1;
+  display: block;
+  flex: 0 0 1.15rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  object-fit: contain;
 }
 
 .contact-list__item a {
