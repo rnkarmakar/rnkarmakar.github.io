@@ -42,15 +42,15 @@ This website collects my research work, notes and other random stuff. Feel free 
   <h2 class="contact-section__title">Contact</h2>
   <ul class="contact-list">
     <li class="contact-list__item">
-      <img class="contact-list__icon" src="{{ '/assets/icons/gmail.svg' | relative_url }}" alt="" aria-hidden="true">
+      <img class="contact-list__icon" src="{{ '/assets/icons/gmail.svg' | relative_url }}" width="18" height="18" alt="" aria-hidden="true">
       <a href="mailto:rnka09122001@gmail.com">rnka09122001@gmail.com</a>
     </li>
     <li class="contact-list__item">
-      <img class="contact-list__icon" src="{{ '/assets/icons/google-scholar.svg' | relative_url }}" alt="" aria-hidden="true">
+      <img class="contact-list__icon" src="{{ '/assets/icons/google-scholar.svg' | relative_url }}" width="18" height="18" alt="" aria-hidden="true">
       <a href="https://scholar.google.com/citations?user=7MDuQY8AAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>
     </li>
     <li class="contact-list__item">
-      <img class="contact-list__icon" src="{{ '/assets/icons/github.svg' | relative_url }}" alt="" aria-hidden="true">
+      <img class="contact-list__icon" src="{{ '/assets/icons/github.svg' | relative_url }}" width="18" height="18" alt="" aria-hidden="true">
       <a href="https://github.com/rnkarmakar" target="_blank" rel="noopener">GitHub</a>
     </li>
   </ul>
