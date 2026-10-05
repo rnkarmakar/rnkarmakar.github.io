@@ -308,3 +308,155 @@ ul.compact-list {
   .cv-item { flex-direction: column; }
   .cv-right { text-align: left; font-size: 0.9em; margin-top: 2px; }
 }
+
+
+/* ---------- Clarity-inspired blog ---------- */
+.clarity-blog {
+  color: #353535;
+}
+
+.clarity-blog__hero {
+  background: #eef0f2;
+  padding: clamp(1.75rem, 5vw, 3.75rem);
+  margin: 0 0 2rem;
+}
+
+.clarity-blog__eyebrow {
+  margin: 0 0 0.75rem;
+  color: #666;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.clarity-blog__title {
+  margin: 0 0 1rem;
+  color: #27292b;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.clarity-blog__abstract {
+  max-width: 48rem;
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.7;
+}
+
+.clarity-blog__list {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.clarity-blog__entry {
+  padding: 1.5rem 0 1.75rem;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.clarity-blog__entry:first-child {
+  padding-top: 0;
+}
+
+.clarity-blog__meta {
+  margin: 0 0 0.5rem;
+  color: #666;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.clarity-blog__entry-title {
+  margin: 0 0 0.6rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.clarity-blog__entry-title a,
+.clarity-blog__read-more,
+.clarity-blog__back-link {
+  color: #245a73;
+  text-decoration: none;
+}
+
+.clarity-blog__entry-title a:hover,
+.clarity-blog__read-more:hover,
+.clarity-blog__back-link:hover {
+  text-decoration: underline;
+}
+
+.clarity-blog__entry-excerpt {
+  margin: 0 0 0.6rem;
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.75;
+}
+
+.clarity-blog__read-more {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.clarity-blog__body {
+  max-width: 46rem;
+  margin: 0 auto;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.08rem;
+  line-height: 1.85;
+}
+
+.clarity-blog__body h2,
+.clarity-blog__body h3 {
+  margin: 2rem 0 0.75rem;
+  color: #27292b;
+  font-family: "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.3;
+}
+
+.clarity-blog__body h2 { font-size: 1.45rem; }
+.clarity-blog__body h3 { font-size: 1.2rem; }
+
+.clarity-blog__body p,
+.clarity-blog__body ul,
+.clarity-blog__body ol,
+.clarity-blog__body blockquote {
+  margin: 0 0 1.15rem;
+}
+
+.clarity-blog__body blockquote {
+  padding: 0.8rem 1rem;
+  border-left: 3px solid #b9c4ca;
+  background: #f7f8f8;
+  color: #4b5052;
+}
+
+.clarity-blog__post-footer {
+  max-width: 46rem;
+  margin: 2.5rem auto 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e6e6e6;
+}
+
+.clarity-blog__credit {
+  margin: 1.5rem 0 0;
+  color: #777;
+  font-size: 0.82rem;
+}
+
+.clarity-blog__credit a {
+  color: inherit;
+}
+
+@media (max-width: 600px) {
+  .clarity-blog__hero {
+    margin-right: -1rem;
+    margin-left: -1rem;
+    padding: 1.75rem 1.25rem;
+  }
+
+  .clarity-blog__body {
+    font-size: 1rem;
+  }
+}

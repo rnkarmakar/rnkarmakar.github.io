@@ -1,0 +1,19 @@
+---
+layout: default
+---
+<article class="clarity-blog">
+  <header class="clarity-blog__hero">
+    <p class="clarity-blog__eyebrow">Blog · <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></p>
+    <h1 class="clarity-blog__title">{{ page.title | escape }}</h1>
+    {% if page.description %}<p class="clarity-blog__abstract">{{ page.description | escape }}</p>{% endif %}
+  </header>
+
+  <div class="clarity-blog__body">
+    {{ content }}
+  </div>
+
+  <footer class="clarity-blog__post-footer">
+    <a class="clarity-blog__back-link" href="{{ '/blog/' | relative_url }}">← All blog posts</a>
+    <p class="clarity-blog__credit">Article styling is adapted from <a href="https://shikun.io/projects/clarity">Clarity</a> by Shikun Liu. This site’s templates and styles are maintained in this repository.</p>
+  </footer>
+</article>
