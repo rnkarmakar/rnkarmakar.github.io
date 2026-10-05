@@ -589,3 +589,11 @@ ul.compact-list {
 .clarity-demo__icons span { display: flex; align-items: center; gap: .45rem; }
 .clarity-demo__icons svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: #36738a; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
+
+/* ---------- Blog-only shell navigation ---------- */
+.clarity-blog__back-link--site {
+  display: inline-block;
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}

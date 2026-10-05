@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ page.title }} · {{ site.title }}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+  </head>
+  <body>
+    <main class="page-content wrapper">
+      <a class="clarity-blog__back-link clarity-blog__back-link--site" href="{{ '/' | relative_url }}">← Back to website</a>
+      {{ content }}
+    </main>
+    <footer class="site-footer wrapper">
+      © {{ site.time | date: '%Y' }} · {{ site.title }}
+    </footer>
+  </body>
+</html>
