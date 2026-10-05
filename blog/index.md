@@ -12,7 +12,7 @@ nav_order: 5
       <a class="clarity-blog__back-link clarity-blog__back-link--site" href="{{ '/' | relative_url }}">← Back to website</a>
     </div>
     <h1 id="blog-heading" class="clarity-blog__title">Unfiltered</h1>
-    <p class="clarity-blog__abstract">Short reflections, explanations, and occasional explorations from mathematics and beyond.</p>
+    <p class="clarity-blog__abstract">Reflections, explanations, and occasional explorations from research and beyond.</p>
   </header>
 
   <div class="clarity-blog__list">
