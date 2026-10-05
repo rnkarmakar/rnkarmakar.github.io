@@ -460,3 +460,132 @@ ul.compact-list {
     font-size: 1rem;
   }
 }
+
+
+/* ---------- self-contained Clarity functionality demo ---------- */
+.clarity-demo__toc {
+  margin: 1.5rem 0 2.5rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid #e1e5e7;
+  border-radius: 5px;
+  background: #f8f9fa;
+  font-family: $font-base;
+}
+.clarity-demo__toc > strong { display: block; margin-bottom: .55rem; color: #444; font-size: .9rem; }
+.clarity-demo__toc > div { display: flex; flex-wrap: wrap; gap: .45rem 1rem; }
+.clarity-demo__toc a { color: #245a73; font-size: .88rem; text-decoration: none; }
+.clarity-demo__toc a:hover { text-decoration: underline; }
+.clarity-blog__body h2 { scroll-margin-top: 1.5rem; }
+.clarity-demo__widths { display: grid; gap: .65rem; margin: 1.2rem 0 1.6rem; }
+.clarity-demo__panel { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .35rem 1rem; padding: .85rem 1rem; border-radius: 4px; background: #edf0f2; font: .9rem/1.5 $font-base; }
+.clarity-demo__panel span { color: #656b70; }
+.clarity-demo__panel--reading { max-width: 40rem; }
+.clarity-demo__panel--figure { max-width: 52rem; }
+.clarity-demo__panel--wide { max-width: 100%; background: linear-gradient(100deg,#e8eff3,#f3eee6); }
+.clarity-demo__grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; margin: 1.2rem 0 2rem; font-family: $font-base; }
+.clarity-demo__card { padding: 1.15rem 1.25rem; border: 1px solid #e3e6e7; border-radius: 5px; }
+.clarity-demo__card h3 { margin: 0 0 .45rem; font-size: 1rem; }
+.clarity-demo__card p { margin: 0; }
+.clarity-demo__card--tint { background: #f2f5f6; }
+.clarity-demo__equation { overflow-x: auto; margin: 1rem 0 2rem; padding: 1.5rem; border-radius: 5px; background: #f5f6f7; text-align: center; font-size: 1.2em; }
+.clarity-demo__code { overflow: hidden; margin: 1rem 0 2rem; border: 1px solid #303841; border-radius: 5px; background: #202830; color: #ecf0f3; font: .88rem/1.65 ui-monospace,SFMono-Regular,Consolas,monospace; }
+.clarity-demo__code-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .55rem .8rem; background: #2b3540; color: #c5ced5; font-size: .76rem; }
+.clarity-demo__copy,.clarity-demo__player button,.clarity-demo__autoplay button { border: 1px solid #aab5be; border-radius: 4px; padding: .35rem .65rem; background: #fff; color: #253746; font: 600 .78rem $font-base; cursor: pointer; }
+.clarity-demo__copy:focus-visible,.clarity-demo__player button:focus-visible,.clarity-demo__autoplay button:focus-visible,.clarity-demo__slide-controls button:focus-visible,.clarity-demo__selection select:focus-visible,.clarity-demo__compare input:focus-visible { outline: 3px solid #7fb5d0; outline-offset: 2px; }
+.clarity-demo__code pre { overflow-x: auto; margin: 0; padding: 1rem; }
+.clarity-demo__code code { color: #ecf0f3; }
+.clarity-demo__code .tok-keyword { color: #c792ea; }
+.clarity-demo__code .tok-function { color: #82aaff; }
+.clarity-demo__code .tok-number { color: #f78c6c; }
+.clarity-demo__code .tok-comment { color: #8a9a8a; font-style: italic; }
+.clarity-demo__copy-status { display: block; min-height: 1.25em; padding: 0 .8rem .4rem; color: #aed5bf; font-size: .75rem; }
+.clarity-demo__table-wrap { overflow-x: auto; margin: 1rem 0 2rem; }
+.clarity-demo__table { width: 100%; border-collapse: collapse; font: .88rem/1.5 $font-base; }
+.clarity-demo__table th,.clarity-demo__table td { padding: .65rem .8rem; border-bottom: 1px solid #e4e7e9; text-align: left; white-space: nowrap; }
+.clarity-demo__table thead { background: #e9edef; }
+.clarity-demo__table tbody tr:nth-child(odd) { background: #f6f7f8; }
+.clarity-demo__slideshow,.clarity-demo__autoplay { margin: 1rem 0 1.8rem; padding: 1rem; border-radius: 5px; background: #f0f2f3; font-family: $font-base; }
+.clarity-demo__slide { text-align: center; }
+.clarity-demo__slide[hidden] { display: none; }
+.clarity-demo__art { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 12rem; gap: .35rem; border-radius: 4px; color: #fff; font: 1rem $font-base; }
+.clarity-demo__art span { font-size: .8rem; opacity: .8; letter-spacing: .15em; }
+.clarity-demo__art b { font: 1.8rem Georgia,serif; }
+.clarity-demo__art--one { background: radial-gradient(circle at 30% 40%,#a3c6d3 0 7%,transparent 7.5%),linear-gradient(135deg,#234c61,#6797a1); }
+.clarity-demo__art--two { background: radial-gradient(circle at 65% 55%,#e6bb82 0 11%,transparent 11.5%),linear-gradient(135deg,#564c74,#b27888); }
+.clarity-demo__art--three { background: radial-gradient(circle at 48% 40%,#bbdfcc 0 13%,transparent 13.5%),linear-gradient(135deg,#355b50,#83a893); }
+.clarity-demo__slide p { margin: .55rem 0 0; font: .82rem $font-base; color: #5c6469; }
+.clarity-demo__slide-controls { display: flex; justify-content: center; gap: .4rem; margin-top: .7rem; }
+.clarity-demo__slide-controls button { border: 0; background: transparent; color: #9aa3a8; cursor: pointer; font-size: 1rem; }
+.clarity-demo__slide-controls button[aria-pressed="true"] { color: #245a73; }
+.clarity-demo__autoplay { display: flex; align-items: center; gap: .7rem; }
+.clarity-demo__auto-window { overflow: hidden; flex: 1; }
+.clarity-demo__auto-track { display: flex; gap: .75rem; transition: transform .45s ease; }
+.clarity-demo__auto-card { flex: 0 0 calc(50% - .4rem); min-height: 7rem; box-sizing: border-box; padding: .8rem; border: 1px solid #e3e6e7; border-radius: 4px; background: white; }
+.clarity-demo__auto-card span,.clarity-demo__auto-card strong,.clarity-demo__auto-card small { display: block; }
+.clarity-demo__auto-card span { margin-bottom: .4rem; color: #87969d; font-size: .7rem; }
+.clarity-demo__auto-card strong { color: #293c47; }
+.clarity-demo__auto-card small { margin-top: .2rem; color: #6d7478; }
+.clarity-demo__hint { margin-top: -.9rem !important; color: #72797c; font: .78rem $font-base; }
+.clarity-demo__selection { display: grid; grid-template-columns: auto minmax(9rem,12rem); align-items: center; gap: .7rem 1rem; margin: 1rem 0 2rem; padding: 1rem; border-radius: 5px; background: #f3f5f6; font-family: $font-base; }
+.clarity-demo__selection label { font-size: .88rem; font-weight: 600; }
+.clarity-demo__selection select { padding: .45rem .6rem; border: 1px solid #aeb8be; border-radius: 4px; background: #fff; font: .88rem $font-base; }
+.clarity-demo__selection-art { grid-column: 1/-1; display: flex; height: 12rem; align-items: end; justify-content: center; gap: .8rem; min-height: 10rem; padding: 1rem; overflow: hidden; border-radius: 4px; background: linear-gradient(145deg,#e2f0f3,#f4f7f8); }
+.clarity-demo__selection-art span { width: 12%; border-radius: 50% 50% 8% 8%; background: #36859b; animation: clarity-demo-float 2.4s ease-in-out infinite alternate; }
+.clarity-demo__selection-art span:nth-child(1) { height: 45%; }
+.clarity-demo__selection-art span:nth-child(2) { height: 72%; animation-delay: -.7s; }
+.clarity-demo__selection-art span:nth-child(3) { height: 58%; animation-delay: -.2s; }
+.clarity-demo__selection-art span:nth-child(4) { height: 86%; animation-delay: -1s; }
+.clarity-demo__selection-art span:nth-child(5) { height: 51%; animation-delay: -.4s; }
+.clarity-demo__selection-art[data-theme="orchid"] { background: linear-gradient(145deg,#f0e5f5,#faf6fb); }
+.clarity-demo__selection-art[data-theme="orchid"] span { background: #9165a5; }
+.clarity-demo__selection-art[data-theme="ember"] { background: linear-gradient(145deg,#f7e7df,#fcf7f3); }
+.clarity-demo__selection-art[data-theme="ember"] span { background: #c66a42; }
+.clarity-demo__selection p { grid-column: 1/-1; margin: 0 !important; color: #61696e; font-size: .82rem; }
+@keyframes clarity-demo-float { to { transform: translateY(-.7rem); } }
+.clarity-demo__compare { --compare: 50%; position: relative; height: clamp(13rem,40vw,22rem); overflow: hidden; margin: 1rem 0 .2rem; border-radius: 5px; background: #d6dfe4; }
+.clarity-demo__compare-scene { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 1.5rem; box-sizing: border-box; background: linear-gradient(135deg,#d4e1e8,#7298aa); color: #294858; font: 700 .75rem $font-base; }
+.clarity-demo__compare-scene::before { position: absolute; content: ""; inset: 0 auto 0 0; width: var(--compare); background: linear-gradient(135deg,#d2c6ad,#9b8b71); }
+.clarity-demo__compare-scene span,.clarity-demo__compare-scene b { position: relative; z-index: 1; padding: .35rem .55rem; border-radius: 3px; background: #ffffffd9; }
+.clarity-demo__compare-scene i { position: absolute; top: 0; bottom: 0; left: var(--compare); width: 2px; background: white; }
+.clarity-demo__compare input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
+.clarity-demo__compare-labels { display: flex; justify-content: space-between; color: #6e7579; font: .76rem $font-base; }
+.clarity-demo__player { margin: 1rem 0 2rem; padding: 1.3rem; border-radius: 5px; background: linear-gradient(135deg,#edf2f4,#e4e9ed); font-family: $font-base; }
+.clarity-demo__orbit { position: relative; display: grid; place-items: center; width: 9rem; height: 9rem; margin: .2rem auto 1rem; border: 1px dashed #91a2ad; border-radius: 50%; animation: clarity-demo-spin 5s linear infinite; }
+.clarity-demo__orbit span,.clarity-demo__orbit i,.clarity-demo__orbit b { position: absolute; display: block; width: 1.3rem; height: 1.3rem; border-radius: 50%; background: #467c94; }
+.clarity-demo__orbit i { top: .25rem; right: 1.6rem; width: .9rem; height: .9rem; background: #c48a54; }
+.clarity-demo__orbit b { bottom: .65rem; left: 1rem; width: .65rem; height: .65rem; background: #708d68; }
+@keyframes clarity-demo-spin { to { transform: rotate(360deg); } }
+.clarity-demo__player-controls { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem; }
+.clarity-demo__player output { min-width: 2.5rem; color: #47565e; text-align: center; font-size: .84rem; }
+.clarity-demo__plot-wrap { margin: 1rem 0 2rem; padding: .8rem; border: 1px solid #e5e8e9; border-radius: 5px; background: #fff; }
+.clarity-demo__plot { display: block; width: 100%; height: auto; }
+.clarity-demo__plot-grid path { fill: none; stroke: #e8ecee; stroke-width: 1; }
+.clarity-demo__plot-axis { fill: none; stroke: #67737a; stroke-width: 1.5; }
+.clarity-demo__plot-line { fill: none; stroke-width: 3.5; stroke-linecap: round; }
+.clarity-demo__plot-line--blue { stroke: #287897; }
+.clarity-demo__plot-line--gold { stroke: #c28343; }
+.clarity-demo__plot-label { fill: #68747a; font: 12px $font-base; text-anchor: middle; }
+.clarity-demo__legend { display: flex; justify-content: center; gap: 1rem; font: .78rem $font-base; color: #586268; }
+.clarity-demo__legend span { display: flex; align-items: center; gap: .35rem; }
+.clarity-demo__legend i { display: inline-block; width: .6rem; height: .6rem; border-radius: 50%; background: #287897; }
+.clarity-demo__legend span+span i { background: #c28343; }
+@media (max-width: 600px) {
+  .clarity-demo__grid { grid-template-columns: 1fr; }
+  .clarity-demo__autoplay { gap: .3rem; padding: .65rem; }
+  .clarity-demo__auto-card { flex-basis: 100%; min-height: 6.5rem; }
+  .clarity-demo__selection { grid-template-columns: 1fr; }
+  .clarity-demo__selection-art,.clarity-demo__selection p { grid-column: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .clarity-demo__selection-art span { animation: none; }
+  .clarity-demo__orbit { animation-duration: 24s; }
+  .clarity-demo__auto-track { transition: none; }
+}
+
+.clarity-demo__figure { margin: 1.3rem 0 1.6rem; padding: .9rem; border-radius: 5px; background: #f5f6f7; }
+.clarity-demo__figure svg { display: block; width: 100%; height: auto; }
+.clarity-demo__figure figcaption { margin: .5rem 0 0; color: #72797c; font: .78rem $font-base; text-align: center; }
+.clarity-demo__icons { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem 2.5rem; margin: 1rem 0 2rem; padding: 1rem; border: 1px solid #e7eaeb; border-radius: 5px; font: .8rem $font-base; color: #52616a; }
+.clarity-demo__icons span { display: flex; align-items: center; gap: .45rem; }
+.clarity-demo__icons svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: #36738a; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
