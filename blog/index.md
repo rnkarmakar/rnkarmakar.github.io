@@ -8,7 +8,7 @@ nav_order: 5
 <section class="clarity-blog" aria-labelledby="blog-heading">
   <header class="clarity-blog__hero">
     <p class="clarity-blog__eyebrow">Rathin’s corner · Blog</p>
-    <h1 id="blog-heading" class="clarity-blog__title">Ideas in progress</h1>
+    <h1 id="blog-heading" class="clarity-blog__title">Unfiltered</h1>
     <p class="clarity-blog__abstract">Short reflections, explanations, and occasional explorations from mathematics and beyond.</p>
   </header>
 
