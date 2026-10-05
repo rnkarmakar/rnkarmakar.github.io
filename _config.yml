@@ -27,4 +27,13 @@ jekyll-archives:
     tag: archive  
 
 excerpt_separator: "<!--more-->"
-    
+
+# Blog posts use their own section and layout.
+permalink: /blog/:year/:month/:day/:title/
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: blog-post
