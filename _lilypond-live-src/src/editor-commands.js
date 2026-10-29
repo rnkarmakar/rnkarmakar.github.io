@@ -57,6 +57,15 @@ export function toggleLineComments(source, start, end) {
   })));
 }
 
+export function insertBracePair(source, start, end) {
+  const selected = source.slice(start, end);
+  return {
+    value: source.slice(0, start) + '{' + selected + '}' + source.slice(end),
+    selectionStart: start + 1,
+    selectionEnd: start + 1 + selected.length,
+  };
+}
+
 export function insertNewline(source, start, end) {
   const lineStart = lineStartAt(source, start);
   const lineEnd = source.indexOf('\n', end) < 0 ? source.length : source.indexOf('\n', end);
