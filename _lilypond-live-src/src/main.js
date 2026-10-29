@@ -247,6 +247,18 @@ function showMapping(mapping, fromScore = false) {
 function mappingAt(offset) {
   return mappings.find(item => offset >= item.start && offset < item.end);
 }
+function nearestMapping(svg, x, y) {
+  let nearest = null, nearestDistance = Infinity;
+  for (const mapping of mappings) {
+    if (mapping.element.ownerSVGElement !== svg) continue;
+    const rect = mapping.element.getBoundingClientRect();
+    const dx = Math.max(rect.left - x, 0, x - rect.right);
+    const dy = Math.max(rect.top - y, 0, y - rect.bottom);
+    const distance = dx * dx + dy * dy;
+    if (distance < nearestDistance) { nearest = mapping; nearestDistance = distance; }
+  }
+  return nearest;
+}
 function renderSvgs(svgs, sourceMap, notes = []) {
   clearMapping();
   mappings = [];
@@ -290,26 +302,31 @@ function renderSvgs(svgs, sourceMap, notes = []) {
     wrapper.append(svg);
     output.append(wrapper);
     for (const mapping of mappings.filter(item => item.element.ownerSVGElement === svg)) {
-      let bounds;
-      try { bounds = mapping.element.getBBox(); } catch { continue; }
-      const padX = Math.max(4, (22 - bounds.width) / 2), padY = Math.max(4, (26 - bounds.height) / 2);
+      let bounds, inverse;
+      try {
+        bounds = mapping.element.getBoundingClientRect();
+        inverse = svg.getScreenCTM().inverse();
+      } catch { continue; }
+      const center = new DOMPoint(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2).matrixTransform(inverse);
+      const corner = new DOMPoint(bounds.left + bounds.width / 2 + 12, bounds.top + bounds.height / 2 + 13).matrixTransform(inverse);
       const hit = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      hit.setAttribute('x', String(bounds.x - padX)); hit.setAttribute('y', String(bounds.y - padY));
-      hit.setAttribute('width', String(bounds.width + 2 * padX)); hit.setAttribute('height', String(bounds.height + 2 * padY));
+      hit.setAttribute('x', String(center.x - Math.abs(corner.x - center.x))); hit.setAttribute('y', String(center.y - Math.abs(corner.y - center.y)));
+      hit.setAttribute('width', String(2 * Math.abs(corner.x - center.x))); hit.setAttribute('height', String(2 * Math.abs(corner.y - center.y)));
       hit.setAttribute('fill', 'transparent'); hit.setAttribute('pointer-events', 'all');
       hit.classList.add('score-hit-target'); hit.setAttribute('aria-label', mapping.element.getAttribute('aria-label'));
       hit.dataset.sourceStart = String(mapping.start); hit.setAttribute('tabindex', '0'); hit.setAttribute('role', 'button');
-      const select = event => {
+      const select = (event, selected = mapping) => {
         event.preventDefault();
         if (compiledRevision !== revision) return;
-        showMapping(mapping, true);
+        showMapping(selected, true);
         sourceEl.focus();
-        sourceEl.setSelectionRange(mapping.start, mapping.end);
+        sourceEl.setSelectionRange(selected.start, selected.end);
       };
-      hit.addEventListener('pointerenter', () => showMapping(mapping, true));
+      hit.addEventListener('pointerenter', event => showMapping(nearestMapping(svg, event.clientX, event.clientY), true));
+      hit.addEventListener('pointermove', event => showMapping(nearestMapping(svg, event.clientX, event.clientY), true));
       hit.addEventListener('pointerleave', clearMapping);
       hit.addEventListener('focus', () => showMapping(mapping, true));
-      hit.addEventListener('click', select);
+      hit.addEventListener('click', event => select(event, nearestMapping(svg, event.clientX, event.clientY)));
       hit.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') select(event); });
       svg.append(hit);
     }
