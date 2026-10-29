@@ -6,9 +6,17 @@ const decoder = new TextDecoder()
 const MISSING_DIST =
   'the lilypond-wasm engine is missing from dist/; run `bun run fetch-dist` in the package'
 
+const browserAssetBase = globalThis.location?.origin && globalThis.location.origin !== 'null'
+  ? `${globalThis.location.origin}/lilypond-live/engine/`
+  : undefined
+const packageDistUrl = (filename) => new URL(`../node_modules/@sightread/lilypond-wasm/dist/${filename}`, import.meta.url)
 const DIST_URLS = {
-  'lilypond.wasm': new URL('../node_modules/@sightread/lilypond-wasm/dist/lilypond.wasm', import.meta.url),
-  'runtime.data.bin': new URL('../node_modules/@sightread/lilypond-wasm/dist/runtime.data.bin', import.meta.url),
+  'lilypond.wasm': browserAssetBase
+    ? new URL('lilypond.wasm', browserAssetBase)
+    : packageDistUrl('lilypond.wasm'),
+  'runtime.data.bin': browserAssetBase
+    ? new URL('runtime.data.bin', browserAssetBase)
+    : packageDistUrl('runtime.data.bin'),
 }
 
 /** dist/ is fetched, not committed, so both of its entry points fail the same helpful way. */

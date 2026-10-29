@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite --host 127.0.0.1 --open",
-    "build": "vite build"
+    "build": "vite build && node copy-engine-assets.mjs"
   },
   "dependencies": {
     "@sightread/lilypond-wasm": "0.2.0",
