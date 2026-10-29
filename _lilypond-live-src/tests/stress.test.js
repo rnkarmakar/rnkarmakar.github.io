@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { ScorePlayer } from '../src/player.js';
 import { CompileQueue } from '../src/compile-queue.js';
 import { addPlaybackToScores, sourceOffset, originalOffset, maskSource, isPitchToken } from '../src/source-map.js';
-import { indentSelection, unindentSelection, toggleLineComments, insertNewline } from '../src/editor-commands.js';
+import { indentSelection, unindentSelection, toggleLineComments, insertBracePair, insertNewline } from '../src/editor-commands.js';
 
 function audioHarness(resume = () => Promise.resolve()) {
   const intervals = new Map();
@@ -194,6 +194,15 @@ test('Enter preserves indentation and adds a tab inside LilyPond braces', () => 
   assert.deepEqual(insertNewline('    c4', 4, 4), { value: '    \n    c4', selectionStart: 9, selectionEnd: 9 });
   assert.deepEqual(insertNewline('  {', 3, 3), { value: '  {\n  \t', selectionStart: 7, selectionEnd: 7 });
   assert.deepEqual(insertNewline('  { }', 4, 4), { value: '  { \n  \t\n  }', selectionStart: 8, selectionEnd: 8 });
+});
+
+test('typing an opening brace inserts its pair and wraps selected source', () => {
+  assert.deepEqual(insertBracePair('c4 d4', 3, 3), {
+    value: 'c4 {}d4', selectionStart: 4, selectionEnd: 4,
+  });
+  assert.deepEqual(insertBracePair('c4 d4', 0, 5), {
+    value: '{c4 d4}', selectionStart: 1, selectionEnd: 6,
+  });
 });
 
 test('Ctrl+/ toggles LilyPond percent comments and preserves mixed existing comments', () => {

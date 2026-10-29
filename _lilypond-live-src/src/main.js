@@ -2,7 +2,7 @@ import CompilerWorker from './compiler.worker.js?worker&inline';
 import { sampleScore } from './sample-score.js';
 import { ScorePlayer } from './player.js';
 import { CompileQueue } from './compile-queue.js';
-import { indentSelection, unindentSelection, toggleLineComments, insertNewline } from './editor-commands.js';
+import { indentSelection, unindentSelection, toggleLineComments, insertBracePair, insertNewline } from './editor-commands.js';
 import { sourceOffset, originalOffset, tokenRange, isPitchToken } from './source-map.js';
 import './style.css';
 
@@ -13,7 +13,7 @@ document.querySelector('#app').innerHTML = [
   '<button class="button quiet" id="save-score" title="Save source (Ctrl/Cmd+S)">Save .ly</button><button class="button quiet" id="download-svg" disabled>Save SVG</button>',
   '<input id="file-picker" type="file" accept=".ly,.ily,.txt,text/plain" hidden /></div></header>',
   '<main class="workspace"><section class="editor-panel" aria-label="LilyPond score editor">',
-  '<div class="panel-heading"><div><h1>Score source</h1><p>Tab indent · Shift+Tab unindent · Ctrl/Cmd+/ comment</p></div><span id="edit-state" class="edit-state"></span></div>',
+  '<div class="panel-heading"><div><h1>Score source</h1><p>{ pairs with } · Tab indent · Shift+Tab unindent · Ctrl/Cmd+/ comment</p></div><span id="edit-state" class="edit-state"></span></div>',
   '<div class="editor-wrap"><div class="line-numbers" id="line-numbers" aria-hidden="true"></div>',
   '<textarea id="source" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="LilyPond source"></textarea>',
   '<div id="source-highlight" aria-hidden="true" hidden></div></div>',
@@ -367,6 +367,13 @@ sourceEl.addEventListener('keydown', event => {
   } else if (event.key === 'Enter' && !event.ctrlKey && !event.metaKey && !event.altKey) {
     event.preventDefault();
     applyEditorCommand(insertNewline(sourceEl.value, sourceEl.selectionStart, sourceEl.selectionEnd));
+  } else if (event.key === '{' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault();
+    applyEditorCommand(insertBracePair(sourceEl.value, sourceEl.selectionStart, sourceEl.selectionEnd));
+  } else if (event.key === '}' && !event.ctrlKey && !event.metaKey && !event.altKey &&
+      sourceEl.selectionStart === sourceEl.selectionEnd && sourceEl.value[sourceEl.selectionStart] === '}') {
+    event.preventDefault();
+    sourceEl.setSelectionRange(sourceEl.selectionStart + 1, sourceEl.selectionEnd + 1);
   } else if ((event.ctrlKey || event.metaKey) && (event.key === '/' || event.code === 'Slash')) {
     event.preventDefault();
     applyEditorCommand(toggleLineComments(sourceEl.value, sourceEl.selectionStart, sourceEl.selectionEnd));

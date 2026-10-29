@@ -4,6 +4,7 @@ Open https://rnkarmakar.github.io/lilypond-live/ and edit ordinary LilyPond sour
 
 ## Controls
 
+- **{** inserts a matching **}** and leaves the caret between them; if text is selected, the braces wrap it. Typing **}** before a pair moves past it.
 - **Tab** inserts a literal tab at the caret, or indents the selected lines.
 - **Enter** carries the current line's indentation forward and adds one tab after `{` or `<<`.
 - **Shift+Tab** removes one tab or up to two leading spaces from the current or selected lines.
