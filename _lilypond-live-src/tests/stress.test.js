@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ScorePlayer } from '../src/player.js';
 import { CompileQueue } from '../src/compile-queue.js';
-import { addPlaybackToScores, sourceOffset, originalOffset, maskSource } from '../src/source-map.js';
+import { addPlaybackToScores, sourceOffset, originalOffset, maskSource, isPitchToken } from '../src/source-map.js';
 
 function audioHarness(resume = () => Promise.resolve()) {
   const intervals = new Map();
@@ -168,6 +168,15 @@ test('source positions remain exact after injected MIDI, including two scores on
   }
   const inserted = result.insertions[0];
   assert.equal(originalOffset(inserted.offset + 1, result.insertions), null);
+});
+
+test('playback source mapping accepts LilyPond pitch tokens and ignores directives', () => {
+  const source = '\\key c \\major \\tempo 4 = 100 cis\'4 bes,2 r4';
+  assert.equal(isPitchToken(source, source.indexOf('\\key') + 1), false);
+  assert.equal(isPitchToken(source, source.indexOf('\\tempo') + 1), false);
+  assert.equal(isPitchToken(source, source.indexOf('cis')), true);
+  assert.equal(isPitchToken(source, source.indexOf('bes')), true);
+  assert.equal(isPitchToken(source, source.indexOf('r4')), false);
 });
 
 test('source columns handle tabs, Unicode, and CRLF source', () => {

@@ -2,7 +2,7 @@ import CompilerWorker from './compiler.worker.js?worker&inline';
 import { sampleScore } from './sample-score.js';
 import { ScorePlayer } from './player.js';
 import { CompileQueue } from './compile-queue.js';
-import { sourceOffset, originalOffset, tokenRange } from './source-map.js';
+import { sourceOffset, originalOffset, tokenRange, isPitchToken } from './source-map.js';
 import './style.css';
 
 document.querySelector('#app').innerHTML = [
@@ -314,11 +314,11 @@ function renderSvgs(svgs, sourceMap, notes = []) {
       svg.append(hit);
     }
   }
-  const starts = [...new Set(mappings.map(item => item.start))].sort((a, b) => a - b);
+  const starts = [...new Set(mappings.map(item => item.start).filter(start => isPitchToken(compiledSource, start)))].sort((a, b) => a - b);
   const orderedNotes = notes.slice().sort((a, b) => a.time - b.time || a.midi - b.midi);
   if (starts.length && orderedNotes.length) {
     sourcePlaybackMap = starts.map((start, index) => {
-      const noteIndex = starts.length === orderedNotes.length ? index : Math.round(index * (orderedNotes.length - 1) / Math.max(1, starts.length - 1));
+      const noteIndex = starts.length <= orderedNotes.length ? index : Math.round(index * (orderedNotes.length - 1) / Math.max(1, starts.length - 1));
       return { start, end: tokenRange(compiledSource, start).end, time: orderedNotes[noteIndex].time };
     });
   }
