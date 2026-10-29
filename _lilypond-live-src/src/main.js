@@ -1,5 +1,5 @@
 import CompilerWorker from './compiler.worker.js?worker&inline';
-import { sampleScore } from './sample-score.js';
+import { sampleScore, previousSampleScore } from './sample-score.js';
 import { ScorePlayer } from './player.js';
 import { CompileQueue } from './compile-queue.js';
 import { indentSelection, unindentSelection, toggleLineComments, insertBracePair, insertNewline } from './editor-commands.js';
@@ -448,6 +448,10 @@ window.addEventListener('pagehide', event => { stopPlayback(); if (!event.persis
 window.addEventListener('resize', clearMapping);
 let savedSource;
 try { savedSource = localStorage.getItem('lilypond-live-source'); } catch { /* storage may be unavailable */ }
+if (savedSource === previousSampleScore) {
+  savedSource = sampleScore;
+  try { localStorage.setItem('lilypond-live-source', sampleScore); } catch { /* storage may be unavailable */ }
+}
 sourceEl.value = savedSource ?? sampleScore;
 updateEditorChrome();
 queueCompile(true);
