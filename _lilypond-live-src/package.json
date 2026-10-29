@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "start": "vite --host 127.0.0.1 --open",
-    "build": "vite build && node copy-engine-assets.mjs"
+    "build": "vite build && node copy-engine-assets.mjs",
+    "test": "node --test tests/stress.test.js"
   },
   "dependencies": {
     "@sightread/lilypond-wasm": "0.2.0",
     "@tonejs/midi": "2.0.28",
-    "tone": "14.8.49",
     "vite": "6.4.5"
   }
 }

@@ -1,26 +1,47 @@
 # LilyPond Live
 
-A browser based LilyPond editor with automatic engraving and playback preparation. The site compiles LilyPond to SVG and MIDI together in the browser. Press **Play** whenever you want to hear the most recently compiled score; it does not render an MP3.
+Open https://rnkarmakar.github.io/lilypond-live/ and edit ordinary LilyPond source. The score and MIDI are compiled together in a browser worker. Playback uses the browser's Web Audio synthesizer, with no separate audio render step.
 
-## Use
+## Controls
 
-Open the [LilyPond Live site](https://rnkarmakar.github.io/lilypond-live/). Type or paste LilyPond source in the left pane. The score and MIDI update after a short pause. Use **Open .ly** and **Save .ly** to work with ordinary LilyPond files.
+- **Ctrl+Enter** (Windows/Linux) or **Cmd+Enter** (Mac): play or restart from the beginning, including while the editor has focus.
+- **Esc**: stop all audio and cancel a Play queued during compilation.
+- **Space** outside text fields and buttons: toggle play/stop.
+- **Ctrl/Cmd+S**: download the current source.
+- Hover a mapped score element to highlight its source token. Hover a source token, or move the text cursor through it, to highlight the score.
+- Click a mapped score element to select and edit its source. Source links update only after a successful compile.
 
-The first compile loads and initializes the included LilyPond WebAssembly engine. Later compiles run in the browser. The MIDI is ready when a successful score compile finishes; browsers require a user click on **Play** to start audio. Playback uses a simple synthesized tone.
+Each edit stops old playback immediately. Only the latest successful revision can play. Ctrl/Cmd+Enter during compilation queues playback for that revision; another edit or Esc cancels it.
 
-## Local development
+The compiler runs one revision at a time and keeps only the newest pending edit. Stale results cannot replace the latest preview or audio. Syntax errors leave the last valid preview dimmed and disable playback until the source compiles successfully. A failed or unresponsive worker can recover on the next edit.
+
+## Performance
+
+There is a 250 ms typing debounce. LilyPond engraving still takes seconds: small warm compilations measured 1.1–1.6 seconds across 20 consecutive Chrome cycles (other examples took about 3 seconds). The first load additionally downloads and initializes the engine. This is automatic feedback, but not per-keystroke instantaneous engraving.
+
+Source mapping covers the elements for which LilyPond emits point-and-click links in the current file. It is source navigation, not graphical note editing. Code that creates notes indirectly through Scheme or included files may not have a direct editable token here.
+
+## Development and checks
 
 Requires Node.js 22 or newer.
 
-```sh
+~~~sh
 npm ci
 npm run start
-```
+npm test
+npm run build
+~~~
 
-## Deployment
+The build copies engine assets into dist/engine/. For a production preview:
 
-The source lives in the parent site repository under `_lilypond-live-src/`. The built static site lives in `lilypond-live/` and is served at https://rnkarmakar.github.io/lilypond-live/. The app is intentionally not linked from the personal site navigation.
+~~~sh
+node node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 4174
+~~~
 
-## Third party licenses
+Open http://127.0.0.1:4174/lilypond-live/.
 
-The embedded LilyPond engine and engraving assets are distributed under their upstream licenses. Their notices are included in [`licenses/lilypond-wasm/`](licenses/lilypond-wasm/). The app also uses Tone.js and `@tonejs/midi`.
+## Repository layout
+
+Editable source is in _lilypond-live-src/ in the personal site repository. Built files are in lilypond-live/. The existing GitHub Pages workflow publishes the static files. The app has no homepage navigation entry.
+
+See STRESS-TEST-REPORT.md for automated coverage and browser checks. Third party notices are in THIRD-PARTY-NOTICES.md and licenses/lilypond-wasm/.
