@@ -227,7 +227,7 @@ export async function compile(
       },
     ],
   })
-  const args = ['-dno-point-and-click', '-o', '/output/score']
+  const args = ['-dpoint-and-click', '-o', '/output/score']
   for (const path of searchPaths) args.push('-I', path)
   if (settingsPath) args.push(`-dinclude-settings=${settingsPath}`)
   args.push(...outputFlags)

@@ -1,89 +1,18 @@
-// Run LilyPond directly in this worker. This avoids a nested worker, which is important
-// for the portable one-file build where browser workers are created from Blob URLs.
 import { compile, loadRuntime, loadWasm } from './lilypond-runtime.js';
 import { Midi } from '@tonejs/midi';
+import { addPlaybackToScores } from './source-map.js';
 
 let enginePromise;
-
-function addPlaybackToScores(source) {
-  const openings = [];
-  let inString = false;
-  let escaped = false;
-  let inComment = false;
-  for (let i = 0; i < source.length; i++) {
-    const char = source[i];
-    if (inComment) {
-      if (char === '\n') inComment = false;
-      continue;
-    }
-    if (inString) {
-      if (escaped) escaped = false;
-      else if (char === '\\') escaped = true;
-      else if (char === '"') inString = false;
-      continue;
-    }
-    if (char === '%') { inComment = true; continue; }
-    if (char === '"') { inString = true; continue; }
-    if (source.startsWith('\\score', i) && !/[A-Za-z]/.test(source[i + 6] ?? '')) {
-      let brace = i + 6;
-      while (brace < source.length && source[brace] !== '{') {
-        if (source[brace] === '%') {
-          const newline = source.indexOf('\n', brace);
-          brace = newline < 0 ? source.length : newline + 1;
-        } else brace++;
-      }
-      if (source[brace] === '{') openings.push(brace);
-      i = brace;
-      continue;
-    }
-  }
-
-  const insertions = [];
-  for (const open of openings) {
-    let depth = 0;
-    inString = false;
-    escaped = false;
-    inComment = false;
-    let close = -1;
-    for (let i = open; i < source.length; i++) {
-      const char = source[i];
-      if (inComment) {
-        if (char === '\n') inComment = false;
-        continue;
-      }
-      if (inString) {
-        if (escaped) escaped = false;
-        else if (char === '\\') escaped = true;
-        else if (char === '"') inString = false;
-        continue;
-      }
-      if (char === '%') { inComment = true; continue; }
-      if (char === '"') { inString = true; continue; }
-      if (char === '{') depth++;
-      else if (char === '}' && --depth === 0) { close = i; break; }
-    }
-    if (close < 0) continue;
-    const body = source.slice(open + 1, close);
-    const activeCode = body.replace(/"(?:\\.|[^"\\])*"/gs, '""').replace(/%[^\n]*/g, '');
-    if (!/\\midi\b/.test(activeCode)) insertions.push(close);
-  }
-  for (const index of insertions.sort((a, b) => b - a)) {
-    source = `${source.slice(0, index)}\\midi { } ${source.slice(index)}`;
-  }
-  return source;
-}
-
 async function getEngine() {
   if (!enginePromise) {
+    const totals = [15914502, 15266329], loaded = [0, 0];
+    const onProgress = index => bytes => {
+      loaded[index] = bytes;
+      self.postMessage({ type: 'loading', percent: Math.floor(100 * (loaded[0] + loaded[1]) / (totals[0] + totals[1])) });
+    };
     enginePromise = Promise.all([
-      loadRuntime(undefined, { onProgress: (loadedBytes, totalBytes) => self.postMessage({
-        type: 'loading', loadedBytes, totalBytes,
-        percent: totalBytes ? Math.floor((loadedBytes / totalBytes) * 100) : 0,
-      }) }),
-      loadWasm({ onProgress: (loadedBytes, totalBytes) => self.postMessage({
-        type: 'loading', loadedBytes, totalBytes,
-        percent: totalBytes ? Math.floor((loadedBytes / totalBytes) * 100) : 0,
-      }) }),
+      loadRuntime(undefined, { onProgress: onProgress(0) }),
+      loadWasm({ onProgress: onProgress(1) }),
     ]).then(([assets, wasmModule]) => ({ assets, wasmModule }));
     enginePromise.catch(() => { enginePromise = null; });
   }
@@ -94,41 +23,34 @@ self.onmessage = async ({ data }) => {
   if (data.type !== 'compile') return;
   const { id, source } = data;
   try {
-    self.postMessage({ type: 'compiling', id });
     const engine = await getEngine();
-    const result = await compile(addPlaybackToScores(source), {
-      ...engine,
-      filename: 'score.ly',
-      format: ['svg', 'midi'],
+    const sourceMap = addPlaybackToScores(source);
+    const result = await compile(sourceMap.source, {
+      ...engine, filename: 'score.ly', format: ['svg', 'midi'],
     });
-    const files = result.files ?? {};
-    const svgFiles = Object.entries(files)
-      .filter(([name]) => name.toLowerCase().endsWith('.svg'))
-      .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }));
-    const midiEntry = Object.entries(files).find(([name]) => /\.midi?$/i.test(name));
-    let midiNotes = null;
-    if (midiEntry) {
-      const parsed = new Midi(midiEntry[1]);
-      midiNotes = parsed.tracks.flatMap((track) => track.notes.map((note) => ({
-        midi: note.midi,
-        time: note.time,
-        duration: note.duration,
-        velocity: note.velocity,
-      })));
+    if (result.exitCode !== 0) {
+      const error = new Error((result.logs ?? []).join('\n') || 'LilyPond rejected this score.');
+      error.logs = result.logs;
+      throw error;
     }
-    self.postMessage({
-      type: 'compiled',
-      id,
-      svgs: svgFiles.map(([name, svg]) => ({ name, svg: typeof svg === 'string' ? svg : new TextDecoder().decode(svg) })),
-      midiNotes,
-      logs: result.logs ?? [],
-    });
+    const entries = Object.entries(result.files ?? {});
+    const svgs = entries.filter(([name]) => name.endsWith('.svg'))
+      .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
+      .map(([name, svg]) => ({ name, svg: typeof svg === 'string' ? svg : new TextDecoder().decode(svg) }));
+    // Multiple score blocks generate separate MIDI files; concatenate in output order.
+    let timeOffset = 0;
+    const midiNotes = [];
+    for (const [, bytes] of entries.filter(([name]) => /\.midi?$/i.test(name))
+      .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))) {
+      const midi = new Midi(bytes);
+      const notes = midi.tracks.flatMap(track => track.notes);
+      for (const note of notes) midiNotes.push({
+        midi: note.midi, time: note.time + timeOffset, duration: note.duration, velocity: note.velocity,
+      });
+      timeOffset += notes.reduce((end, note) => Math.max(end, note.time + note.duration), 0);
+    }
+    self.postMessage({ type: 'compiled', id, svgs, midiNotes, sourceMap, logs: result.logs ?? [] });
   } catch (error) {
-    self.postMessage({
-      type: 'error',
-      id,
-      message: error?.message ?? String(error),
-      logs: error?.logs ?? [],
-    });
+    self.postMessage({ type: 'error', id, message: error?.message ?? String(error), logs: error?.logs ?? [] });
   }
 };
