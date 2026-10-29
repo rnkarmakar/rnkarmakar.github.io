@@ -2,6 +2,7 @@ import CompilerWorker from './compiler.worker.js?worker&inline';
 import { sampleScore } from './sample-score.js';
 import { ScorePlayer } from './player.js';
 import { CompileQueue } from './compile-queue.js';
+import { indentSelection, unindentSelection, toggleLineComments, insertNewline } from './editor-commands.js';
 import { sourceOffset, originalOffset, tokenRange, isPitchToken } from './source-map.js';
 import './style.css';
 
@@ -12,7 +13,7 @@ document.querySelector('#app').innerHTML = [
   '<button class="button quiet" id="save-score" title="Save source (Ctrl/Cmd+S)">Save .ly</button><button class="button quiet" id="download-svg" disabled>Save SVG</button>',
   '<input id="file-picker" type="file" accept=".ly,.ily,.txt,text/plain" hidden /></div></header>',
   '<main class="workspace"><section class="editor-panel" aria-label="LilyPond score editor">',
-  '<div class="panel-heading"><div><h1>Score source</h1><p>Type LilyPond. The score and audio update together.</p></div><span id="edit-state" class="edit-state"></span></div>',
+  '<div class="panel-heading"><div><h1>Score source</h1><p>Tab indent · Shift+Tab unindent · Ctrl/Cmd+/ comment</p></div><span id="edit-state" class="edit-state"></span></div>',
   '<div class="editor-wrap"><div class="line-numbers" id="line-numbers" aria-hidden="true"></div>',
   '<textarea id="source" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="LilyPond source"></textarea>',
   '<div id="source-highlight" aria-hidden="true" hidden></div></div>',
@@ -353,6 +354,24 @@ $('#zoom-in').addEventListener('click', () => { scoreZoom = Math.min(3, +(scoreZ
 $('#zoom-out').addEventListener('click', () => { scoreZoom = Math.max(.5, +(scoreZoom - .25).toFixed(2)); applyZoom(); });
 
 sourceEl.addEventListener('input', () => { updateEditorChrome(); queueCompile(); });
+function applyEditorCommand(result) {
+  sourceEl.value = result.value;
+  sourceEl.setSelectionRange(result.selectionStart, result.selectionEnd);
+  sourceEl.dispatchEvent(new Event('input', { bubbles: true }));
+}
+sourceEl.addEventListener('keydown', event => {
+  if (event.key === 'Tab' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault();
+    const command = event.shiftKey ? unindentSelection : indentSelection;
+    applyEditorCommand(command(sourceEl.value, sourceEl.selectionStart, sourceEl.selectionEnd));
+  } else if (event.key === 'Enter' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault();
+    applyEditorCommand(insertNewline(sourceEl.value, sourceEl.selectionStart, sourceEl.selectionEnd));
+  } else if ((event.ctrlKey || event.metaKey) && (event.key === '/' || event.code === 'Slash')) {
+    event.preventDefault();
+    applyEditorCommand(toggleLineComments(sourceEl.value, sourceEl.selectionStart, sourceEl.selectionEnd));
+  }
+});
 sourceEl.addEventListener('pointermove', event => {
   if (compiledRevision !== revision) return;
   const metrics = textMetrics(), rect = sourceEl.getBoundingClientRect();
