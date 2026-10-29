@@ -4,6 +4,10 @@ Open https://rnkarmakar.github.io/lilypond-live/ and edit ordinary LilyPond sour
 
 ## Controls
 
+- **Tab** inserts a literal tab at the caret, or indents the selected lines.
+- **Enter** carries the current line's indentation forward and adds one tab after `{` or `<<`.
+- **Shift+Tab** removes one tab or up to two leading spaces from the current or selected lines.
+- **Ctrl+/** (Windows/Linux) or **Cmd+/** (Mac) toggles LilyPond `%` comments on the selected lines (or the current line when there is no selection).
 - **Ctrl+Enter** (Windows/Linux) or **Cmd+Enter** (Mac): play or restart from the beginning, including while the editor has focus.
 - **Ctrl/Cmd+Shift+Enter**: play from the note at the editor caret or the selected score note.
 - **Esc**: stop all audio and cancel a Play queued during compilation.

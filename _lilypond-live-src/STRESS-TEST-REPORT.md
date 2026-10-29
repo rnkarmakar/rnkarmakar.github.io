@@ -4,7 +4,7 @@ Date: 2026-10-29 (Asia/Tokyo)
 
 ## Automated checks
 
-Run npm test. All 13 tests pass.
+Run npm test. All 17 tests pass.
 
 - 500 consecutive playback restarts: every previous oscillator is stopped and disconnected; exactly one scheduler remains.
 - 100 simultaneous Play requests: only the most recent session starts.
@@ -13,6 +13,7 @@ Run npm test. All 13 tests pass.
 - 10,000 notes: only the short lookahead window is scheduled; delayed scheduler ticks skip expired notes instead of emitting them together.
 - Starting from a selected time: expired notes are skipped, notes already sounding continue with their remaining duration, and later notes retain their relative timing.
 - Source-position mapping counts pitch tokens but excludes tempo, key, and meter directives from note selection.
+- Tab insertion and multiline selection indentation, Shift+Tab unindent, Enter indentation inside braces, and Ctrl+/ LilyPond comment toggling.
 - 10,000 source revisions: one compilation runs and only the newest pending revision is sent next. Old results cannot replace the new revision.
 - Edits before debounce, compiler errors, and recovery.
 - MIDI injection through strings and nested comments.

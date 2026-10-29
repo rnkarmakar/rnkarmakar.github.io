@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { ScorePlayer } from '../src/player.js';
 import { CompileQueue } from '../src/compile-queue.js';
 import { addPlaybackToScores, sourceOffset, originalOffset, maskSource, isPitchToken } from '../src/source-map.js';
+import { indentSelection, unindentSelection, toggleLineComments, insertNewline } from '../src/editor-commands.js';
 
 function audioHarness(resume = () => Promise.resolve()) {
   const intervals = new Map();
@@ -177,6 +178,32 @@ test('playback source mapping accepts LilyPond pitch tokens and ignores directiv
   assert.equal(isPitchToken(source, source.indexOf('cis')), true);
   assert.equal(isPitchToken(source, source.indexOf('bes')), true);
   assert.equal(isPitchToken(source, source.indexOf('r4')), false);
+});
+
+test('Tab inserts a literal tab and indents every line in a multiline selection', () => {
+  assert.deepEqual(indentSelection('abc', 1, 1), { value: 'a\tbc', selectionStart: 2, selectionEnd: 2 });
+  assert.deepEqual(indentSelection('a\nb\nc', 0, 3), { value: '\ta\n\tb\nc', selectionStart: 1, selectionEnd: 5 });
+});
+
+test('Shift+Tab removes one tab or up to two spaces on selected lines', () => {
+  assert.deepEqual(unindentSelection('\ta\n  b\nc', 0, 6), { value: 'a\nb\nc', selectionStart: 0, selectionEnd: 3 });
+  assert.deepEqual(unindentSelection('  c4', 3, 3), { value: 'c4', selectionStart: 1, selectionEnd: 1 });
+});
+
+test('Enter preserves indentation and adds a tab inside LilyPond braces', () => {
+  assert.deepEqual(insertNewline('    c4', 4, 4), { value: '    \n    c4', selectionStart: 9, selectionEnd: 9 });
+  assert.deepEqual(insertNewline('  {', 3, 3), { value: '  {\n  \t', selectionStart: 7, selectionEnd: 7 });
+  assert.deepEqual(insertNewline('  { }', 4, 4), { value: '  { \n  \t\n  }', selectionStart: 8, selectionEnd: 8 });
+});
+
+test('Ctrl+/ toggles LilyPond percent comments and preserves mixed existing comments', () => {
+  const source = '\tc4\n\td4\n';
+  const commented = toggleLineComments(source, 0, source.length);
+  assert.equal(commented.value, '\t% c4\n\t% d4\n');
+  assert.deepEqual(toggleLineComments(commented.value, 0, commented.value.length), {
+    value: source, selectionStart: 0, selectionEnd: source.length,
+  });
+  assert.equal(toggleLineComments('% c4\nd4', 0, 7).value, '% c4\n% d4');
 });
 
 test('source columns handle tabs, Unicode, and CRLF source', () => {
