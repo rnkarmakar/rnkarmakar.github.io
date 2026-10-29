@@ -4,13 +4,14 @@ Date: 2026-10-29 (Asia/Tokyo)
 
 ## Automated checks
 
-Run npm test. All 11 tests pass.
+Run npm test. All 12 tests pass.
 
 - 500 consecutive playback restarts: every previous oscillator is stopped and disconnected; exactly one scheduler remains.
 - 100 simultaneous Play requests: only the most recent session starts.
 - Stop during asynchronous audio unlock: no late playback.
 - An obsolete rejected audio unlock cannot cancel newer playback.
 - 10,000 notes: only the short lookahead window is scheduled; delayed scheduler ticks skip expired notes instead of emitting them together.
+- Starting from a selected time: expired notes are skipped, notes already sounding continue with their remaining duration, and later notes retain their relative timing.
 - 10,000 source revisions: one compilation runs and only the newest pending revision is sent next. Old results cannot replace the new revision.
 - Edits before debounce, compiler errors, and recovery.
 - MIDI injection through strings and nested comments.

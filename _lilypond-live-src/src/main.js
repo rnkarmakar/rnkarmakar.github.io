@@ -19,9 +19,10 @@ document.querySelector('#app').innerHTML = [
   '<div class="editor-footer"><span id="mapping-hint">Hover notes or source to link them</span><span id="source-count"></span></div></section>',
   '<section class="preview-panel" aria-label="Compiled score and playback"><div class="panel-heading preview-heading">',
   '<div><h1>Score preview</h1><p id="preview-message">Waiting for the first compile…</p></div>',
-  '<div class="transport"><button class="play-button" id="play" title="Play / restart (Ctrl/Cmd+Enter)" aria-keyshortcuts="Control+Enter Meta+Enter" disabled><span class="play-icon">▶</span><span>Play</span></button>',
+  '<div class="transport"><button class="play-button" id="play" title="Play from start (Ctrl/Cmd+Enter)" aria-keyshortcuts="Control+Enter Meta+Enter" disabled><span class="play-icon">▶</span><span>Start</span></button>',
+  '<button class="button quiet play-here" id="play-here" title="Play from the selected note (Ctrl/Cmd+Shift+Enter)" aria-keyshortcuts="Control+Shift+Enter Meta+Shift+Enter" disabled>Play here</button>',
   '<button class="stop-button" id="stop" title="Stop playback or cancel queued play (Esc)" aria-keyshortcuts="Escape" disabled>■</button></div></div>',
-  '<div class="shortcut-hint"><kbd>Ctrl/Cmd + Enter</kbd> Play / restart <span>·</span> <kbd>Esc</kbd> Stop <span>·</span> Space toggles outside the editor</div>',
+  '<div class="shortcut-hint"><span class="zoom-controls"><button id="zoom-out" aria-label="Zoom out" title="Zoom out">−</button><output id="zoom-level">100%</output><button id="zoom-in" aria-label="Zoom in" title="Zoom in">+</button></span><kbd>Ctrl/Cmd + Enter</kbd> Start <span>·</span> <kbd>Ctrl/Cmd + Shift + Enter</kbd> Play here <span>·</span> <kbd>Esc</kbd> Stop <span>·</span> Space starts / stops</div>',
   '<div class="preview-scroll" id="preview-scroll"><div id="score-output" class="score-output"><div class="empty-state"><span class="empty-glyph">𝄞</span><b>Your score will appear here</b><span>Open a .ly file or edit the example.</span></div></div></div>',
   '<div class="playback-footer"><span id="audio-state">Audio is prepared with the score.</span><span id="duration"></span></div></section></main>',
   '<footer class="footnote"><span>Your score stays in this browser</span><span id="engine-state">Loading LilyPond engine…</span></footer>',
@@ -31,16 +32,17 @@ document.querySelector('#app').innerHTML = [
 const $ = selector => document.querySelector(selector);
 const sourceEl = $('#source'), output = $('#score-output');
 const playButton = $('#play'), stopButton = $('#stop');
+const playHereButton = $('#play-here');
 const audioState = $('#audio-state'), previewMessage = $('#preview-message');
 const marker = $('#source-highlight');
 let revision = 0, compiledRevision = 0, compileTimer, watchdog, toastTimer;
 let lastGoodSvgs = [], playableNotes = null, compiledSource = '';
 let saveName = 'my-score.ly', pendingPlay = false, engineReady = false;
-let mappings = [], activeMapping = null, worker;
+let mappings = [], activeMapping = null, sourcePlaybackMap = [], pendingPlayFrom = 0, scoreZoom = 1, worker;
 const player = new ScorePlayer({ onState: playing => {
   document.body.dataset.playing = String(playing);
   playButton.classList.toggle('playing', playing);
-  playButton.lastElementChild.textContent = playing ? 'Restart' : 'Play';
+  playButton.lastElementChild.textContent = playing ? 'Restart' : 'Start';
   stopButton.disabled = !playing && !pendingPlay;
   if (playing) audioState.textContent = 'Playing compiled audio…';
   else if (compiledRevision === revision && playableNotes?.length)
@@ -115,7 +117,7 @@ const queue = new CompileQueue({
     compiledRevision = request.id;
     document.body.dataset.compiledRevision = String(compiledRevision);
     playableNotes = data.midiNotes?.length ? data.midiNotes : null;
-    renderSvgs(data.svgs, data.sourceMap);
+    renderSvgs(data.svgs, data.sourceMap, playableNotes);
     output.classList.remove('stale');
     playButton.disabled = !playableNotes;
     $('#duration').textContent = playableNotes ? duration(playableNotes).toFixed(1) + ' s' : '';
@@ -125,7 +127,8 @@ const queue = new CompileQueue({
     $('#engine-state').textContent = 'LilyPond engine ready';
     $('#edit-state').textContent = 'Compiled';
     $('#mapping-hint').textContent = mappings.length ? 'Hover either pane · click a note to edit its source' : 'No source links in this score';
-    if (pendingPlay && playableNotes) { pendingPlay = false; startPlayback(); }
+    playHereButton.disabled = !sourcePlaybackMap.length;
+    if (pendingPlay && playableNotes) { pendingPlay = false; playFromTime(pendingPlayFrom); }
     else if (!playableNotes) stopPlayback();
   },
 });
@@ -143,6 +146,7 @@ function queueCompile(immediate = false) {
   queue.invalidate(revision);
   document.body.dataset.revision = String(revision);
   playButton.disabled = true;
+  playHereButton.disabled = true;
   output.classList.add('stale');
   clearMapping();
   setStatus('queued', 'Compiling shortly…');
@@ -164,22 +168,35 @@ function duration(notes) {
   return notes.reduce((end, note) => Math.max(end, note.time + note.duration), 0);
 }
 async function startPlayback() {
+  return playFromTime(0);
+}
+async function playFromTime(time) {
   pendingPlay = false;
   if (compiledRevision !== revision || !playableNotes?.length) return;
-  try { await player.play(playableNotes); }
+  try { await player.play(playableNotes, time); }
   catch (error) { stopPlayback(); showError('Audio could not start: ' + error.message); }
 }
-function requestPlay(toggle = false) {
+function selectedPlaybackTime() {
+  if (!sourcePlaybackMap.length) return null;
+  const offset = sourceEl.selectionStart;
+  const linked = sourcePlaybackMap.find(item => offset >= item.start && offset < item.end);
+  const next = sourcePlaybackMap.find(item => item.start >= offset);
+  return (linked ?? next ?? sourcePlaybackMap.at(-1)).time;
+}
+function requestPlay(toggle = false, fromHere = false) {
   if (toggle && (player.playing || pendingPlay)) { stopPlayback(); return; }
-  if (compiledRevision === revision && playableNotes?.length) { startPlayback(); return; }
+  const selectedTime = fromHere ? selectedPlaybackTime() : 0;
+  if (fromHere && selectedTime === null) return;
+  if (compiledRevision === revision && playableNotes?.length) { playFromTime(selectedTime); return; }
   if ($('#compile-status').classList.contains('error')) return;
   pendingPlay = true;
+  pendingPlayFrom = selectedTime;
   const targetRevision = revision;
   player.prepare().catch(error => {
     if (pendingPlay && targetRevision === revision) { stopPlayback(); showError('Audio could not start: ' + error.message); }
   });
   stopButton.disabled = false;
-  audioState.textContent = 'Will play the current edit when compilation finishes. Esc cancels.';
+  audioState.textContent = (fromHere ? 'Will play from the selected note' : 'Will play from the beginning') + ' when compilation finishes. Esc cancels.';
 }
 
 function clearMapping() {
@@ -230,9 +247,10 @@ function showMapping(mapping, fromScore = false) {
 function mappingAt(offset) {
   return mappings.find(item => offset >= item.start && offset < item.end);
 }
-function renderSvgs(svgs, sourceMap) {
+function renderSvgs(svgs, sourceMap, notes = []) {
   clearMapping();
   mappings = [];
+  sourcePlaybackMap = [];
   output.replaceChildren();
   for (let pageIndex = 0; pageIndex < svgs.length; pageIndex++) {
     const doc = new DOMParser().parseFromString(svgs[pageIndex].svg, 'image/svg+xml');
@@ -268,9 +286,19 @@ function renderSvgs(svgs, sourceMap) {
       const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
       title.textContent = compiledSource.slice(mapping.start, mapping.end) + ' · click to edit source';
       element.append(title);
-      element.addEventListener('pointerenter', () => showMapping(mapping, true));
-      element.addEventListener('pointerleave', clearMapping);
-      element.addEventListener('focus', () => showMapping(mapping, true));
+    }
+    wrapper.append(svg);
+    output.append(wrapper);
+    for (const mapping of mappings.filter(item => item.element.ownerSVGElement === svg)) {
+      let bounds;
+      try { bounds = mapping.element.getBBox(); } catch { continue; }
+      const padX = Math.max(4, (22 - bounds.width) / 2), padY = Math.max(4, (26 - bounds.height) / 2);
+      const hit = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      hit.setAttribute('x', String(bounds.x - padX)); hit.setAttribute('y', String(bounds.y - padY));
+      hit.setAttribute('width', String(bounds.width + 2 * padX)); hit.setAttribute('height', String(bounds.height + 2 * padY));
+      hit.setAttribute('fill', 'transparent'); hit.setAttribute('pointer-events', 'all');
+      hit.classList.add('score-hit-target'); hit.setAttribute('aria-label', mapping.element.getAttribute('aria-label'));
+      hit.dataset.sourceStart = String(mapping.start); hit.setAttribute('tabindex', '0'); hit.setAttribute('role', 'button');
       const select = event => {
         event.preventDefault();
         if (compiledRevision !== revision) return;
@@ -278,14 +306,34 @@ function renderSvgs(svgs, sourceMap) {
         sourceEl.focus();
         sourceEl.setSelectionRange(mapping.start, mapping.end);
       };
-      element.addEventListener('click', select);
-      element.addEventListener('keydown', event => { if (event.key === 'Enter') select(event); });
+      hit.addEventListener('pointerenter', () => showMapping(mapping, true));
+      hit.addEventListener('pointerleave', clearMapping);
+      hit.addEventListener('focus', () => showMapping(mapping, true));
+      hit.addEventListener('click', select);
+      hit.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') select(event); });
+      svg.append(hit);
     }
-    wrapper.append(svg);
-    output.append(wrapper);
   }
+  const starts = [...new Set(mappings.map(item => item.start))].sort((a, b) => a - b);
+  const orderedNotes = notes.slice().sort((a, b) => a.time - b.time || a.midi - b.midi);
+  if (starts.length && orderedNotes.length) {
+    sourcePlaybackMap = starts.map((start, index) => {
+      const noteIndex = starts.length === orderedNotes.length ? index : Math.round(index * (orderedNotes.length - 1) / Math.max(1, starts.length - 1));
+      return { start, end: tokenRange(compiledSource, start).end, time: orderedNotes[noteIndex].time };
+    });
+  }
+  document.body.dataset.sourceNoteCount = String(sourcePlaybackMap.length);
+  document.body.dataset.midiNoteCount = String(orderedNotes.length);
+  playHereButton.disabled = !sourcePlaybackMap.length;
   $('#download-svg').disabled = svgs.length === 0;
 }
+
+function applyZoom() {
+  $('#zoom-level').value = Math.round(scoreZoom * 100) + '%';
+  output.querySelectorAll('.score-page').forEach(page => { page.style.width = (scoreZoom * 100) + '%'; });
+}
+$('#zoom-in').addEventListener('click', () => { scoreZoom = Math.min(3, +(scoreZoom + .25).toFixed(2)); applyZoom(); });
+$('#zoom-out').addEventListener('click', () => { scoreZoom = Math.max(.5, +(scoreZoom - .25).toFixed(2)); applyZoom(); });
 
 sourceEl.addEventListener('input', () => { updateEditorChrome(); queueCompile(); });
 sourceEl.addEventListener('pointermove', event => {
@@ -311,6 +359,8 @@ sourceEl.addEventListener('keyup', event => {
     showMapping(mappingAt(sourceEl.selectionStart));
 });
 sourceEl.addEventListener('click', () => showMapping(mappingAt(sourceEl.selectionStart)));
+sourceEl.addEventListener('click', () => { playHereButton.disabled = !sourcePlaybackMap.length; });
+sourceEl.addEventListener('keyup', () => { playHereButton.disabled = !sourcePlaybackMap.length; });
 sourceEl.addEventListener('scroll', () => {
   $('#line-numbers').scrollTop = sourceEl.scrollTop;
   if (activeMapping) showMapping(activeMapping);
@@ -337,11 +387,12 @@ $('#download-svg').addEventListener('click', () => {
   if (lastGoodSvgs.length) download(lastGoodSvgs[0].svg, 'image/svg+xml', saveName.replace(/\.ly$/i, '') + '.svg');
 });
 playButton.addEventListener('click', () => requestPlay());
+playHereButton.addEventListener('click', () => requestPlay(false, true));
 stopButton.addEventListener('click', stopPlayback);
 document.addEventListener('keydown', event => {
   if (event.isComposing || event.repeat) return;
   if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-    event.preventDefault(); requestPlay();
+    event.preventDefault(); requestPlay(false, event.shiftKey);
   } else if (event.key === 'Escape') {
     event.preventDefault(); stopPlayback();
   } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
