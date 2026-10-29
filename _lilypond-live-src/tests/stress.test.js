@@ -96,6 +96,22 @@ test('10,000 notes use a short lookahead and skip expired notes after a stalled 
   assert.equal(h.intervals.size, 0);
 });
 
+test('play from a selected time begins there and sustains notes that cross the selection', async () => {
+  const h = audioHarness();
+  await h.player.play([
+    { midi: 60, time: 0, duration: 1, velocity: .8 },
+    { midi: 64, time: .5, duration: 3, velocity: .8 },
+    { midi: 67, time: 2, duration: 1, velocity: .8 },
+  ], 1.25);
+  assert.equal(h.created.length, 1, 'only the note still sounding at the selection point starts immediately');
+  assert.equal(h.created[0].startedAt, h.context.currentTime + .035);
+  h.context.currentTime = .7;
+  h.tick();
+  assert.equal(h.created.length, 2, 'the next note retains its timing relative to the selection');
+  assert.ok(Math.abs(h.created[1].startedAt - .785) < .001);
+  h.player.stop();
+});
+
 test('10,000 edits coalesce to the newest revision with one compile active', () => {
   const sent = [], applied = [];
   const queue = new CompileQueue({ send: r => sent.push(r.id), result: d => applied.push(d.id) });

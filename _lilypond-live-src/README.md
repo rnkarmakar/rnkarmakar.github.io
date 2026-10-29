@@ -5,11 +5,14 @@ Open https://rnkarmakar.github.io/lilypond-live/ and edit ordinary LilyPond sour
 ## Controls
 
 - **Ctrl+Enter** (Windows/Linux) or **Cmd+Enter** (Mac): play or restart from the beginning, including while the editor has focus.
+- **Ctrl/Cmd+Shift+Enter**: play from the note at the editor caret or the selected score note.
 - **Esc**: stop all audio and cancel a Play queued during compilation.
 - **Space** outside text fields and buttons: toggle play/stop.
+- **Zoom − / +**: resize the score from 50% to 300%; use the preview scrollbars to move around a zoomed page.
 - **Ctrl/Cmd+S**: download the current source.
 - Hover a mapped score element to highlight its source token. Hover a source token, or move the text cursor through it, to highlight the score.
 - Click a mapped score element to select and edit its source. Source links update only after a successful compile.
+- Click a note in the editor to place the caret there, then use **Play here** to start playback at that note.
 
 Each edit stops old playback immediately. Only the latest successful revision can play. Ctrl/Cmd+Enter during compilation queues playback for that revision; another edit or Esc cancels it.
 

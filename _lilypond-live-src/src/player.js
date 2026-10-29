@@ -29,11 +29,14 @@ export class ScorePlayer {
     await this.context.resume();
   }
 
-  async play(notes) {
+  async play(notes, fromTime = 0) {
     this.stop();
     const generation = this.generation;
-    const valid = notes.filter(n => Number.isFinite(n.time) && n.time >= 0 &&
+    fromTime = Number.isFinite(fromTime) ? Math.max(0, fromTime) : 0;
+    const valid = notes.filter(n => Number.isFinite(n.time) && n.time + n.duration > fromTime &&
       Number.isFinite(n.duration) && n.duration > 0 && Number.isFinite(n.midi))
+      .map(n => ({ ...n, duration: n.time < fromTime ? n.time + n.duration - fromTime : n.duration,
+        time: Math.max(0, n.time - fromTime) }))
       .slice().sort((a, b) => a.time - b.time);
     if (!valid.length) return;
     try { await this.prepare(); }
