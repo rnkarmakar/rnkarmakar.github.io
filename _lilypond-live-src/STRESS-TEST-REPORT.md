@@ -1,4 +1,75 @@
-# Feedback loop stress tests
+# Browser stress tests — 2026-10-30 (Asia/Tokyo)
+
+Tested the deployed HTTPS product in Chrome first, then the repaired production
+build at `http://127.0.0.1:4175/lilypond-live/`. Browser actions used the actual
+editor, buttons, keyboard, pointer, file picker and downloads. DOM observations
+checked the visible state and source selections; unit tests were supplementary.
+
+## Repairs found during this pass
+
+- Ordinary `\score` blocks without `\layout` stopped engraving when automatic
+  MIDI was inserted. Both output definitions are now supplied when absent.
+- Play here guessed times from source order. Simultaneous staves, dynamics
+  attached to notes, chords and ties could select the wrong playback time.
+  A MIDI performer now records LilyPond's interpreted source positions and
+  musical moments. Tempo changes and grace timing use the actual MIDI header.
+- Recompiling reset the page size while the zoom label retained its old value.
+  Zoom is now reapplied; enlarged pages also remain reachable from their left edge.
+- Programmatic brace/indent/comment commands discarded native Undo history.
+  Commands now use a native editing transaction, with a fallback where unavailable.
+- Editor click/keyup could re-enable Play here against stale source mappings.
+  It now stays disabled until the current revision succeeds.
+- Score elements exposed duplicate keyboard targets, some without working
+  activation. Only the working targets are focusable, and selecting with Space
+  no longer also triggers the global playback shortcut.
+- SVG export silently omitted every page after the first. It now combines all
+  pages into one SVG, with separate identifiers for page-local definitions.
+- Uppercase `.LY` filenames gained a second `.ly` suffix; file reads could reject
+  without feedback. Filename matching is now case insensitive and read errors
+  are surfaced.
+- Compilation diagnostics disappeared after ten seconds. They now remain visible
+  until an edit, and obsolete diagnostics are removed from the accessibility tree.
+
+## Actual browser coverage
+
+| Feature | Result |
+| --- | --- |
+| Initial/default example | Compiled voice, piano, chord names and lyrics; 163 MIDI notes and 129 mapped source positions. |
+| Automatic edit/compile/preview | Small scores compiled and enabled audio; ordinary blocks without layout now engrave. |
+| Status/errors/recovery | Invalid notation disables playback and leaves the last preview dimmed; a corrected source recovers. |
+| Start/stop/restart | Actual browser AudioContext entered playback; 20 Ctrl+Enter restarts followed by Esc stopped it cleanly. |
+| Selected score/source note | Both simultaneous first-staff notes map to 0 seconds; the next lower-staff note plays from 1 second, through Play here and Ctrl+Shift+Enter. |
+| Source/score relationship | Pointer movement over source highlighted the score, and movement over a rendered note highlighted its source. Clicking and arrow-key caret movement were checked too. |
+| Zoom | 50%, 150%, and 300%; zoomed score selection; left edge remains accessible; 150% survives recompilation. |
+| Shortcuts | Ctrl+Enter, Ctrl+Shift+Enter, Esc, Space outside the editor, and literal spaces inside the editor. |
+| Editing commands | Paired braces, selection wrapping, Enter indentation, Tab, Shift+Tab, Ctrl+/ twice, and native Undo/Redo. |
+| Open/save | Actual file picker loaded an uppercase `.LY` file with Unicode text. Source download and retention across reload were checked. The user confirmed SVG downloads succeed in Chrome. |
+| Multiple pages | Two-page score rendered; Save SVG completed for both pages. |
+| Rapid edits | Twelve source replacements were made while a prior compile was active; revision 30 became the applied revision with 19 notes; stale playback remained stopped and Play here disabled during recompilation. |
+
+## Automated regression coverage
+
+`npm test`: **24 passing tests**. Five tests execute the real WebAssembly
+LilyPond compiler, checking simultaneous voices, attached dynamics, variables,
+chords, rests, tuplets, tempo changes, tie continuations, grace-note onsets,
+multiple MIDI files, final rests between scores, and the full default example.
+The other 19 cover player cancellation/scheduling, compile coalescing, source
+offsets and editor transformations. `npm run build` creates the production bundle.
+
+## Known engine limitation
+
+The bundled LilyPond/Pango/HarfBuzz engine can abort on unsupported text glyphs
+(reproduced with Japanese and emoji in a title). The source is retained, playback
+is disabled, and removing the unsupported text allows the next edit to compile.
+The app now gives an actionable message instead of the raw `unreachable` trap.
+This does not add missing fonts or repair the upstream WebAssembly text shaper.
+Browser coverage here is Chrome on Windows; other browser/OS combinations are
+not claimed as tested. Ctrl shortcuts were exercised; Cmd uses the same handler
+but was not tested on macOS.
+
+---
+
+# Earlier feedback-loop tests (2026-10-29)
 
 Date: 2026-10-29 (Asia/Tokyo)
 

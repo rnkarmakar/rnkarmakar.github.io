@@ -1,6 +1,7 @@
 import { compile, loadRuntime, loadWasm } from './lilypond-runtime.js';
 import { Midi } from '@tonejs/midi';
 import { addPlaybackToScores } from './source-map.js';
+import { playbackSettings, readPlaybackEvents, mapPlaybackEvents, playbackEndTime } from './playback-map.js';
 
 let enginePromise;
 async function getEngine() {
@@ -27,6 +28,7 @@ self.onmessage = async ({ data }) => {
     const sourceMap = addPlaybackToScores(source);
     const result = await compile(sourceMap.source, {
       ...engine, filename: 'score.ly', format: ['svg', 'midi'],
+      files: { 'live-settings.ly': playbackSettings }, includeSettings: 'live-settings.ly',
     });
     if (result.exitCode !== 0) {
       const error = new Error((result.logs ?? []).join('\n') || 'LilyPond rejected this score.');
@@ -40,17 +42,29 @@ self.onmessage = async ({ data }) => {
     // Multiple score blocks generate separate MIDI files; concatenate in output order.
     let timeOffset = 0;
     const midiNotes = [];
-    for (const [, bytes] of entries.filter(([name]) => /\.midi?$/i.test(name))
-      .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))) {
+    const playbackMap = [], scores = readPlaybackEvents(result.logs ?? []);
+    let scoreIndex = 0;
+    for (const [name, bytes] of entries.filter(([name]) => /\.midi?$/i.test(name))
+      .sort(([a], [b]) => scores.findIndex(score => score.filename === a) - scores.findIndex(score => score.filename === b))) {
       const midi = new Midi(bytes);
       const notes = midi.tracks.flatMap(track => track.notes);
+      const score = scores.find(score => score.filename === name) ?? scores[scoreIndex];
+      scoreIndex++;
+      if (score) playbackMap.push(...mapPlaybackEvents(score, midi, sourceMap, source, timeOffset));
       for (const note of notes) midiNotes.push({
         midi: note.midi, time: note.time + timeOffset, duration: note.duration, velocity: note.velocity,
       });
-      timeOffset += notes.reduce((end, note) => Math.max(end, note.time + note.duration), 0);
+      timeOffset += Math.max(notes.reduce((end, note) => Math.max(end, note.time + note.duration), 0),
+        score ? playbackEndTime(score, midi) : 0);
     }
-    self.postMessage({ type: 'compiled', id, svgs, midiNotes, sourceMap, logs: result.logs ?? [] });
+    self.postMessage({ type: 'compiled', id, svgs, midiNotes, sourceMap, playbackMap,
+      logs: (result.logs ?? []).filter(line => !line.startsWith('LPLIVE:')) });
   } catch (error) {
-    self.postMessage({ type: 'error', id, message: error?.message ?? String(error), logs: error?.logs ?? [] });
+    const logs = (error?.logs ?? []).filter(line => !line.startsWith('LPLIVE:'));
+    const fontCrash = logs.some(line => /harfbuzz|assert_unicode/.test(line));
+    const message = fontCrash
+      ? 'The engraving engine could not render a text character in this score. Try removing unsupported symbols or emoji, then edit again to retry.'
+      : error?.message ?? String(error);
+    self.postMessage({ type: 'error', id, message, logs });
   }
 };

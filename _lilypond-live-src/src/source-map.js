@@ -66,14 +66,16 @@ export function addPlaybackToScores(source) {
       if (mask[close] === '}') depth--;
       if (depth) close++;
     }
-    if (!depth && !/\\midi\b/.test(mask.slice(open, close)))
-      insertions.push({ offset: close, length: 12 });
+    if (!depth) {
+      const body = mask.slice(open, close);
+      const text = (!/\\layout\b/.test(body) ? ' \\layout { } ' : '') +
+        (!/\\midi\b/.test(body) ? ' \\midi { } ' : '');
+      if (text) insertions.push({ offset: close, length: text.length, text });
+    }
   }
   let generated = source;
-  const text = ' \\midi { } ';
   for (const insertion of insertions.slice().reverse()) {
-    insertion.length = text.length;
-    generated = generated.slice(0, insertion.offset) + text + generated.slice(insertion.offset);
+    generated = generated.slice(0, insertion.offset) + insertion.text + generated.slice(insertion.offset);
   }
   return { source: generated, insertions };
 }

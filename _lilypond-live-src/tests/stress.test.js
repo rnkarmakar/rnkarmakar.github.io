@@ -155,7 +155,9 @@ test('current compilation errors are surfaced and the queue accepts recovery', (
 test('MIDI insertion ignores strings, nested block comments, and line comments', () => {
   const source = '\\header { title = "\\\\score { }" }\n%{ \\score { %{ nested %} } %}\n% \\score { }\n\\score { c4 }\n\\score { d4 \\midi { } }';
   const result = addPlaybackToScores(source);
-  assert.equal(result.insertions.length, 1);
+  assert.equal(result.insertions.length, 2);
+  assert.equal((maskSource(result.source).match(/\\midi\b/g) ?? []).length, 2);
+  assert.equal((maskSource(result.source).match(/\\layout\b/g) ?? []).length, 2);
   assert.equal(result.source.slice(0, result.insertions[0].offset), source.slice(0, result.insertions[0].offset));
   assert.equal(maskSource(source).length, source.length);
 });
