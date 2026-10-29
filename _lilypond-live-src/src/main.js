@@ -3,7 +3,8 @@ import { sampleScore, previousSampleScore } from './sample-score.js';
 import { ScorePlayer } from './player.js';
 import { CompileQueue } from './compile-queue.js';
 import { indentSelection, unindentSelection, toggleLineComments, insertBracePair, insertNewline } from './editor-commands.js';
-import { sourceOffset, originalOffset, tokenRange, isPitchToken } from './source-map.js';
+import { sourceOffset, originalOffset, tokenRange } from './source-map.js';
+import { exportScoreSvg } from './svg-export.js';
 import './style.css';
 
 document.querySelector('#app').innerHTML = [
@@ -27,7 +28,7 @@ document.querySelector('#app').innerHTML = [
   '<div class="preview-scroll" id="preview-scroll"><div id="score-output" class="score-output"><div class="empty-state"><span class="empty-glyph">𝄞</span><b>Your score will appear here</b><span>Open a .ly file or edit the example.</span></div></div></div>',
   '<div class="playback-footer"><span id="audio-state">Audio is prepared with the score.</span><span id="duration"></span></div></section></main>',
   '<footer class="footnote"><span>Your score stays in this browser</span><span id="engine-state">Loading LilyPond engine…</span></footer>',
-  '<div id="error-toast" class="error-toast" role="status" aria-live="polite"></div>',
+  '<div id="error-toast" class="error-toast" role="status" aria-live="polite" hidden></div>',
 ].join('');
 
 const $ = selector => document.querySelector(selector);
@@ -54,11 +55,14 @@ function setStatus(kind, text) {
   $('#compile-status').className = 'status ' + kind;
   $('#compile-status span').textContent = text;
 }
-function showError(message) {
+function showError(message, persistent = false) {
+  $('#error-toast').hidden = false;
   $('#error-toast').textContent = String(message).split('\n').slice(0, 8).join('\n');
   $('#error-toast').classList.add('visible');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => $('#error-toast').classList.remove('visible'), 10000);
+  if (!persistent) toastTimer = setTimeout(() => {
+    $('#error-toast').classList.remove('visible'); $('#error-toast').hidden = true;
+  }, 10000);
 }
 function stopPlayback() {
   const cancelled = pendingPlay;
@@ -110,7 +114,7 @@ const queue = new CompileQueue({
       previewMessage.textContent = lastGoodSvgs.length ? 'Last valid preview · current source has errors' : 'Current source could not be compiled.';
       audioState.textContent = 'Playback waits for a successful compile.';
       $('#engine-state').textContent = 'Ready to retry on the next edit';
-      showError(data.message || 'No score page was produced.');
+      showError(data.message || 'No score page was produced.', true);
       return;
     }
     lastGoodSvgs = data.svgs;
@@ -118,7 +122,7 @@ const queue = new CompileQueue({
     compiledRevision = request.id;
     document.body.dataset.compiledRevision = String(compiledRevision);
     playableNotes = data.midiNotes?.length ? data.midiNotes : null;
-    renderSvgs(data.svgs, data.sourceMap, playableNotes);
+    renderSvgs(data.svgs, data.sourceMap, data.playbackMap ?? []);
     output.classList.remove('stale');
     playButton.disabled = !playableNotes;
     $('#duration').textContent = playableNotes ? duration(playableNotes).toFixed(1) + ' s' : '';
@@ -156,6 +160,8 @@ function queueCompile(immediate = false) {
   $('#edit-state').textContent = 'Unsaved changes';
   $('#mapping-hint').textContent = 'Source links update after compilation';
   $('#error-toast').classList.remove('visible');
+  $('#error-toast').hidden = true;
+  $('#error-toast').textContent = '';
   try { localStorage.setItem('lilypond-live-source', sourceEl.value); } catch { /* storage may be unavailable */ }
   const request = { type: 'compile', id: revision, source: sourceEl.value };
   compileTimer = setTimeout(() => queue.submit(request), immediate ? 0 : 250);
@@ -174,11 +180,12 @@ async function startPlayback() {
 async function playFromTime(time) {
   pendingPlay = false;
   if (compiledRevision !== revision || !playableNotes?.length) return;
+  document.body.dataset.playbackFrom = String(time);
   try { await player.play(playableNotes, time); }
   catch (error) { stopPlayback(); showError('Audio could not start: ' + error.message); }
 }
 function selectedPlaybackTime() {
-  if (!sourcePlaybackMap.length) return null;
+  if (compiledRevision !== revision || !sourcePlaybackMap.length) return null;
   const offset = sourceEl.selectionStart;
   const linked = sourcePlaybackMap.find(item => offset >= item.start && offset < item.end);
   const next = sourcePlaybackMap.find(item => item.start >= offset);
@@ -260,7 +267,7 @@ function nearestMapping(svg, x, y) {
   }
   return nearest;
 }
-function renderSvgs(svgs, sourceMap, notes = []) {
+function renderSvgs(svgs, sourceMap, playbackMap = []) {
   clearMapping();
   mappings = [];
   sourcePlaybackMap = [];
@@ -291,8 +298,6 @@ function renderSvgs(svgs, sourceMap, notes = []) {
       const mapping = { ...tokenRange(compiledSource, start), element };
       mappings.push(mapping);
       element.classList.add('score-link');
-      element.setAttribute('role', 'button');
-      element.setAttribute('tabindex', '0');
       const originalLines = compiledSource.slice(0, start).split('\n');
       element.setAttribute('aria-label', 'Source line ' + originalLines.length + ', character ' + ([...originalLines.at(-1)].length + 1));
       element.dataset.sourceStart = String(start);
@@ -328,26 +333,31 @@ function renderSvgs(svgs, sourceMap, notes = []) {
       hit.addEventListener('pointerleave', clearMapping);
       hit.addEventListener('focus', () => showMapping(mapping, true));
       hit.addEventListener('click', event => select(event, nearestMapping(svg, event.clientX, event.clientY)));
-      hit.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') select(event); });
+      hit.addEventListener('keydown', event => {
+        if (!event.ctrlKey && !event.metaKey && (event.key === 'Enter' || event.key === ' ')) {
+          event.stopPropagation(); select(event);
+        }
+      });
       svg.append(hit);
     }
   }
-  const starts = [...new Set(mappings.map(item => item.start).filter(start => isPitchToken(compiledSource, start)))].sort((a, b) => a - b);
-  const orderedNotes = notes.slice().sort((a, b) => a.time - b.time || a.midi - b.midi);
-  if (starts.length && orderedNotes.length) {
-    sourcePlaybackMap = starts.map((start, index) => {
-      const noteIndex = starts.length <= orderedNotes.length ? index : Math.round(index * (orderedNotes.length - 1) / Math.max(1, starts.length - 1));
-      return { start, end: tokenRange(compiledSource, start).end, time: orderedNotes[noteIndex].time };
-    });
+  // Repeated source notes select their first performed occurrence.
+  sourcePlaybackMap = [...playbackMap].sort((a, b) => a.start - b.start || a.time - b.time)
+    .filter((item, index, items) => !index || items[index - 1].start !== item.start);
+  for (const mapping of mappings) {
+    const point = sourcePlaybackMap.find(item => item.start === mapping.start);
+    if (point) mapping.element.dataset.playbackTime = String(point.time);
   }
   document.body.dataset.sourceNoteCount = String(sourcePlaybackMap.length);
-  document.body.dataset.midiNoteCount = String(orderedNotes.length);
+  document.body.dataset.midiNoteCount = String(playableNotes?.length ?? 0);
   playHereButton.disabled = !sourcePlaybackMap.length;
   $('#download-svg').disabled = svgs.length === 0;
+  applyZoom();
 }
 
 function applyZoom() {
   $('#zoom-level').value = Math.round(scoreZoom * 100) + '%';
+  output.style.alignItems = scoreZoom > 1 ? 'flex-start' : 'center';
   output.querySelectorAll('.score-page').forEach(page => { page.style.width = (scoreZoom * 100) + '%'; });
 }
 $('#zoom-in').addEventListener('click', () => { scoreZoom = Math.min(3, +(scoreZoom + .25).toFixed(2)); applyZoom(); });
@@ -355,11 +365,20 @@ $('#zoom-out').addEventListener('click', () => { scoreZoom = Math.max(.5, +(scor
 
 sourceEl.addEventListener('input', () => { updateEditorChrome(); queueCompile(); });
 function applyEditorCommand(result) {
-  sourceEl.value = result.value;
+  // A native editing transaction preserves the browser's Undo/Redo history.
+  const before = sourceEl.value;
+  let start = 0, oldEnd = before.length, newEnd = result.value.length;
+  while (start < oldEnd && start < newEnd && before[start] === result.value[start]) start++;
+  while (oldEnd > start && newEnd > start && before[oldEnd - 1] === result.value[newEnd - 1]) { oldEnd--; newEnd--; }
+  sourceEl.setSelectionRange(start, oldEnd);
+  const previousRevision = revision;
+  if (!document.execCommand('insertText', false, result.value.slice(start, newEnd)))
+    sourceEl.setRangeText(result.value.slice(start, newEnd), start, oldEnd, 'end');
   sourceEl.setSelectionRange(result.selectionStart, result.selectionEnd);
-  sourceEl.dispatchEvent(new Event('input', { bubbles: true }));
+  if (revision === previousRevision) sourceEl.dispatchEvent(new Event('input', { bubbles: true }));
 }
 sourceEl.addEventListener('keydown', event => {
+  if (event.isComposing) return;
   if (event.key === 'Tab' && !event.ctrlKey && !event.metaKey && !event.altKey) {
     event.preventDefault();
     const command = event.shiftKey ? unindentSelection : indentSelection;
@@ -402,8 +421,8 @@ sourceEl.addEventListener('keyup', event => {
     showMapping(mappingAt(sourceEl.selectionStart));
 });
 sourceEl.addEventListener('click', () => showMapping(mappingAt(sourceEl.selectionStart)));
-sourceEl.addEventListener('click', () => { playHereButton.disabled = !sourcePlaybackMap.length; });
-sourceEl.addEventListener('keyup', () => { playHereButton.disabled = !sourcePlaybackMap.length; });
+sourceEl.addEventListener('click', () => { playHereButton.disabled = compiledRevision !== revision || !sourcePlaybackMap.length; });
+sourceEl.addEventListener('keyup', () => { playHereButton.disabled = compiledRevision !== revision || !sourcePlaybackMap.length; });
 sourceEl.addEventListener('scroll', () => {
   $('#line-numbers').scrollTop = sourceEl.scrollTop;
   if (activeMapping) showMapping(activeMapping);
@@ -413,21 +432,29 @@ $('#open-score').addEventListener('click', () => $('#file-picker').click());
 $('#file-picker').addEventListener('change', async event => {
   const file = event.target.files?.[0];
   if (!file) return;
-  saveName = file.name.endsWith('.ly') ? file.name : file.name + '.ly';
-  setSource(await file.text());
-  event.target.value = '';
+  try {
+    const text = await file.text();
+    saveName = /\.ly$/i.test(file.name) ? file.name : file.name + '.ly';
+    setSource(text);
+  } catch (error) { showError('Could not open this file: ' + error.message); }
+  finally { event.target.value = ''; }
 });
 function download(content, type, name) {
   const url = URL.createObjectURL(new Blob([content], { type }));
-  const link = document.createElement('a'); link.href = url; link.download = name; link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const link = document.createElement('a'); link.href = url; link.download = name;
+  document.body.append(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
 }
 $('#save-score').addEventListener('click', () => {
   download(sourceEl.value, 'text/plain;charset=utf-8', saveName);
   $('#edit-state').textContent = 'Saved .ly file';
 });
 $('#download-svg').addEventListener('click', () => {
-  if (lastGoodSvgs.length) download(lastGoodSvgs[0].svg, 'image/svg+xml', saveName.replace(/\.ly$/i, '') + '.svg');
+  if (!lastGoodSvgs.length) return;
+  try {
+    download(exportScoreSvg(lastGoodSvgs), 'image/svg+xml;charset=utf-8', saveName.replace(/\.ly$/i, '') + '.svg');
+    $('#edit-state').textContent = 'Saved SVG · ' + lastGoodSvgs.length + ' page(s)';
+  } catch (error) { showError('Could not save SVG: ' + error.message); }
 });
 playButton.addEventListener('click', () => requestPlay());
 playHereButton.addEventListener('click', () => requestPlay(false, true));

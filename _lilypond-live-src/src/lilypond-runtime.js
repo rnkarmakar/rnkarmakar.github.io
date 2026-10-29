@@ -238,7 +238,7 @@ export async function compile(
     const status = mod.callMain([...args, mainPath])
     if (typeof status === 'number') exitCode = status
   } catch (error) {
-    if (error.name !== 'ExitStatus') throw error
+    if (error.name !== 'ExitStatus') { error.logs = logs; throw error }
     exitCode = error.status
   } finally {
     if (nodeProcess) nodeProcess.exitCode = previousExitCode

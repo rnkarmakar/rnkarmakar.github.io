@@ -6,7 +6,7 @@
   "scripts": {
     "start": "vite --host 127.0.0.1 --open",
     "build": "vite build && node copy-engine-assets.mjs",
-    "test": "node --test tests/stress.test.js"
+    "test": "node --test tests/stress.test.js tests/compiler.test.js"
   },
   "dependencies": {
     "@sightread/lilypond-wasm": "0.2.0",

@@ -11,6 +11,7 @@ The default example is a multi-system voice-and-piano song with chord names, lyr
 - **Enter** carries the current line's indentation forward and adds one tab after `{` or `<<`.
 - **Shift+Tab** removes one tab or up to two leading spaces from the current or selected lines.
 - **Ctrl+/** (Windows/Linux) or **Cmd+/** (Mac) toggles LilyPond `%` comments on the selected lines (or the current line when there is no selection).
+- Editor commands preserve native Undo/Redo where the browser supports editing transactions.
 - **Ctrl+Enter** (Windows/Linux) or **Cmd+Enter** (Mac): play or restart from the beginning, including while the editor has focus.
 - **Ctrl/Cmd+Shift+Enter**: play from the note at the editor caret or the selected score note.
 - **Esc**: stop all audio and cancel a Play queued during compilation.
@@ -20,6 +21,7 @@ The default example is a multi-system voice-and-piano song with chord names, lyr
 - Hover a mapped score element to highlight its source token. Hover a source token, or move the text cursor through it, to highlight the score.
 - Click a mapped score element to select and edit its source. Source links update only after a successful compile.
 - Click a note in the editor to place the caret there, then use **Play here** to start playback at that note.
+- **Save SVG** includes every page in one SVG file.
 
 Each edit stops old playback immediately. Only the latest successful revision can play. Ctrl/Cmd+Enter during compilation queues playback for that revision; another edit or Esc cancels it.
 
@@ -30,6 +32,10 @@ The compiler runs one revision at a time and keeps only the newest pending edit.
 There is a 250 ms typing debounce. LilyPond engraving still takes seconds: small warm compilations measured 1.1–1.6 seconds across 20 consecutive Chrome cycles (other examples took about 3 seconds). The first load additionally downloads and initializes the engine. This is automatic feedback, but not per-keystroke instantaneous engraving.
 
 Source mapping covers the elements for which LilyPond emits point-and-click links in the current file. It is source navigation, not graphical note editing. Code that creates notes indirectly through Scheme or included files may not have a direct editable token here.
+
+Play here uses source positions and musical moments recorded by LilyPond's MIDI interpreter, including simultaneous staves and tempo changes. A source token played more than once selects its first performed occurrence. Ordinary score blocks receive both layout and MIDI output when either is absent.
+
+Some unsupported text glyphs can trigger a failure in the bundled engraving engine. The app retains the source and reports the problem; remove the unsupported symbol and edit again to recover. This build does not include broad CJK or emoji font coverage.
 
 ## Development and checks
 
