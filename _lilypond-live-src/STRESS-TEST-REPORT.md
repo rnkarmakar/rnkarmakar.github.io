@@ -4,7 +4,7 @@ Date: 2026-10-29 (Asia/Tokyo)
 
 ## Automated checks
 
-Run npm test. All 18 tests pass.
+Run npm test. All 19 tests pass.
 
 - 500 consecutive playback restarts: every previous oscillator is stopped and disconnected; exactly one scheduler remains.
 - 100 simultaneous Play requests: only the most recent session starts.
@@ -13,6 +13,7 @@ Run npm test. All 18 tests pass.
 - 10,000 notes: only the short lookahead window is scheduled; delayed scheduler ticks skip expired notes instead of emitting them together.
 - Starting from a selected time: expired notes are skipped, notes already sounding continue with their remaining duration, and later notes retain their relative timing.
 - Source-position mapping counts pitch tokens but excludes tempo, key, and meter directives from note selection.
+- The default example has four score systems, two staves, lyrics, chord names, and representative expressive notation; legacy pristine sample text is migrated while custom saved scores remain untouched.
 - Tab insertion and multiline selection indentation, Shift+Tab unindent, Enter indentation inside braces, paired opening/closing braces with selection wrapping, and Ctrl+/ LilyPond comment toggling.
 - 10,000 source revisions: one compilation runs and only the newest pending revision is sent next. Old results cannot replace the new revision.
 - Edits before debounce, compiler errors, and recovery.

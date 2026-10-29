@@ -2,6 +2,8 @@
 
 Open https://rnkarmakar.github.io/lilypond-live/ and edit ordinary LilyPond source. The score and MIDI are compiled together in a browser worker. Playback uses the browser's Web Audio synthesizer, with no separate audio render step.
 
+The default example is a multi-system voice-and-piano song with chord names, lyrics, slurs, dynamics, articulation, a tuplet, a grace note, a tie, rests, and a fermata. The first visit uses this showcase; a saved custom score is preserved.
+
 ## Controls
 
 - **{** inserts a matching **}** and leaves the caret between them; if text is selected, the braces wrap it. Typing **}** before a pair moves past it.

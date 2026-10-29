@@ -4,6 +4,7 @@ import { ScorePlayer } from '../src/player.js';
 import { CompileQueue } from '../src/compile-queue.js';
 import { addPlaybackToScores, sourceOffset, originalOffset, maskSource, isPitchToken } from '../src/source-map.js';
 import { indentSelection, unindentSelection, toggleLineComments, insertBracePair, insertNewline } from '../src/editor-commands.js';
+import { sampleScore, previousSampleScore } from '../src/sample-score.js';
 
 function audioHarness(resume = () => Promise.resolve()) {
   const intervals = new Map();
@@ -203,6 +204,15 @@ test('typing an opening brace inserts its pair and wraps selected source', () =>
   assert.deepEqual(insertBracePair('c4 d4', 0, 5), {
     value: '{c4 d4}', selectionStart: 1, selectionEnd: 6,
   });
+});
+
+test('default sample demonstrates a multi-system voice and piano score and retains migration source', () => {
+  assert.equal((sampleScore.match(/\\score\b/g) ?? []).length, 1);
+  assert.equal((sampleScore.match(/\\break\b/g) ?? []).length, 6);
+  assert.equal((sampleScore.match(/\\new Staff\b/g) ?? []).length, 2);
+  for (const feature of ['\\new Lyrics', 'd4( g)', '\\tuplet', '\\grace', '\\fermata', '\\chordmode'])
+    assert.ok(sampleScore.includes(feature), 'sample should demonstrate ' + feature);
+  assert.match(previousSampleScore, /A little melody/);
 });
 
 test('Ctrl+/ toggles LilyPond percent comments and preserves mixed existing comments', () => {
