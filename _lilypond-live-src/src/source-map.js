@@ -24,6 +24,11 @@ export function tokenRange(source, offset) {
   return { start: offset, end: Math.max(offset + 1, end) };
 }
 
+export function isPitchToken(source, offset) {
+  const token = source.slice(offset, tokenRange(source, offset).end);
+  return /^[a-g](?:(?:isis|eses|is|es|ih|eh))?[,']*(?:\d+)?\.*$/.test(token);
+}
+
 export function maskSource(source) {
   let result = '', string = false, escaped = false, line = false, block = 0;
   for (let i = 0; i < source.length; i++) {
